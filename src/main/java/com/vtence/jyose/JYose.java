@@ -16,7 +16,7 @@ public class JYose {
 
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    public static class PingResponse {
+    public static class Pong {
         public final boolean alive = true;
     }
 
@@ -25,7 +25,7 @@ public class JYose {
             get("/ping").to(new Application() {
                 public void handle(Request request, Response response) throws Exception {
                     response.contentType("application/json");
-                    response.body(gson.toJson(new PingResponse()));
+                    response.body(gson.toJson(new Pong()));
                 }
             });
 

@@ -1,4 +1,4 @@
-define 'jyose', :group => 'com.vtence.jyose', :version => '0.2-SNAPSHOT' do
+define 'jyose', :group => 'com.vtence.jyose', :version => '0.2' do
   compile.options.source = '1.7'
   compile.options.target = '1.7'
 
