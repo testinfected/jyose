@@ -1,4 +1,4 @@
-package com.vtence.jyose.challenges.start;
+package com.vtence.jyose.challenges;
 
 import com.vtence.jyose.JYose;
 import com.vtence.molecule.simple.SimpleServer;
@@ -12,7 +12,7 @@ import java.io.IOException;
 
 import static com.vtence.molecule.support.HttpRequest.aRequest;
 
-public class HelloYoseTest {
+public class StartChallengeTest {
 
     static int PORT = 9999;
 
@@ -26,11 +26,17 @@ public class HelloYoseTest {
         yose.start(server);
     }
 
-    @Test
-    public void passesChallenge() throws IOException {
+    @Test public void passesHelloChallenge() throws IOException {
         response = request.get("/");
         response.assertOK();
         response.assertHasContent("Hello Yose");
+    }
+
+    @Test public void passesPingChallenge() throws IOException {
+        response = request.get("/ping");
+        response.assertOK();
+        response.assertHasContentType("application/json");
+        response.assertHasContent("{\n  \"alive\": true\n}");
     }
 
     @After public void
