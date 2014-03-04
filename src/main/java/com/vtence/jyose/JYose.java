@@ -9,6 +9,7 @@ import com.vtence.molecule.Server;
 import com.vtence.molecule.middlewares.Router;
 import com.vtence.molecule.routing.DynamicRoutes;
 import com.vtence.molecule.simple.SimpleServer;
+import com.vtence.molecule.util.MimeTypes;
 
 import java.io.IOException;
 
@@ -31,7 +32,16 @@ public class JYose {
 
             get("/").to(new Application() {
                 public void handle(Request request, Response response) throws Exception {
-                    response.body("Hello Yose");
+                    response.contentType(MimeTypes.TEXT_HTML);
+                    response.body("<html>\n" +
+                            "<body>\n" +
+                            "<h3>Hello Yose</h3>\n" +
+                            "<p>\n" +
+                            "Source available on <a id=\"repository-link\" " +
+                            "href=\"https://github.com/testinfected/jyose\">GitHub</a>\n" +
+                            "</p>\n" +
+                            "</body>\n" +
+                            "</html>");
                 }
             });
         }}));

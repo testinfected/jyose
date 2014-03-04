@@ -4,6 +4,7 @@ import com.vtence.jyose.JYose;
 import com.vtence.molecule.simple.SimpleServer;
 import com.vtence.molecule.support.HttpRequest;
 import com.vtence.molecule.support.HttpResponse;
+import com.vtence.molecule.util.MimeTypes;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +12,7 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static com.vtence.molecule.support.HttpRequest.aRequest;
+import static org.hamcrest.CoreMatchers.containsString;
 
 public class StartChallengeTest {
 
@@ -26,17 +28,29 @@ public class StartChallengeTest {
         yose.start(server);
     }
 
-    @Test public void passesHelloChallenge() throws IOException {
+    @Test public void
+    passesHelloChallenge() throws IOException {
         response = request.get("/");
         response.assertOK();
-        response.assertHasContent("Hello Yose");
+        response.assertHasContent(containsString("Hello Yose"));
     }
 
-    @Test public void passesPingChallenge() throws IOException {
+    @Test public void
+    passesPingChallenge() throws IOException {
         response = request.get("/ping");
         response.assertOK();
         response.assertHasContentType("application/json");
         response.assertHasContent("{\n  \"alive\": true\n}");
+    }
+
+    @Test public void
+    passesShareChallenge() throws IOException {
+        response = request.get("/");
+        response.assertOK();
+        response.assertHasContentType(MimeTypes.TEXT_HTML);
+        response.assertHasContent(containsString(
+                "<a id=\"repository-link\" href=\"https://github.com/testinfected/jyose\""
+        ));
     }
 
     @After public void
