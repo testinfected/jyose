@@ -1,1 +1,1 @@
-web: bundle exec buildr clean run $PORT
+web: bundle exec buildr clean run
