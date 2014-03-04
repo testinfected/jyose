@@ -1,1 +1,1 @@
-web: bundle exec buildr clean run
+web: bundle exec buildr clean run test=no
