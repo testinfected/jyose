@@ -42,8 +42,7 @@ public class PortfolioChallengeTest {
         response.assertOK();
         response.assertHasContent(
                 containsString(
-                        "<a id=\"ping-challenge-link\" " +
-                        "href=\"https://github.com/testinfected/jyose/blob/master/src/main/java/com/vtence/jyose/JYose.java\""));
+                        "<a id=\"ping-challenge-link\" href=\"http://jyose.herokuapp.com/ping\""));
     }
 
     @After public void
