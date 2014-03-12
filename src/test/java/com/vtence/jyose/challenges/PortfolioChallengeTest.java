@@ -1,6 +1,7 @@
 package com.vtence.jyose.challenges;
 
 import com.vtence.jyose.JYose;
+import com.vtence.jyose.WebRoot;
 import com.vtence.molecule.simple.SimpleServer;
 import com.vtence.molecule.support.HttpRequest;
 import com.vtence.molecule.support.HttpResponse;
@@ -17,7 +18,7 @@ public class PortfolioChallengeTest {
 
     static int PORT = 9999;
 
-    JYose yose = new JYose();
+    JYose yose = new JYose(WebRoot.locate());
     SimpleServer server = new SimpleServer(PORT);
     HttpRequest request = aRequest().onPort(PORT);
     HttpResponse response;
@@ -33,6 +34,16 @@ public class PortfolioChallengeTest {
         response.assertOK();
         response.assertHasContent(
                 containsString("<a id=\"contact-me-link\" href=\"http://vtence.com\""));
+    }
+
+    @Test public void
+    passesPingSourceChallenge() throws IOException {
+        response = request.get("/");
+        response.assertOK();
+        response.assertHasContent(
+                containsString(
+                        "<a id=\"ping-challenge-link\" " +
+                        "href=\"https://github.com/testinfected/jyose/blob/master/src/main/java/com/vtence/jyose/JYose.java\""));
     }
 
     @After public void

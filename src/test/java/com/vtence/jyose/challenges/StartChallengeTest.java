@@ -1,6 +1,7 @@
 package com.vtence.jyose.challenges;
 
 import com.vtence.jyose.JYose;
+import com.vtence.jyose.WebRoot;
 import com.vtence.molecule.simple.SimpleServer;
 import com.vtence.molecule.support.HttpRequest;
 import com.vtence.molecule.support.HttpResponse;
@@ -18,7 +19,7 @@ public class StartChallengeTest {
 
     static int PORT = 9999;
 
-    JYose yose = new JYose();
+    JYose yose = new JYose(WebRoot.locate());
     SimpleServer server = new SimpleServer(PORT);
     HttpRequest request = aRequest().onPort(PORT);
     HttpResponse response;
@@ -47,7 +48,7 @@ public class StartChallengeTest {
     passesShareChallenge() throws IOException {
         response = request.get("/");
         response.assertOK();
-        response.assertHasContentType(MimeTypes.HTML);
+        response.assertHasContentType(containsString(MimeTypes.HTML));
         response.assertHasContent(containsString(
                 "<a id=\"repository-link\" href=\"https://github.com/testinfected/jyose\""
         ));
