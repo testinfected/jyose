@@ -47,7 +47,7 @@ public class StartChallengeTest {
     passesShareChallenge() throws IOException {
         response = request.get("/");
         response.assertOK();
-        response.assertHasContentType(MimeTypes.TEXT_HTML);
+        response.assertHasContentType(MimeTypes.HTML);
         response.assertHasContent(containsString(
                 "<a id=\"repository-link\" href=\"https://github.com/testinfected/jyose\""
         ));

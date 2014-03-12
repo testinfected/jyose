@@ -4,7 +4,6 @@ import com.vtence.jyose.JYose;
 import com.vtence.molecule.simple.SimpleServer;
 import com.vtence.molecule.support.HttpRequest;
 import com.vtence.molecule.support.HttpResponse;
-import com.vtence.molecule.util.MimeTypes;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,28 +28,11 @@ public class PortfolioChallengeTest {
     }
 
     @Test public void
-    passesHelloChallenge() throws IOException {
+    passesContactInformationChallenge() throws IOException {
         response = request.get("/");
         response.assertOK();
-        response.assertHasContent(containsString("Hello Yose"));
-    }
-
-    @Test public void
-    passesPingChallenge() throws IOException {
-        response = request.get("/ping");
-        response.assertOK();
-        response.assertHasContentType("application/json");
-        response.assertHasContent("{\n  \"alive\": true\n}");
-    }
-
-    @Test public void
-    passesShareChallenge() throws IOException {
-        response = request.get("/");
-        response.assertOK();
-        response.assertHasContentType(MimeTypes.HTML);
-        response.assertHasContent(containsString(
-                "<a id=\"repository-link\" href=\"https://github.com/testinfected/jyose\""
-        ));
+        response.assertHasContent(
+                containsString("<a id=\"contact-me-link\" href=\"http://vtence.com\""));
     }
 
     @After public void

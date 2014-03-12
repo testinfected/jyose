@@ -25,14 +25,14 @@ public class JYose {
         server.run(Router.draw(new DynamicRoutes() {{
             get("/ping").to(new Application() {
                 public void handle(Request request, Response response) throws Exception {
-                    response.contentType("application/json");
+                    response.contentType(MimeTypes.JSON);
                     response.body(gson.toJson(new Pong()));
                 }
             });
 
             get("/").to(new Application() {
                 public void handle(Request request, Response response) throws Exception {
-                    response.contentType(MimeTypes.TEXT_HTML);
+                    response.contentType(MimeTypes.HTML);
                     response.body("<html>\n" +
                             "<body>\n" +
                             "<h3>Hello Yose</h3>\n" +
@@ -40,6 +40,13 @@ public class JYose {
                             "Source available on <a id=\"repository-link\" " +
                             "href=\"https://github.com/testinfected/jyose\">GitHub</a>\n" +
                             "</p>\n" +
+                            "<footer>\n" +
+                            "<ul>\n" +
+                            "<li>\n" +
+                            "<a id=\"contact-me-link\" href=\"http://vtence.com\">Blog</a>\n" +
+                            "</li>\n" +
+                            "</ul>\n" +
+                            "</footer>\n" +
                             "</body>\n" +
                             "</html>");
                 }
