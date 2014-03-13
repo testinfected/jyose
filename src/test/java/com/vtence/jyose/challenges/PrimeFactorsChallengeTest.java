@@ -35,6 +35,14 @@ public class PrimeFactorsChallengeTest {
         response.assertHasContent("{\"number\":16,\"decomposition\":[2,2,2,2]}");
     }
 
+    @Test public void
+    passesStringGuardChallenge() throws IOException {
+        response = request.withParameter("number", "hello").get("/primeFactors");
+        response.assertOK();
+        response.assertHasContentType("application/json");
+        response.assertHasContent("{\"number\":\"hello\",\"error\":\"not a number\"}");
+    }
+
     @After public void
     stopServer() throws Exception {
         server.shutdown();

@@ -53,12 +53,29 @@ public class JYose {
 
             get("/primeFactors").to(new Application() {
                 public void handle(Request request, Response response) throws Exception {
-                    int number = Integer.parseInt(request.parameter("number"));
                     response.contentType(MimeTypes.JSON);
-                    response.body(gson.toJson(new PrimeFactorsDecomposition(number)));
+                    String number = request.parameter("number");
+                    if (isAnInteger(number)) {
+                        response.body(gson.toJson(new PrimeFactorsDecomposition(toInt(number))));
+                    } else {
+                        response.body(gson.toJson(new NotANumber(number)));
+                    }
                 }
             });
         }}));
+    }
+
+    private int toInt(String number) {
+        return Integer.parseInt(number);
+    }
+
+    private boolean isAnInteger(String candidate) {
+        try {
+            toInt(candidate);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
     public static class Pong {
@@ -72,6 +89,15 @@ public class JYose {
         public PrimeFactorsDecomposition(int number) {
             this.number = number;
             this.decomposition = PrimeFactors.of(number);
+        }
+    }
+
+    public static class NotANumber {
+        private final String number;
+        private final String error  = "not a number";
+
+        public NotANumber(String number) {
+            this.number = number;
         }
     }
 
