@@ -16,18 +16,20 @@ import com.vtence.molecule.util.MimeTypes;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class JYose {
 
-    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private final File webroot;
+    private final Gson gson;
 
     public JYose(File webroot) {
-        this.webroot = webroot;
+        this(webroot, new Gson());
     }
 
-    public static class Pong {
-        public final boolean alive = true;
+    public JYose(File webroot, Gson gson) {
+        this.webroot = webroot;
+        this.gson = gson;
     }
 
     public void start(Server server) throws IOException {
@@ -48,11 +50,33 @@ public class JYose {
                     views.html("home").render(response, null);
                 }
             });
+
+            get("/primeFactors").to(new Application() {
+                public void handle(Request request, Response response) throws Exception {
+                    int number = Integer.parseInt(request.parameter("number"));
+                    response.contentType(MimeTypes.JSON);
+                    response.body(gson.toJson(new PrimeFactorsDecomposition(number)));
+                }
+            });
         }}));
     }
 
+    public static class Pong {
+        public final boolean alive = true;
+    }
+
+    public static class PrimeFactorsDecomposition {
+        private final int number;
+        private final List<Integer> decomposition;
+
+        public PrimeFactorsDecomposition(int number) {
+            this.number = number;
+            this.decomposition = PrimeFactors.of(number);
+        }
+    }
+
     public static void main(String[] args) throws IOException {
-        JYose game = new JYose(webroot(args));
+        JYose game = new JYose(webroot(args), new GsonBuilder().setPrettyPrinting().create());
         SimpleServer server = new SimpleServer(port(args));
         server.defaultCharset(Charsets.UTF_8);
         game.start(server);

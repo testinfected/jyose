@@ -5,7 +5,6 @@ import com.vtence.jyose.WebRoot;
 import com.vtence.molecule.simple.SimpleServer;
 import com.vtence.molecule.support.HttpRequest;
 import com.vtence.molecule.support.HttpResponse;
-import com.vtence.molecule.util.MimeTypes;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,9 +12,8 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static com.vtence.molecule.support.HttpRequest.aRequest;
-import static org.hamcrest.CoreMatchers.containsString;
 
-public class StartChallengeTest {
+public class PrimeFactorsChallengeTest {
 
     static int PORT = 9999;
 
@@ -30,28 +28,11 @@ public class StartChallengeTest {
     }
 
     @Test public void
-    passesHelloChallenge() throws IOException {
-        response = request.get("/");
-        response.assertOK();
-        response.assertHasContent(containsString("Hello Yose"));
-    }
-
-    @Test public void
-    passesPingChallenge() throws IOException {
-        response = request.get("/ping");
+    passesFactorsOfTwoChallenge() throws IOException {
+        response = request.withParameter("number", "16").get("/primeFactors");
         response.assertOK();
         response.assertHasContentType("application/json");
-        response.assertHasContent("{\"alive\":true}");
-    }
-
-    @Test public void
-    passesShareChallenge() throws IOException {
-        response = request.get("/");
-        response.assertOK();
-        response.assertHasContentType(containsString(MimeTypes.HTML));
-        response.assertHasContent(containsString(
-                "<a id=\"repository-link\" href=\"https://github.com/testinfected/jyose\""
-        ));
+        response.assertHasContent("{\"number\":16,\"decomposition\":[2,2,2,2]}");
     }
 
     @After public void
