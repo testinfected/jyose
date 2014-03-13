@@ -48,7 +48,7 @@ public class PrimeFactorsChallengeTest {
         response = request.withParameter("number", "1000001").get("/primeFactors");
         response.assertOK();
         response.assertHasContentType("application/json");
-        response.assertHasContent("{\"number\":\"hello\",\"error\":\"too big number (>1e6)\"}");
+        response.assertHasContent("{\"number\":1000001,\"error\":\"too big number (\\u003e1e6)\"}");
     }
 
     @After public void

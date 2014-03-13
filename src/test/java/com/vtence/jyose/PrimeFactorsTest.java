@@ -15,7 +15,7 @@ import static org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class PrimeFactorsTest {
 
-    @Parameters(name = "prime factors of {0}={1}")
+    @Parameters(name = "{0}={1}")
     public static Collection<Object[]> data() {
         return asList(new Object[][] {
                 { 1, asList() },
@@ -42,7 +42,7 @@ public class PrimeFactorsTest {
     }
 
     @Test public void
-    primeFactorsDecomposition() {
+    primeFactorsOf() {
         assertThat("prime factors of " + number, PrimeFactors.of(number), equalTo(primes));
     }
 }
