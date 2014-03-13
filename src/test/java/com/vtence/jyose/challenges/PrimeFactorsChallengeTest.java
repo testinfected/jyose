@@ -51,6 +51,16 @@ public class PrimeFactorsChallengeTest {
         response.assertHasContent("{\"number\":1000001,\"error\":\"too big number (\\u003e1e6)\"}");
     }
 
+    @Test public void
+    passesMultipleEntriesChallenge() throws IOException {
+        response = request.withParameter("number", "300", "120", "hello").get("/primeFactors");
+        response.assertOK();
+        response.assertHasContent(
+                "[{\"number\":300,\"decomposition\":[2,2,3,5,5]}," +
+                "{\"number\":120,\"decomposition\":[2,2,2,3,5]}," +
+                "{\"number\":\"hello\",\"error\":\"not a number\"}]");
+    }
+
     @After public void
     stopServer() throws Exception {
         server.shutdown();
