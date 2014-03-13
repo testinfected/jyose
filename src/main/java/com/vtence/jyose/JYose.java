@@ -55,10 +55,12 @@ public class JYose {
                 public void handle(Request request, Response response) throws Exception {
                     response.contentType(MimeTypes.JSON);
                     String number = request.parameter("number");
-                    if (isAnInteger(number)) {
-                        response.body(gson.toJson(new PrimeFactorsDecomposition(toInt(number))));
-                    } else {
+                    if (!isAnInteger(number)) {
                         response.body(gson.toJson(new NotANumber(number)));
+                    } else if (isTooBig(toInt(number))) {
+                        response.body(gson.toJson(new NumberTooBig(toInt(number))));
+                    } else {
+                        response.body(gson.toJson(new PrimeFactorsDecomposition(toInt(number))));
                     }
                 }
             });
@@ -78,6 +80,10 @@ public class JYose {
         }
     }
 
+    private boolean isTooBig(int number) {
+        return number > 1000000;
+    }
+
     public static class Pong {
         public final boolean alive = true;
     }
@@ -89,6 +95,15 @@ public class JYose {
         public PrimeFactorsDecomposition(int number) {
             this.number = number;
             this.decomposition = PrimeFactors.of(number);
+        }
+    }
+
+    public static class NumberTooBig {
+        private final int number;
+        private final String error  = "too big number (>1e6)";
+
+        public NumberTooBig(int number) {
+            this.number = number;
         }
     }
 

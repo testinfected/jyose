@@ -43,6 +43,14 @@ public class PrimeFactorsChallengeTest {
         response.assertHasContent("{\"number\":\"hello\",\"error\":\"not a number\"}");
     }
 
+    @Test public void
+    passesBigNumberGuardChallenge() throws IOException {
+        response = request.withParameter("number", "1000001").get("/primeFactors");
+        response.assertOK();
+        response.assertHasContentType("application/json");
+        response.assertHasContent("{\"number\":\"hello\",\"error\":\"too big number (>1e6)\"}");
+    }
+
     @After public void
     stopServer() throws Exception {
         server.shutdown();
