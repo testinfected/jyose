@@ -6,7 +6,10 @@ import com.vtence.molecule.Application;
 import com.vtence.molecule.Request;
 import com.vtence.molecule.Response;
 import com.vtence.molecule.Server;
+import com.vtence.molecule.middlewares.FileServer;
+import com.vtence.molecule.middlewares.MiddlewareStack;
 import com.vtence.molecule.middlewares.Router;
+import com.vtence.molecule.middlewares.StaticAssets;
 import com.vtence.molecule.mustache.JMustacheRenderer;
 import com.vtence.molecule.routing.DynamicRoutes;
 import com.vtence.molecule.simple.SimpleServer;
@@ -33,104 +36,113 @@ public class JYose {
         this.gson = gson;
     }
 
+    public static File viewsIn(File webroot) { return new File(webroot, "views"); }
+    public static File assetsIn(File webroot) { return new File(webroot, "assets"); }
+
     public void start(Server server) throws IOException {
-        final Templates views = Templates.renderedWith(JMustacheRenderer.lookIn(new File(webroot,
-                "views")).extension("html"));
+        final Templates views = Templates.renderedWith(
+                JMustacheRenderer.lookIn(viewsIn(webroot)).extension("html"));
 
-        server.run(Router.draw(new DynamicRoutes() {{
-            get("/ping").to(new Application() {
-                public void handle(Request request, Response response) throws Exception {
-                    response.contentType(MimeTypes.JSON);
-                    response.body(gson.toJson(new Pong()));
-                }
+        server.run(new MiddlewareStack() {{
 
-                class Pong {
-                    public final boolean alive = true;
-                }
-            });
+            use(new StaticAssets(new FileServer(assetsIn(webroot)), "/favicon.ico",
+                    "/images", "/css"));
 
-            get("/").to(new Application() {
-                public void handle(Request request, Response response) throws Exception {
-                    response.contentType(MimeTypes.HTML);
-                    views.html("home").render(response, null);
-                }
-            });
-
-            get("/primeFactors").to(new Application() {
-                public void handle(Request request, Response response) throws Exception {
-                    List<Object> answers = new ArrayList<>();
-                    for (String number : request.parameters("number")) {
-                        answers.add(decomposeToPrimeFactors(number));
+            run(Router.draw(new DynamicRoutes() {{
+                get("/ping").to(new Application() {
+                    public void handle(Request request, Response response) throws Exception {
+                        response.contentType(MimeTypes.JSON);
+                        response.body(gson.toJson(new Pong()));
                     }
 
-                    respondWith(response, answers);
-                }
-
-                private void respondWith(Response response, List<Object> answers) throws IOException {
-                    response.contentType(MimeTypes.JSON);
-                    if (answers.size() == 1) {
-                        response.body(gson.toJson(answers.get(0)));
-                    } else {
-                        response.body(gson.toJson(answers));
+                    class Pong {
+                        public final boolean alive = true;
                     }
-                }
+                });
 
-                private Object decomposeToPrimeFactors(String number) {
-                    if (!isAnInteger(number)) {
-                        return new NotANumber(number);
-                    } else if (isTooBig(toInt(number))) {
-                        return new NumberTooBig(toInt(number));
-                    } else {
-                        return new PrimeFactorsDecomposition(toInt(number));
+                get("/").to(new Application() {
+                    public void handle(Request request, Response response) throws Exception {
+                        response.contentType(MimeTypes.HTML);
+                        views.html("home").render(response, null);
                     }
-                }
+                });
 
-                private int toInt(String number) {
-                    return Integer.parseInt(number);
-                }
+                get("/primeFactors").to(new Application() {
+                    public void handle(Request request, Response response) throws Exception {
+                        List<Object> answers = new ArrayList<>();
+                        for (String number : request.parameters("number")) {
+                            answers.add(decomposeToPrimeFactors(number));
+                        }
 
-                private boolean isAnInteger(String candidate) {
-                    try {
-                        toInt(candidate);
-                        return true;
-                    } catch (NumberFormatException e) {
-                        return false;
+                        respondWith(response, answers);
                     }
-                }
 
-                private boolean isTooBig(int number) {
-                    return number > 1000000;
-                }
-
-                class PrimeFactorsDecomposition {
-                    private final int number;
-                    private final List<Integer> decomposition;
-
-                    public PrimeFactorsDecomposition(int number) {
-                        this.number = number;
-                        this.decomposition = PrimeFactors.of(number);
+                    private void respondWith(Response response, List<Object> answers) throws IOException {
+                        response.contentType(MimeTypes.JSON);
+                        if (answers.size() == 1) {
+                            response.body(gson.toJson(answers.get(0)));
+                        } else {
+                            response.body(gson.toJson(answers));
+                        }
                     }
-                }
 
-                class NumberTooBig {
-                    private final int number;
-                    private final String error  = "too big number (>1e6)";
-
-                    public NumberTooBig(int number) {
-                        this.number = number;
+                    private Object decomposeToPrimeFactors(String number) {
+                        if (!isAnInteger(number)) {
+                            return new NotANumber(number);
+                        } else if (isTooBig(toInt(number))) {
+                            return new NumberTooBig(toInt(number));
+                        } else {
+                            return new PrimeFactorsDecomposition(toInt(number));
+                        }
                     }
-                }
 
-                class NotANumber {
-                    private final String number;
-                    private final String error  = "not a number";
-
-                    public NotANumber(String number) {
-                        this.number = number;
+                    private int toInt(String number) {
+                        return Integer.parseInt(number);
                     }
-                }
-            });
-        }}));
+
+                    private boolean isAnInteger(String candidate) {
+                        try {
+                            toInt(candidate);
+                            return true;
+                        } catch (NumberFormatException e) {
+                            return false;
+                        }
+                    }
+
+                    private boolean isTooBig(int number) {
+                        return number > 1000000;
+                    }
+
+                    class PrimeFactorsDecomposition {
+                        private final int number;
+                        private final List<Integer> decomposition;
+
+                        public PrimeFactorsDecomposition(int number) {
+                            this.number = number;
+                            this.decomposition = PrimeFactors.of(number);
+                        }
+                    }
+
+                    class NumberTooBig {
+                        private final int number;
+                        private final String error = "too big number (>1e6)";
+
+                        public NumberTooBig(int number) {
+                            this.number = number;
+                        }
+                    }
+
+                    class NotANumber {
+                        private final String number;
+                        private final String error = "not a number";
+
+                        public NotANumber(String number) {
+                            this.number = number;
+                        }
+                    }
+                });
+            }}));
+        }});
     }
 
     public static void main(String[] args) throws IOException {
