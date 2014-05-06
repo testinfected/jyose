@@ -1,1 +1,1 @@
-web: ./gradlew run $PORT src/main/webapp
+web: ./gradlew run -Penv=$PORT
