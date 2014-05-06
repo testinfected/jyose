@@ -1,8 +1,12 @@
 language: java
-
 jdk:
-  - oraclejdk7
-
+- oraclejdk7
 env:
   global:
-    - TERM=dumb
+  - TERM=dumb
+deploy:
+  api_key:
+    provider: heroku
+    secure: bxHEL0FILrcrzCHJZPN0ud3uf1W0FbHQ6WQfK4nTrtz8LRBbDpi+opv88smwtYFvjV9oB8AhmIzk3Pgf9hx5jivwDI6eheANOAcyVQkLFjiEmd5WTVaCnTvoNgydUN1qHTiI/4pwtAzHbjGwo1d9Wpdj3FDfwAtf2/JEqjf1Utc=
+    app: jyose
+
