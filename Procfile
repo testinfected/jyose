@@ -1,1 +1,1 @@
-web: ./gradlew $PORT src/main/webapp
+web: ./gradlew run $PORT src/main/webapp
