@@ -12,6 +12,7 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'jacoco'
 apply plugin: 'coveralls'
+apply plugin: 'application'
 
 defaultTasks 'build'
 
@@ -66,3 +67,15 @@ task coverage(dependsOn: ['test', 'jacocoTestReport'])
 task wrapper(type: Wrapper) {
     gradleVersion = '1.12'
 }
+
+mainClassName = 'com.vtence.jyose.JYose'
+
+if (!project.hasProperty('port')) {
+    ext.port = 8080
+}
+
+run {
+    args port
+    args file('src/main/webapp')
+}
+
