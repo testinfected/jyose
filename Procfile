@@ -1,1 +1,1 @@
-web: bundle exec buildr clean run test=no
+web: ./gradlew $PORT src/main/webapp
