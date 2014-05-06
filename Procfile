@@ -1,1 +1,1 @@
-web: build/install/jyose/bin/jyose $PORT src/main/webapp/
+web: ./build/install/jyose/bin/jyose $PORT src/main/webapp/
