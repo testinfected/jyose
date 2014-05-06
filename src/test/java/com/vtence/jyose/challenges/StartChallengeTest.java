@@ -2,17 +2,16 @@ package com.vtence.jyose.challenges;
 
 import com.vtence.jyose.JYose;
 import com.vtence.jyose.WebRoot;
-import com.vtence.molecule.simple.SimpleServer;
+import com.vtence.molecule.http.MimeTypes;
+import com.vtence.molecule.servers.SimpleServer;
 import com.vtence.molecule.support.HttpRequest;
 import com.vtence.molecule.support.HttpResponse;
-import com.vtence.molecule.util.MimeTypes;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 
-import static com.vtence.molecule.support.HttpRequest.aRequest;
 import static org.hamcrest.CoreMatchers.containsString;
 
 public class StartChallengeTest {
@@ -20,8 +19,8 @@ public class StartChallengeTest {
     static int PORT = 9999;
 
     JYose yose = new JYose(WebRoot.locate());
-    SimpleServer server = new SimpleServer(PORT);
-    HttpRequest request = aRequest().onPort(PORT);
+    SimpleServer server = new SimpleServer("localhost", PORT);
+    HttpRequest request = new HttpRequest(server.port());
     HttpResponse response;
 
     @Before public void

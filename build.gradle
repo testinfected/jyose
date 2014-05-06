@@ -1,0 +1,68 @@
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:0.4.0'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'coveralls'
+
+defaultTasks 'build'
+
+version = '0.3-SNAPSHOT'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+def libs = [
+        gson              : 'com.google.code.gson:gson:2.2.4',
+        molecule          : 'com.vtence.molecule:molecule:0.4-SNAPSHOT',
+        simple            : 'org.simpleframework:simple:5.1.6',
+        jmustache         : 'com.samskivert:jmustache:1.9',
+        hamcrest_all      : 'org.hamcrest:hamcrest-all:1.3',
+        junit             : 'junit:junit:4.11@jar',
+        jmock             : 'org.jmock:jmock:2.6.0@jar',
+        jmock_junit4      : 'org.jmock:jmock-junit4:2.6.0@jar',
+        htmlunit          : 'net.sourceforge.htmlunit:htmlunit:2.14',
+        molecule_test     : 'com.vtence.molecule:molecule:0.4-SNAPSHOT:tests',
+]
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
+}
+
+dependencies {
+    compile libs.gson
+    compile libs.molecule
+    compile libs.simple
+    compile libs.jmustache
+
+    testCompile libs.hamcrest_all
+    testCompile libs.junit
+    testCompile libs.jmock
+    testCompile libs.jmock_junit4
+    testCompile libs.htmlunit
+    testCompile libs.molecule_test
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true // coveralls plugin depends on xml format report
+        html.enabled = true
+    }
+}
+
+task coverage(dependsOn: ['test', 'jacocoTestReport'])
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.12'
+}

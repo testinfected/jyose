@@ -3,8 +3,7 @@ define 'jyose', :group => 'com.vtence.jyose', :version => '0.3-SNAPSHOT' do
   compile.options.target = '1.7'
 
   compile.with :molecule, :simple, :gson, :mustache
-  test.with :hamcrest, :jmock, transitive(artifacts(:htmlunit)), :juniversalchardet,
-            :molecule_tests
+  test.with :hamcrest, :jmock, transitive(artifacts(:htmlunit)), :juniversalchardet, :molecule_tests
 
   package(:jar).tap do |jar|
       jar.merge artifacts(:molecule, :simple, :gson, :mustache)
