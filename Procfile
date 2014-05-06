@@ -1,1 +1,1 @@
-web: ./gradlew run -Penv=$PORT
+web: build/install/jyose/bin/jyose $PORT src/main/webapp/

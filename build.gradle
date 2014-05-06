@@ -79,3 +79,4 @@ run {
     args file('src/main/webapp')
 }
 
+task stage(dependsOn: ['clean', 'installApp'])
