@@ -62,7 +62,7 @@ jacocoTestReport {
 task coverage(dependsOn: ['test', 'jacocoTestReport'])
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.12'
+    gradleVersion = '2.1'
 }
 
 mainClassName = 'com.vtence.jyose.JYose'
