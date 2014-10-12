@@ -18,9 +18,6 @@ defaultTasks 'build'
 
 version = '0.3-SNAPSHOT'
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
-
 def libs = [
         gson              : 'com.google.code.gson:gson:2.2.4',
         molecule          : 'com.vtence.molecule:molecule:0.4-SNAPSHOT',

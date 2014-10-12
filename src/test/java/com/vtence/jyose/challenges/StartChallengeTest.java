@@ -2,8 +2,8 @@ package com.vtence.jyose.challenges;
 
 import com.vtence.jyose.JYose;
 import com.vtence.jyose.WebRoot;
+import com.vtence.molecule.WebServer;
 import com.vtence.molecule.http.MimeTypes;
-import com.vtence.molecule.servers.SimpleServer;
 import com.vtence.molecule.support.HttpRequest;
 import com.vtence.molecule.support.HttpResponse;
 import org.junit.After;
@@ -19,8 +19,8 @@ public class StartChallengeTest {
     static int PORT = 9999;
 
     JYose yose = new JYose(WebRoot.locate());
-    SimpleServer server = new SimpleServer("localhost", PORT);
-    HttpRequest request = new HttpRequest(server.port());
+    WebServer server = WebServer.create("localhost", PORT);
+    HttpRequest request = new HttpRequest(PORT);
     HttpResponse response;
 
     @Before public void
@@ -55,6 +55,6 @@ public class StartChallengeTest {
 
     @After public void
     stopServer() throws Exception {
-        server.shutdown();
+        server.stop();
     }
 }

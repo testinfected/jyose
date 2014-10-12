@@ -5,14 +5,11 @@ import com.google.gson.GsonBuilder;
 import com.vtence.molecule.Application;
 import com.vtence.molecule.Request;
 import com.vtence.molecule.Response;
-import com.vtence.molecule.Server;
+import com.vtence.molecule.WebServer;
 import com.vtence.molecule.http.MimeTypes;
-import com.vtence.molecule.lib.MiddlewareStack;
 import com.vtence.molecule.middlewares.FileServer;
-import com.vtence.molecule.middlewares.Router;
 import com.vtence.molecule.middlewares.StaticAssets;
 import com.vtence.molecule.routing.DynamicRoutes;
-import com.vtence.molecule.servers.SimpleServer;
 import com.vtence.molecule.templating.JMustacheRenderer;
 import com.vtence.molecule.templating.Templates;
 
@@ -22,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JYose {
+
+    private static final Object NO_CONTEXT = null;
 
     private final File webroot;
     private final Gson gson;
@@ -35,114 +34,110 @@ public class JYose {
         this.gson = gson;
     }
 
-    public void start(Server server) throws IOException {
+    public void start(WebServer server) throws IOException {
         final Templates views = new Templates(
                 new JMustacheRenderer().fromDir(new File(webroot, "views")).extension("html"));
 
-        server.run(new MiddlewareStack() {{
+        server.add(new StaticAssets(new FileServer(new File(webroot, "assets")), "/favicon.ico", "/images", "/css"))
+              .start(new DynamicRoutes() {{
+                  get("/").to((request, response) -> {
+                      response.contentType(MimeTypes.HTML);
+                      response.body(views.named("home").render(NO_CONTEXT));
+                  });
+                  get("/ping").to((request, response) -> {
+                      response.contentType(MimeTypes.JSON);
+                      response.body(gson.toJson(new Pong()));
+                  });
+                  get("/primeFactors").to(primeFactors());
+              }});
+    }
 
-            use(new StaticAssets(new FileServer(new File(webroot, "assets")), "/favicon.ico", "/images", "/css"));
 
-            run(Router.draw(new DynamicRoutes() {{
-                get("/ping").to(new Application() {
-                    public void handle(Request request, Response response) throws Exception {
-                        response.contentType(MimeTypes.JSON);
-                        response.body(gson.toJson(new Pong()));
-                    }
+    class Pong {
+        public final boolean alive = true;
+    }
 
-                    class Pong {
-                        public final boolean alive = true;
-                    }
-                });
 
-                get("/").to(new Application() {
-                    public void handle(Request request, Response response) throws Exception {
-                        response.contentType(MimeTypes.HTML);
-                        response.body(views.named("home").render(null));
-                    }
-                });
+    private Application primeFactors() {
+        return new Application() {
+            public void handle(Request request, Response response) throws Exception {
+                List<Object> answers = new ArrayList<>();
+                for (String number : request.parameters("number")) {
+                    answers.add(decomposeToPrimeFactors(number));
+                }
 
-                get("/primeFactors").to(new Application() {
-                    public void handle(Request request, Response response) throws Exception {
-                        List<Object> answers = new ArrayList<>();
-                        for (String number : request.parameters("number")) {
-                            answers.add(decomposeToPrimeFactors(number));
-                        }
+                respondWith(response, answers);
+            }
 
-                        respondWith(response, answers);
-                    }
+            private void respondWith(Response response, List<Object> answers) throws IOException {
+                response.contentType(MimeTypes.JSON);
+                if (answers.size() == 1) {
+                    response.body(gson.toJson(answers.get(0)));
+                } else {
+                    response.body(gson.toJson(answers));
+                }
+            }
 
-                    private void respondWith(Response response, List<Object> answers) throws IOException {
-                        response.contentType(MimeTypes.JSON);
-                        if (answers.size() == 1) {
-                            response.body(gson.toJson(answers.get(0)));
-                        } else {
-                            response.body(gson.toJson(answers));
-                        }
-                    }
+            private Object decomposeToPrimeFactors(String number) {
+                if (!isAnInteger(number)) {
+                    return new NotANumber(number);
+                } else if (isTooBig(toInt(number))) {
+                    return new NumberTooBig(toInt(number));
+                } else {
+                    return new PrimeFactorsDecomposition(toInt(number));
+                }
+            }
 
-                    private Object decomposeToPrimeFactors(String number) {
-                        if (!isAnInteger(number)) {
-                            return new NotANumber(number);
-                        } else if (isTooBig(toInt(number))) {
-                            return new NumberTooBig(toInt(number));
-                        } else {
-                            return new PrimeFactorsDecomposition(toInt(number));
-                        }
-                    }
+            private int toInt(String number) {
+                return Integer.parseInt(number);
+            }
 
-                    private int toInt(String number) {
-                        return Integer.parseInt(number);
-                    }
+            private boolean isAnInteger(String candidate) {
+                try {
+                    toInt(candidate);
+                    return true;
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+            }
 
-                    private boolean isAnInteger(String candidate) {
-                        try {
-                            toInt(candidate);
-                            return true;
-                        } catch (NumberFormatException e) {
-                            return false;
-                        }
-                    }
+            private boolean isTooBig(int number) {
+                return number > 1000000;
+            }
 
-                    private boolean isTooBig(int number) {
-                        return number > 1000000;
-                    }
+            class PrimeFactorsDecomposition {
+                private final int number;
+                private final List<Integer> decomposition;
 
-                    class PrimeFactorsDecomposition {
-                        private final int number;
-                        private final List<Integer> decomposition;
+                public PrimeFactorsDecomposition(int number) {
+                    this.number = number;
+                    this.decomposition = PrimeFactors.of(number);
+                }
+            }
 
-                        public PrimeFactorsDecomposition(int number) {
-                            this.number = number;
-                            this.decomposition = PrimeFactors.of(number);
-                        }
-                    }
+            class NumberTooBig {
+                private final int number;
+                private final String error = "too big number (>1e6)";
 
-                    class NumberTooBig {
-                        private final int number;
-                        private final String error = "too big number (>1e6)";
+                public NumberTooBig(int number) {
+                    this.number = number;
+                }
+            }
 
-                        public NumberTooBig(int number) {
-                            this.number = number;
-                        }
-                    }
+            class NotANumber {
+                private final String number;
+                private final String error = "not a number";
 
-                    class NotANumber {
-                        private final String number;
-                        private final String error = "not a number";
-
-                        public NotANumber(String number) {
-                            this.number = number;
-                        }
-                    }
-                });
-            }}));
-        }});
+                public NotANumber(String number) {
+                    this.number = number;
+                }
+            }
+        };
     }
 
     public static void main(String[] args) throws IOException {
         JYose game = new JYose(webroot(args), new GsonBuilder().setPrettyPrinting().create());
-        SimpleServer server = new SimpleServer("0.0.0.0", port(args));
+        WebServer server = WebServer.create("0.0.0.0", port(args));
         game.start(server);
     }
 
