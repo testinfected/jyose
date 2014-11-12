@@ -1,5 +1,6 @@
-package com.vtence.jyose;
+package com.vtence.jyose.primes;
 
+import com.vtence.jyose.primes.PrimeFactors;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

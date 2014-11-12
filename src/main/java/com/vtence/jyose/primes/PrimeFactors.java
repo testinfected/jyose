@@ -1,4 +1,4 @@
-package com.vtence.jyose;
+package com.vtence.jyose.primes;
 
 import java.util.ArrayList;
 import java.util.List;
