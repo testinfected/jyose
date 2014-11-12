@@ -20,7 +20,7 @@ version = '0.3-SNAPSHOT'
 
 def libs = [
         gson              : 'com.google.code.gson:gson:2.2.4',
-        molecule          : 'com.vtence.molecule:molecule:0.4-SNAPSHOT',
+        molecule          : 'com.vtence.molecule:molecule:0.4',
         simple            : 'org.simpleframework:simple:5.1.6',
         jmustache         : 'com.samskivert:jmustache:1.9',
         hamcrest_all      : 'org.hamcrest:hamcrest-all:1.3',
