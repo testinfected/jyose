@@ -7,6 +7,7 @@ import com.vtence.molecule.support.HttpRequest;
 import com.vtence.molecule.support.HttpResponse;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class FireChallengesTest {
@@ -30,7 +31,7 @@ public class FireChallengesTest {
         server.stop();
     }
 
-    @Test
+    @Test @Ignore("wip")
     public void passesFirstFireChallenge() throws Exception {
         response = request.get("/fire/geek?width=3&map=...P...WF");
         response.assertOK();
@@ -45,7 +46,7 @@ public class FireChallengesTest {
                     "moves:[" +
                         "{dx:0,dy:1}," +
                         "{dx:1,dy:0}," +
-                        "{dx:1,dy:0}," +
+                        "{dx:1,dy:0}" +
                     "]" +
                 "}");
     }
