@@ -3,6 +3,7 @@ package com.vtence.jyose.challenges;
 import com.vtence.jyose.JYose;
 import com.vtence.jyose.WebRoot;
 import com.vtence.molecule.WebServer;
+import com.vtence.molecule.http.MimeTypes;
 import com.vtence.molecule.support.HttpRequest;
 import com.vtence.molecule.support.HttpResponse;
 import org.junit.After;
@@ -13,12 +14,12 @@ import java.io.IOException;
 
 import static org.hamcrest.CoreMatchers.containsString;
 
-public class PortfolioChallengeTest {
+public class StartChallengesTest {
 
     static int PORT = 9999;
 
     JYose yose = new JYose(WebRoot.locate());
-    WebServer server = WebServer.create(PORT);
+    WebServer server = WebServer.create("localhost", PORT);
     HttpRequest request = new HttpRequest(PORT);
     HttpResponse response;
 
@@ -28,20 +29,28 @@ public class PortfolioChallengeTest {
     }
 
     @Test public void
-    passesContactInformationChallenge() throws IOException {
+    passesHelloChallenge() throws IOException {
         response = request.get("/");
         response.assertOK();
-        response.assertHasContent(
-                containsString("<a id=\"contact-me-link\" href=\"http://vtence.com\""));
+        response.assertHasContent(containsString("Hello Yose"));
     }
 
     @Test public void
-    passesPingSourceChallenge() throws IOException {
+    passesPingChallenge() throws IOException {
+        response = request.get("/ping");
+        response.assertOK();
+        response.assertHasContentType("application/json");
+        response.assertHasContent("{\"alive\":true}");
+    }
+
+    @Test public void
+    passesShareChallenge() throws IOException {
         response = request.get("/");
         response.assertOK();
-        response.assertHasContent(
-                containsString(
-                        "<a id=\"ping-challenge-link\" href=\"http://jyose.herokuapp.com/ping\""));
+        response.assertHasContentType(containsString(MimeTypes.HTML));
+        response.assertHasContent(containsString(
+                "<a id=\"repository-link\" href=\"https://github.com/testinfected/jyose\""
+        ));
     }
 
     @After public void

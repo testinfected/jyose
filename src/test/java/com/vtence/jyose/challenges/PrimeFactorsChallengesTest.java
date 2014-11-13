@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-public class PrimeFactorsChallengeTest {
+public class PrimeFactorsChallengesTest {
 
     static final int PORT = 9999;
     JYose yose = new JYose(WebRoot.locate());
