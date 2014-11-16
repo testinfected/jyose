@@ -22,25 +22,25 @@ public class Terrain {
         return new Terrain(map);
     }
 
-    public boolean contains(Integer row, Integer col) {
+    public boolean contains(int row, int col) {
         return map.size() > row && map.get(row).size() > col;
     }
 
-    public Location planeLocation() {
+    public Pos plane() {
         return findOnMap(PLANE);
     }
 
-    public Location fireLocation() {
+    public Pos fire() {
         return findOnMap(FIRE);
     }
 
-    public Location waterLocation() {
+    public Pos water() {
         return findOnMap(WATER);
     }
 
-    private Location findOnMap(int what) {
+    private Pos findOnMap(int what) {
         int row = map.indexOf(map.stream().filter(line -> line.contains(what)).findFirst().get());
         int col = map.get(row).indexOf(what);
-        return Location.at(row, col);
+        return Pos.at(row, col);
     }
 }

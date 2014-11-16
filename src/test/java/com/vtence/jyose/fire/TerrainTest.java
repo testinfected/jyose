@@ -41,19 +41,19 @@ public class TerrainTest {
     @Test
     public void knowsPlaneStartingLocation() throws Exception {
         Terrain terrain = Terrain.parse("...P..", 2);
-        assertThat("plane location", terrain.planeLocation(), equalTo(Location.at(1, 1)));
+        assertThat("plane pos", terrain.plane(), equalTo(Pos.at(1, 1)));
     }
 
     @Test
     public void knowsFireLocation() throws Exception {
         Terrain terrain = Terrain.parse(".....F", 2);
-        assertThat("fire location", terrain.fireLocation(), equalTo(Location.at(2, 1)));
+        assertThat("fire pos", terrain.fire(), equalTo(Pos.at(2, 1)));
     }
 
     @Test
     public void knowsWaterLocation() throws Exception {
         Terrain terrain = Terrain.parse(".W....", 2);
-        assertThat("water location", terrain.waterLocation(), equalTo(Location.at(0, 1)));
+        assertThat("water pos", terrain.water(), equalTo(Pos.at(0, 1)));
     }
 
     private void assertContainsCells(Terrain terrain, int height, int width) {
