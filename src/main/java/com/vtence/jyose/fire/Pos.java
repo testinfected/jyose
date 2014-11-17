@@ -38,6 +38,10 @@ public class Pos {
         return Stream.of(Move.values()).map(m -> new Step(m.from(this), m)).collect(toList());
     }
 
+    public boolean within(Terrain terrain) {
+        return terrain.contains(row, col);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -2,61 +2,58 @@ package com.vtence.jyose.fire;
 
 import org.junit.Test;
 
-import static com.vtence.jyose.fire.Move.Down;
-import static com.vtence.jyose.fire.Move.Left;
-import static com.vtence.jyose.fire.Move.Right;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.empty;
+import java.util.Optional;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
 
 public class SolverTest {
 
+    Terrain terrain;
+
     @Test
-    public void findsSolutionConsistingOfNoMove() throws Exception {
-        Solver solver = new Solver();
-        Path path = solver.solve(Pos.at(0, 0), Pos.at(0, 0)).get();
-        assertThat("pos", path.pos(), equalTo(Pos.at(0, 0)));
-        assertThat("moves", path.moves(), empty());
+    public void findsSolutionWhenNoMoveIsRequired() throws Exception {
+        Solver solver = solverFor(Terrain.parse(""));
+        assertFindsSolution(solver, Pos.at(0, 0), Pos.at(0, 0));
     }
 
     @Test
-    public void findsSolutionConsistingOfSingleRightMove() throws Exception {
-        Solver solver = new Solver();
-        Path path = solver.solve(Pos.at(0, 0), Pos.at(0, 1)).get();
-        assertThat("pos", path.pos(), equalTo(Pos.at(0, 1)));
-        assertThat("moves", path.moves(), contains(Right));
+    public void findsSolutionByGoingRight() throws Exception {
+        Solver solver = solverFor(Terrain.parse("...."));
+        assertFindsSolution(solver, Pos.at(0, 0), Pos.at(0, 3));
     }
 
     @Test
-    public void findsSolutionConsistingOfSingleDownMove() throws Exception {
-        Solver solver = new Solver();
-        Path path = solver.solve(Pos.at(0, 0), Pos.at(1, 0)).get();
-        assertThat("pos", path.pos(), equalTo(Pos.at(1, 0)));
-        assertThat("moves", path.moves(), contains(Down));
+    public void findsSolutionByGoingDown() throws Exception {
+        Solver solver = solverFor(Terrain.parse(".", ".", ".", "."));
+        assertFindsSolution(solver, Pos.at(0, 0), Pos.at(3, 0));
     }
 
     @Test
-    public void findsSolutionConsistingOfSingleLeftMove() throws Exception {
-        Solver solver = new Solver();
-        Path path = solver.solve(Pos.at(0, 1), Pos.at(0, 0)).get();
-        assertThat("pos", path.pos(), equalTo(Pos.at(0, 0)));
-        assertThat("moves", path.moves(), contains(Left));
+    public void findsSolutionByGoingLeft() throws Exception {
+        Solver solver = solverFor(Terrain.parse("...."));
+        assertFindsSolution(solver, Pos.at(0, 3), Pos.at(0, 0));
     }
 
     @Test
-    public void findsSolutionConsistingOfTowConsecutiveRightMoves() throws Exception {
-        Solver solver = new Solver();
-        Path path = solver.solve(Pos.at(0, 0), Pos.at(0, 2)).get();
-        assertThat("pos", path.pos(), equalTo(Pos.at(0, 2)));
-        assertThat("moves", path.moves(), contains(Right, Right));
+    public void findsSolutionAtOppositeOfTerrain() throws Exception {
+        Solver solver = solverFor(Terrain.parse("....", "....", "....", "...."));
+        assertFindsSolution(solver, Pos.at(0, 0), Pos.at(3, 3));
     }
 
-    @Test
-    public void solves00to33() throws Exception {
-        Solver solver = new Solver();
-        Path path = solver.solve(Pos.at(0, 0), Pos.at(3, 3)).get();
-        assertThat("pos", path.pos(), equalTo(Pos.at(3, 3)));
-        assertThat("moves", path.moves(), contains(Right, Right, Right, Down, Down, Down));
+    private Solver solverFor(Terrain terrain) {
+        this.terrain = terrain;
+        return new Solver();
+    }
+
+    private void assertFindsSolution(Solver solver, Pos start, Pos goal) {
+        Optional<Path> solution = solver.solve(start, goal);
+        assertThat("no solution found", solution.isPresent());
+        Pos end = solution.get().moves().stream().reduce(start, (pos, move) -> {
+            Pos next = move.from(pos);
+            if (!terrain.valid(next)) throw new AssertionError("Illegal move");
+            return next;
+        }, (left, right) -> right);
+        assertThat("pos", end, equalTo(goal));
     }
 }

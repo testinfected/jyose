@@ -1,6 +1,7 @@
 package com.vtence.jyose.fire;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -15,8 +16,8 @@ public class Terrain {
         this.map = map;
     }
 
-    public static Terrain parse(String level, int width) {
-        List<List<Integer>> map = Splitter.fixedLength(width).stream(level).
+    public static Terrain parse(String... rows) {
+        List<List<Integer>> map = Stream.of(rows).
                 map(line -> line.chars().boxed().collect(toList())).
                 collect(toList());
         return new Terrain(map);
@@ -24,6 +25,10 @@ public class Terrain {
 
     public boolean contains(int row, int col) {
         return map.size() > row && map.get(row).size() > col;
+    }
+
+    public boolean valid(Pos pos) {
+        return pos.within(this);
     }
 
     public Pos plane() {
@@ -42,5 +47,9 @@ public class Terrain {
         int row = map.indexOf(map.stream().filter(line -> line.contains(what)).findFirst().get());
         int col = map.get(row).indexOf(what);
         return Pos.at(row, col);
+    }
+
+    public static void main(String[] args) {
+        Terrain.parse(Splitter.fixedLength(2).split("...."));
     }
 }

@@ -11,48 +11,43 @@ public class TerrainTest {
 
     @Test
     public void parsesEmptyMap() {
-        Terrain empty = Terrain.parse("", 0);
+        Terrain empty = Terrain.parse("");
         assertThat("terrain (0,0)", empty.contains(0, 0), equalTo(false));
     }
 
     @Test
-    public void parsesSingleNodeMap() {
-        Terrain terrain = Terrain.parse(".", 1);
-        assertThat("terrain (0,0)", terrain.contains(0, 0), equalTo(true));
-        assertThat("terrain (1,0)", terrain.contains(1, 0), equalTo(false));
-        assertThat("terrain (0,1)", terrain.contains(0, 1), equalTo(false));
+    public void parsesSingleCellMap() {
+        Terrain terrain = Terrain.parse(".");
+        assertContainsCells(terrain, 1, 1);
     }
 
     @Test
     public void parsesSquareMaps() {
-        int size = 3;
-        Terrain terrain = Terrain.parse(".........", size);
-        assertContainsCells(terrain, size, size);
+        Terrain terrain = Terrain.parse("...", "...", "...");
+        assertContainsCells(terrain, 3, 3);
     }
 
     @Test
-    public void parsesRectangularMap() {
-        int height = 2;
-        int width = 3;
-        Terrain terrain = Terrain.parse("......", width);
-        assertContainsCells(terrain, height, width);
+    public void parsesRectangularMaps() {
+        Terrain terrain = Terrain.parse("...", "...");
+        assertContainsCells(terrain, 2, 3);
     }
 
     @Test
     public void knowsPlaneStartingLocation() throws Exception {
-        Terrain terrain = Terrain.parse("...P..", 2);
+        Terrain terrain = Terrain.parse("..", ".P", "..");
         assertThat("plane pos", terrain.plane(), equalTo(Pos.at(1, 1)));
     }
 
     @Test
     public void knowsFireLocation() throws Exception {
-        Terrain terrain = Terrain.parse(".....F", 2);
+        Terrain terrain = Terrain.parse("..", "..", ".F");
         assertThat("fire pos", terrain.fire(), equalTo(Pos.at(2, 1)));
     }
 
     @Test
     public void knowsWaterLocation() throws Exception {
-        Terrain terrain = Terrain.parse(".W....", 2);
+        Terrain terrain = Terrain.parse(".W.", "...");
         assertThat("water pos", terrain.water(), equalTo(Pos.at(0, 1)));
     }
 
