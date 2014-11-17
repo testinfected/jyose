@@ -13,31 +13,31 @@ public class SolverTest {
 
     @Test
     public void findsSolutionWhenNoMoveIsRequired() throws Exception {
-        Solver solver = solverFor(Terrain.parse(""));
+        Solver solver = solverFor(Terrain.parse("G"));
         assertFindsSolution(solver, Pos.at(0, 0), Pos.at(0, 0));
     }
 
     @Test
     public void findsSolutionByGoingRight() throws Exception {
-        Solver solver = solverFor(Terrain.parse("...."));
+        Solver solver = solverFor(Terrain.parse("S..G"));
         assertFindsSolution(solver, Pos.at(0, 0), Pos.at(0, 3));
     }
 
     @Test
     public void findsSolutionByGoingDown() throws Exception {
-        Solver solver = solverFor(Terrain.parse(".", ".", ".", "."));
+        Solver solver = solverFor(Terrain.parse("S", ".", ".", "G"));
         assertFindsSolution(solver, Pos.at(0, 0), Pos.at(3, 0));
     }
 
     @Test
     public void findsSolutionByGoingLeft() throws Exception {
-        Solver solver = solverFor(Terrain.parse("...."));
+        Solver solver = solverFor(Terrain.parse("G..S"));
         assertFindsSolution(solver, Pos.at(0, 3), Pos.at(0, 0));
     }
 
     @Test
     public void findsSolutionAtOppositeOfTerrain() throws Exception {
-        Solver solver = solverFor(Terrain.parse("....", "....", "....", "...."));
+        Solver solver = solverFor(Terrain.parse("S...", "....", "....", "...G"));
         assertFindsSolution(solver, Pos.at(0, 0), Pos.at(3, 3));
     }
 
