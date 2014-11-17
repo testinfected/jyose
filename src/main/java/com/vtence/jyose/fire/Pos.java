@@ -1,9 +1,6 @@
 package com.vtence.jyose.fire;
 
-import java.util.List;
 import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toList;
 
 public class Pos {
     private final int row;
@@ -34,8 +31,8 @@ public class Pos {
         return at(row, col - 1);
     }
 
-    public List<Step> neighbors() {
-        return Stream.of(Move.values()).map(m -> new Step(m.from(this), m)).collect(toList());
+    public Stream<Step> neighbors() {
+        return Stream.of(Move.values()).map(m -> new Step(m.from(this), m));
     }
 
     public boolean within(Terrain terrain) {

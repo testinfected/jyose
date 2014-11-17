@@ -2,9 +2,9 @@ package com.vtence.jyose.fire;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
-import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.joining;
 
 public class Path {
@@ -24,8 +24,8 @@ public class Path {
         return pos;
     }
 
-    public List<Move> moves() {
-        return unmodifiableList(moves);
+    public Stream<Move> moves() {
+        return moves.stream();
     }
 
     public boolean leadsTo(Pos pos) {

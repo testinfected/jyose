@@ -1,9 +1,9 @@
 package com.vtence.jyose.fire;
 
 import java.util.ArrayDeque;
-import java.util.List;
 import java.util.Optional;
 import java.util.Queue;
+import java.util.stream.Stream;
 
 public class Solver {
 
@@ -19,8 +19,8 @@ public class Solver {
             Path current = frontier.remove();
             if (current.leadsTo(goal)) return Optional.of(current);
 
-            List<Step> neighbors = current.pos().neighbors();
-            neighbors.stream().map(current::advance).forEach(frontier::add);
+            Stream<Step> neighbors = current.pos().neighbors();
+            neighbors.map(current::advance).forEach(frontier::add);
         }
 
         return Optional.empty();
