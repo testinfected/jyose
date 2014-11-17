@@ -51,7 +51,7 @@ public class SolverTest {
         assertThat("no solution found", solution.isPresent());
         Pos end = solution.get().moves().reduce(start, (pos, move) -> {
             Pos next = move.from(pos);
-            if (!terrain.valid(next)) throw new AssertionError("Illegal move");
+            if (!terrain.legal(next)) throw new AssertionError("Illegal move");
             return next;
         }, (left, right) -> right);
         assertThat("pos", end, equalTo(goal));

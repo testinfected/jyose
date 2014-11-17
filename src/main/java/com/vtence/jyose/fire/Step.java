@@ -9,7 +9,7 @@ public class Step {
         this.move = move;
     }
 
-    public Path make(Path path) {
+    public Path takeOn(Path path) {
         return path.step(pos, move);
     }
 }

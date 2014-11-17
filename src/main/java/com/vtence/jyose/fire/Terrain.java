@@ -27,7 +27,7 @@ public class Terrain {
         return map.size() > row && map.get(row).size() > col;
     }
 
-    public boolean valid(Pos pos) {
+    public boolean legal(Pos pos) {
         return pos.within(this);
     }
 

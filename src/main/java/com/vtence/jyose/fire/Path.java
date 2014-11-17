@@ -28,12 +28,8 @@ public class Path {
         return moves.stream();
     }
 
-    public boolean leadsTo(Pos pos) {
-        return this.pos.equals(pos);
-    }
-
     public Path advance(Step step) {
-        return step.make(this);
+        return step.takeOn(this);
     }
 
     public Path step(Pos pos, Move move) {
