@@ -10,21 +10,21 @@ public class Terrain {
     private static final int FIRE = 'F';
     private static final int WATER = 'W';
 
-    private final List<List<Integer>> map;
+    private final List<List<Integer>> tiles;
 
-    public Terrain(List<List<Integer>> map) {
-        this.map = map;
+    public Terrain(List<List<Integer>> tiles) {
+        this.tiles = tiles;
     }
 
     public static Terrain parse(String... rows) {
-        List<List<Integer>> map = Stream.of(rows).
+        List<List<Integer>> tiles = Stream.of(rows).
                 map(line -> line.chars().boxed().collect(toList())).
                 collect(toList());
-        return new Terrain(map);
+        return new Terrain(tiles);
     }
 
     public boolean contains(Pos pos) {
-        return isDefined(pos.row, map) && isDefined(pos.col, map.get(pos.row));
+        return isDefined(pos.row, tiles) && isDefined(pos.col, tiles.get(pos.row));
     }
 
     private boolean isDefined(int index, List<?> map) {
@@ -32,7 +32,7 @@ public class Terrain {
     }
 
     public int at(Pos pos) {
-        return map.get(pos.row).get(pos.col);
+        return tiles.get(pos.row).get(pos.col);
     }
 
     public Pos plane() {
@@ -48,8 +48,8 @@ public class Terrain {
     }
 
     public Pos find(int what) {
-        int row = map.indexOf(map.stream().filter(line -> line.contains(what)).findFirst().get());
-        int col = map.get(row).indexOf(what);
+        int row = tiles.indexOf(tiles.stream().filter(line -> line.contains(what)).findFirst().get());
+        int col = tiles.get(row).indexOf(what);
         return Pos.at(row, col);
     }
 }
