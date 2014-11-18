@@ -23,33 +23,33 @@ public class Terrain {
         return new Terrain(map);
     }
 
-    public boolean contains(int row, int col) {
-        return map.size() > row && map.get(row).size() > col;
+    public boolean contains(Pos pos) {
+        return isDefined(pos.row, map) && isDefined(pos.col, map.get(pos.row));
     }
 
-    public boolean legal(Pos pos) {
-        return pos.within(this);
+    private boolean isDefined(int index, List<?> map) {
+        return index >= 0 && index < map.size();
+    }
+
+    public int at(Pos pos) {
+        return map.get(pos.row).get(pos.col);
     }
 
     public Pos plane() {
-        return findOnMap(PLANE);
+        return find(PLANE);
     }
 
     public Pos fire() {
-        return findOnMap(FIRE);
+        return find(FIRE);
     }
 
     public Pos water() {
-        return findOnMap(WATER);
+        return find(WATER);
     }
 
-    private Pos findOnMap(int what) {
+    public Pos find(int what) {
         int row = map.indexOf(map.stream().filter(line -> line.contains(what)).findFirst().get());
         int col = map.get(row).indexOf(what);
         return Pos.at(row, col);
-    }
-
-    public static void main(String[] args) {
-        Terrain.parse(Splitter.fixedLength(2).split("...."));
     }
 }

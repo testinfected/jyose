@@ -12,7 +12,7 @@ public class TerrainTest {
     @Test
     public void parsesEmptyMap() {
         Terrain empty = Terrain.parse("");
-        assertThat("terrain (0,0)", empty.contains(0, 0), equalTo(false));
+        assertThat("terrain (0,0)", empty.contains(Pos.at(0, 0)), equalTo(false));
     }
 
     @Test
@@ -52,15 +52,15 @@ public class TerrainTest {
     }
 
     private void assertContainsCells(Terrain terrain, int height, int width) {
-        range(0, height).forEach((row) -> range(0, width).forEach((col) -> assertWithinLimits(terrain, row, col)));
-        assertOffLimits(terrain, height, width);
+        range(0, height).forEach((row) -> range(0, width).forEach((col) -> assertWithinLimits(terrain, Pos.at(row, col))));
+        assertOffLimits(terrain, Pos.at(height, width));
     }
 
-    private void assertWithinLimits(Terrain terrain, int row, int col) {
-        assertThat(format("(%s,%s) off limits", row, col), terrain.contains(row, col));
+    private void assertWithinLimits(Terrain terrain, Pos pos) {
+        assertThat(format("(%s,%s) off limits", pos.row, pos.col), terrain.contains(pos));
     }
 
-    private void assertOffLimits(Terrain terrain, int row, int col) {
-        assertThat(format("(%s,%s) within limits", row, col), !terrain.contains(row, col));
+    private void assertOffLimits(Terrain terrain, Pos pos) {
+        assertThat(format("(%s,%s) within limits", pos.row, pos.col), !terrain.contains(pos));
     }
 }

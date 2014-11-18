@@ -3,8 +3,8 @@ package com.vtence.jyose.fire;
 import java.util.stream.Stream;
 
 public class Pos {
-    private final int row;
-    private final int col;
+    public final int row;
+    public final int col;
 
     public Pos(Integer row, Integer col) {
         this.row = row;
@@ -33,10 +33,6 @@ public class Pos {
 
     public Stream<Step> neighbors() {
         return Stream.of(Move.values()).map(m -> new Step(m.from(this), m));
-    }
-
-    public boolean within(Terrain terrain) {
-        return terrain.contains(row, col);
     }
 
     @Override

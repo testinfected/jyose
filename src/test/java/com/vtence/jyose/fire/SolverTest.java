@@ -1,5 +1,7 @@
 package com.vtence.jyose.fire;
 
+import org.hamcrest.FeatureMatcher;
+import org.hamcrest.Matcher;
 import org.junit.Test;
 
 import java.util.Optional;
@@ -9,51 +11,101 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class SolverTest {
 
-    Terrain terrain;
-
-    @Test
-    public void findsSolutionWhenNoMoveIsRequired() throws Exception {
-        Solver solver = solverFor(Terrain.parse("G"));
-        assertFindsSolution(solver, Pos.at(0, 0), Pos.at(0, 0));
-    }
-
     @Test
     public void findsSolutionByGoingRight() throws Exception {
-        Solver solver = solverFor(Terrain.parse("S..G"));
-        assertFindsSolution(solver, Pos.at(0, 0), Pos.at(0, 3));
+        Terrain terrain = Terrain.parse("S..G");
+        Path solution = solve(terrain);
+        assertThat(solution, hasLocation(0, 3));
+        assertThat(solution, hasTotalMoves(3));
     }
 
     @Test
     public void findsSolutionByGoingDown() throws Exception {
-        Solver solver = solverFor(Terrain.parse("S", ".", ".", "G"));
-        assertFindsSolution(solver, Pos.at(0, 0), Pos.at(3, 0));
+        Terrain terrain = Terrain.parse(
+                "S",
+                ".",
+                ".",
+                "G");
+        Path solution = solve(terrain);
+        assertThat(solution, hasLocation(3, 0));
+        assertThat(solution, hasTotalMoves(3));
     }
 
     @Test
     public void findsSolutionByGoingLeft() throws Exception {
-        Solver solver = solverFor(Terrain.parse("G..S"));
-        assertFindsSolution(solver, Pos.at(0, 3), Pos.at(0, 0));
+        Terrain terrain = Terrain.parse("G..S");
+        Path solution = solve(terrain);
+        assertThat(solution, hasLocation(0, 0));
+        assertThat(solution, hasTotalMoves(3));
+    }
+
+    @Test
+    public void findsSolutionByGoingUp() throws Exception {
+        Terrain terrain = Terrain.parse(
+                "G",
+                ".",
+                ".",
+                "S");
+        Path solution = solve(terrain);
+        assertThat(solution, hasLocation(0, 0));
+        assertThat(solution, hasTotalMoves(3));
     }
 
     @Test
     public void findsSolutionAtOppositeOfTerrain() throws Exception {
-        Solver solver = solverFor(Terrain.parse("S...", "....", "....", "...G"));
-        assertFindsSolution(solver, Pos.at(0, 0), Pos.at(3, 3));
+        Terrain terrain = Terrain.parse(
+                "S...",
+                "....",
+                "....",
+                "...G");
+        Path solution = solve(terrain);
+        assertThat(solution, hasLocation(3, 3));
+        assertThat(solution, hasTotalMoves(6));
     }
 
-    private Solver solverFor(Terrain terrain) {
-        this.terrain = terrain;
-        return new Solver();
+    @Test
+    public void avoidsTerrainObstacles() throws Exception {
+        Terrain terrain = Terrain.parse(
+                "S.-....",
+                ".-..--.",
+                ".-.-...",
+                ".-.-.--",
+                "...-..G");
+        Path solution = solve(terrain);
+        assertThat(solution, hasLocation(4, 6));
+        assertThat(solution, hasTotalMoves(22));
     }
 
-    private void assertFindsSolution(Solver solver, Pos start, Pos goal) {
-        Optional<Path> solution = solver.solve(start, goal);
+    private Path solve(Terrain terrain) {
+        Pos start = terrain.find('S');
+        Pos goal = terrain.find('G');
+        Optional<Path> solution = new Solver(terrain).avoid('-').solve(start, goal);
         assertThat("no solution found", solution.isPresent());
-        Pos end = solution.get().moves().reduce(start, (pos, move) -> {
+        Path path = solution.get();
+        path.moves().reduce(start, (pos, move) -> {
             Pos next = move.from(pos);
-            if (!terrain.legal(next)) throw new AssertionError("Illegal move");
+            if (!terrain.contains(next) || terrain.at(next) == '-')
+                throw new AssertionError("Illegal move: " + move + " to " + pos);
             return next;
         }, (left, right) -> right);
-        assertThat("pos", end, equalTo(goal));
+        return path;
+    }
+
+    private Matcher<? super Path> hasLocation(int row, int col) {
+        return new FeatureMatcher<Path, Pos>(equalTo(Pos.at(row, col)), "position", "position") {
+            @Override
+            protected Pos featureValueOf(Path actual) {
+                return actual.pos();
+            }
+        };
+    }
+
+    private Matcher<? super Path> hasTotalMoves(long count) {
+        return new FeatureMatcher<Path, Long>(equalTo(count), "total moves", "total") {
+            @Override
+            protected Long featureValueOf(Path actual) {
+                return actual.moves().count();
+            }
+        };
     }
 }

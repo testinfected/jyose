@@ -18,6 +18,12 @@ public enum Move {
         public Pos from(Pos initial) {
             return initial.left();
         }
+    },
+    Up {
+        @Override
+        public Pos from(Pos initial) {
+            return initial.up();
+        }
     };
 
     public abstract Pos from(Pos initial);

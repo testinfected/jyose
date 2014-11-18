@@ -29,13 +29,9 @@ public class Path {
     }
 
     public Path advance(Step step) {
-        return step.takeOn(this);
-    }
-
-    public Path step(Pos pos, Move move) {
         List<Move> history = new ArrayList<>(moves);
-        history.add(move);
-        return new Path(pos, history);
+        history.add(step.move);
+        return new Path(step.pos, history);
     }
 
     @Override
