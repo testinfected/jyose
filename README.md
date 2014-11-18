@@ -1,3 +1,5 @@
+[![Yose score](http://yosethegame.com/players/testinfected/badge.svg)](http://yosethegame.com)
+
 jyose
 =====
 
