@@ -16,7 +16,7 @@ public class CommandCenter {
     public List<Move> planAttack(Terrain terrain) {
         Pos plane = terrain.find(PLANE).orElseThrow(invalidMap);
         Pos water = terrain.find(WATER).orElseThrow(invalidMap);
-        Pos fire = terrain.find(FIRE).get();
+        Pos fire = terrain.find(FIRE).orElseThrow(invalidMap);
         List<Move> moves =  Navigation.on(terrain).avoiding(FIRE).
                 findPath(plane, water).orElseThrow(invalidMap).
                 moves().collect(toList());
