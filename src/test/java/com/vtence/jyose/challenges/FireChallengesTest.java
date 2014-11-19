@@ -7,6 +7,7 @@ import com.vtence.molecule.support.HttpRequest;
 import com.vtence.molecule.support.HttpResponse;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class FireChallengesTest {
@@ -72,6 +73,31 @@ public class FireChallengesTest {
                         "{\"dx\":-1,\"dy\":0}," +
                         "{\"dx\":-1,\"dy\":0}," +
                         "{\"dx\":-1,\"dy\":0}" +
+                    "]" +
+                "}");
+    }
+
+    @Test @Ignore("wip")
+    public void passesThirdFireChallenge() throws Exception {
+        response = request.get("/fire/geek?width=5&map=" +
+                "W...P" +
+                "F...." +
+                "....W");
+        response.assertOK();
+        response.assertHasContentType("application/json");
+        response.assertHasContent(
+                "{" +
+                    "\"map\":[" +
+                        "\"W...P\"," +
+                        "\"F....\"," +
+                        "\"....W\"" +
+                    "]," +
+                    "\"moves\":[" +
+                        "{\"dx\":-1,\"dy\":0}," +
+                        "{\"dx\":-1,\"dy\":0}," +
+                        "{\"dx\":-1,\"dy\":0}," +
+                        "{\"dx\":-1,\"dy\":0}" +
+                        "{\"dx\":0,\"dy\":1}" +
                     "]" +
                 "}");
     }
