@@ -7,7 +7,6 @@ import com.vtence.molecule.support.HttpRequest;
 import com.vtence.molecule.support.HttpResponse;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class FireChallengesTest {
@@ -31,22 +30,25 @@ public class FireChallengesTest {
         server.stop();
     }
 
-    @Test @Ignore("wip")
+    @Test
     public void passesFirstFireChallenge() throws Exception {
-        response = request.get("/fire/geek?width=3&map=...P...WF");
+        response = request.get("/fire/geek?width=3&map=" +
+                "..." +
+                "P.." +
+                ".WF");
         response.assertOK();
         response.assertHasContentType("application/json");
         response.assertHasContent(
                 "{" +
-                    "map:[" +
+                    "\"map\":[" +
                         "\"...\"," +
                         "\"P..\"," +
                         "\".WF\"" +
                     "]," +
-                    "moves:[" +
-                        "{dx:0,dy:1}," +
-                        "{dx:1,dy:0}," +
-                        "{dx:1,dy:0}" +
+                    "\"moves\":[" +
+                        "{\"dx\":1,\"dy\":0}," +
+                        "{\"dx\":0,\"dy\":1}," +
+                        "{\"dx\":1,\"dy\":0}" +
                     "]" +
                 "}");
     }

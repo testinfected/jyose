@@ -2,6 +2,7 @@ package com.vtence.jyose;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.vtence.jyose.fire.FireFighting;
 import com.vtence.jyose.primes.Primes;
 import com.vtence.molecule.WebServer;
 import com.vtence.molecule.http.MimeTypes;
@@ -38,15 +39,20 @@ public class JYose {
 
         server.add(new StaticAssets(new FileServer(new File(webroot, "assets")), "/favicon.ico", "/images", "/css"))
               .start(new DynamicRoutes() {{
+
                   get("/").to((request, response) -> {
                       response.contentType(MimeTypes.HTML);
                       response.body(views.named("home").render(NO_CONTEXT));
                   });
+
                   get("/ping").to((request, response) -> {
                       response.contentType(MimeTypes.JSON);
                       response.body(gson.toJson(new Pong()));
                   });
+
                   get("/primeFactors").to(new Primes(gson));
+
+                  get("/fire/geek").to(new FireFighting(gson));
               }});
     }
 
