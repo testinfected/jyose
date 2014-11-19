@@ -7,6 +7,7 @@ import com.vtence.molecule.Response;
 
 import java.util.stream.Stream;
 
+import static com.vtence.jyose.fire.CommandCenter.FIRE;
 import static com.vtence.molecule.http.MimeTypes.JSON;
 import static java.lang.Integer.parseInt;
 
@@ -22,9 +23,18 @@ public class FireFighting implements Application {
     public void handle(Request request, Response response) throws Exception {
         int width = parseInt(request.parameter("width"));
         String[] map = Splitter.fixedLength(width).split(request.parameter("map"));
-        Stream<Move> moves = new CommandCenter().planAttack(Terrain.parse(map));
+        Terrain terrain = Terrain.parse(map);
         response.contentType(JSON);
-        response.body(gson.toJson(new Solution(map, moves)));
+        response.body(gson.toJson(new Solution(map, fireSolutionFor(terrain))));
+    }
+
+    private Stream<Move> fireSolutionFor(Terrain terrain) {
+        CommandCenter base = new CommandCenter();
+        if (terrain.find(FIRE).isPresent()) {
+            return base.planAttack(terrain);
+        } else {
+            return base.trainPilot(terrain);
+        }
     }
 
     private static class Solution {

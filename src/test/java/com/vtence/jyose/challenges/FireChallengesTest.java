@@ -52,4 +52,27 @@ public class FireChallengesTest {
                     "]" +
                 "}");
     }
+
+    @Test
+    public void passesSecondFireChallenge() throws Exception {
+        response = request.get("/fire/geek?width=5&map=" +
+                "W..P." +
+                "....." +
+                "W....");
+        response.assertOK();
+        response.assertHasContentType("application/json");
+        response.assertHasContent(
+                "{" +
+                    "\"map\":[" +
+                        "\"W..P.\"," +
+                        "\".....\"," +
+                        "\"W....\"" +
+                    "]," +
+                    "\"moves\":[" +
+                        "{\"dx\":-1,\"dy\":0}," +
+                        "{\"dx\":-1,\"dy\":0}," +
+                        "{\"dx\":-1,\"dy\":0}" +
+                    "]" +
+                "}");
+    }
 }

@@ -15,7 +15,7 @@ import static org.hamcrest.Matchers.contains;
 public class CommandCenterTest {
 
     @Test
-    public void fillsPlaneWithWaterAndAttacksFire() throws Exception {
+    public void directsPilotToFillPlaneWithWaterThenAttackFire() throws Exception {
         Terrain terrain = Terrain.parse(
                 "P...",
                 ".F..",
@@ -24,5 +24,16 @@ public class CommandCenterTest {
         CommandCenter base = new CommandCenter();
         List<Move> moves = base.planAttack(terrain).collect(toList());
         assertThat("moves", moves, contains(Right, Right, Down, Down, Down, Left, Up, Up));
+    }
+
+    @Test
+    public void trainsPilotToGrabNearestWater() throws Exception {
+        Terrain terrain = Terrain.parse(
+                "W....",
+                ".....",
+                "P...W");
+        CommandCenter base = new CommandCenter();
+        List<Move> moves = base.trainPilot(terrain).collect(toList());
+        assertThat("moves", moves, contains(Up, Up));
     }
 }
