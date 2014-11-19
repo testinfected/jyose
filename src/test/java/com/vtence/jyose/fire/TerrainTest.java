@@ -3,8 +3,10 @@ package com.vtence.jyose.fire;
 import org.junit.Test;
 
 import static java.lang.String.format;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 
 public class TerrainTest {
@@ -34,21 +36,9 @@ public class TerrainTest {
     }
 
     @Test
-    public void knowsPlaneStartingLocation() throws Exception {
-        Terrain terrain = Terrain.parse("..", ".P", "..");
-        assertThat("plane pos", terrain.plane(), equalTo(Pos.at(1, 1)));
-    }
-
-    @Test
-    public void knowsFireLocation() throws Exception {
-        Terrain terrain = Terrain.parse("..", "..", ".F");
-        assertThat("fire pos", terrain.fire(), equalTo(Pos.at(2, 1)));
-    }
-
-    @Test
-    public void knowsWaterLocation() throws Exception {
-        Terrain terrain = Terrain.parse(".W.", "...");
-        assertThat("water pos", terrain.water(), equalTo(Pos.at(0, 1)));
+    public void locatesTargetsOnMap() throws Exception {
+        Terrain terrain = Terrain.parse("..F", ".F.", "F..");
+        assertThat("fires", terrain.findAll('F').collect(toList()), contains(Pos.at(0, 2), Pos.at(1, 1), Pos.at(2, 0)));
     }
 
     private void assertContainsCells(Terrain terrain, int height, int width) {

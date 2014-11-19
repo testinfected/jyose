@@ -77,8 +77,8 @@ public class NavigationTest {
     }
 
     private Path findPathToGoal(Terrain terrain) {
-        Pos start = terrain.find('S');
-        Pos goal = terrain.find('G');
+        Pos start = terrain.find('S').get();
+        Pos goal = terrain.find('G').get();
         Optional<Path> solution = Navigation.on(terrain).avoiding('-').findPath(start, goal);
         assertThat("no solution found", solution.isPresent());
         Path path = solution.get();

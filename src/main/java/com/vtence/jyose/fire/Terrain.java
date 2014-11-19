@@ -1,15 +1,12 @@
 package com.vtence.jyose.fire;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
 public class Terrain {
-    private static final int PLANE = 'P';
-    private static final int FIRE = 'F';
-    private static final int WATER = 'W';
-
     private final List<List<Integer>> tiles;
 
     public Terrain(List<List<Integer>> tiles) {
@@ -35,21 +32,17 @@ public class Terrain {
         return tiles.get(pos.row).get(pos.col);
     }
 
-    public Pos plane() {
-        return find(PLANE);
+    public Optional<Pos> find(int what) {
+        return findAll(what).findAny();
     }
 
-    public Pos fire() {
-        return find(FIRE);
-    }
-
-    public Pos water() {
-        return find(WATER);
-    }
-
-    public Pos find(int what) {
-        int row = tiles.indexOf(tiles.stream().filter(line -> line.contains(what)).findFirst().get());
-        int col = tiles.get(row).indexOf(what);
-        return Pos.at(row, col);
+    public Stream<Pos> findAll(int what) {
+        return tiles.stream().
+                filter(line -> line.contains(what)).
+                flatMap(line -> line.stream().filter(c -> c == what).map(c -> {
+                    int row = tiles.indexOf(line);
+                    int col = tiles.get(row).indexOf(what);
+                    return Pos.at(row, col);
+                }));
     }
 }

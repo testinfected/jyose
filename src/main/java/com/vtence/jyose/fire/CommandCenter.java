@@ -7,23 +7,22 @@ import static java.util.stream.Collectors.toList;
 
 public class CommandCenter {
 
-    public static final char FIRE = 'F';
-    private static final char WATER = 'W';
+    private static final int PLANE = 'P';
+    private static final int FIRE = 'F';
+    private static final int WATER = 'W';
+
+    private final Supplier<? extends RuntimeException> invalidMap = () -> new IllegalArgumentException("Invalid map");
 
     public List<Move> planAttack(Terrain terrain) {
-        Pos plane = terrain.plane();
-        Pos water = terrain.water();
-        Pos fire = terrain.fire();
+        Pos plane = terrain.find(PLANE).orElseThrow(invalidMap);
+        Pos water = terrain.find(WATER).orElseThrow(invalidMap);
+        Pos fire = terrain.find(FIRE).get();
         List<Move> moves =  Navigation.on(terrain).avoiding(FIRE).
-                findPath(plane, water).orElseThrow(noPathTo(WATER)).
+                findPath(plane, water).orElseThrow(invalidMap).
                 moves().collect(toList());
         moves.addAll(Navigation.on(terrain).
-                findPath(water, fire).orElseThrow(noPathTo(FIRE)).
+                findPath(water, fire).orElseThrow(invalidMap).
                 moves().collect(toList()));
         return moves;
-    }
-
-    private Supplier<IllegalArgumentException> noPathTo(int what) {
-        return () -> new IllegalArgumentException("No path to " + what);
     }
 }
