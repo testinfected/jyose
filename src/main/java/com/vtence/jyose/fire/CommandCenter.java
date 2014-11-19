@@ -19,11 +19,12 @@ public class CommandCenter {
 
     public Stream<Move> planAttack(Terrain terrain) {
         Pos plane = terrain.find(PLANE).orElseThrow(invalidMap);
-        Pos water = terrain.find(WATER).orElseThrow(invalidMap);
         Pos fire = terrain.find(FIRE).orElseThrow(invalidMap);
-        return Stream.concat(
-                Navigation.on(terrain).avoiding(FIRE).findPath(plane, water).orElseThrow(invalidMap).moves(),
-                Navigation.on(terrain).findPath(water, fire).orElseThrow(invalidMap).moves());
+        Stream<Pos> waters = terrain.findAll(WATER);
+        Optional<Path> shortest = waters.map(water -> Path.concat(
+                Navigation.on(terrain).avoiding(FIRE).findPath(plane, water).orElseThrow(invalidMap),
+                Navigation.on(terrain).findPath(water, fire).orElseThrow(invalidMap))).reduce(shortestPath());
+        return shortest.orElseThrow(invalidMap).moves();
     }
 
     public Stream<Move> trainPilot(Terrain terrain) {

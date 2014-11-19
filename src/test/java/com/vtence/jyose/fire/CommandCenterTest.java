@@ -36,4 +36,16 @@ public class CommandCenterTest {
         List<Move> moves = base.trainPilot(terrain).collect(toList());
         assertThat("moves", moves, contains(Up, Up));
     }
+
+    @Test
+    public void calculatesShortestPathToAttack() throws Exception {
+        Terrain terrain = Terrain.parse(
+                "P...W",
+                ".....",
+                ".F...",
+                "..W..");
+        CommandCenter base = new CommandCenter();
+        List<Move> moves = base.planAttack(terrain).collect(toList());
+        assertThat("moves", moves, contains(Right, Right, Down, Down, Down, Left, Up));
+    }
 }
