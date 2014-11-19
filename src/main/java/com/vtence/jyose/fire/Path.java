@@ -28,6 +28,10 @@ public class Path {
         return moves.stream();
     }
 
+    public int length() {
+        return (int) moves().count();
+    }
+
     public Path advance(Step step) {
         List<Move> history = new ArrayList<>(moves);
         history.add(step.move);

@@ -15,8 +15,8 @@ public class NavigationTest {
     public void findsPathToGoalByGoingRight() throws Exception {
         Terrain terrain = Terrain.parse("S..G");
         Path solution = findPathToGoal(terrain);
-        assertThat(solution, hasLocation(0, 3));
-        assertThat(solution, hasTotalMoves(3));
+        assertThat(solution, hasDestination(0, 3));
+        assertThat(solution, hasLength(3));
     }
 
     @Test
@@ -27,16 +27,16 @@ public class NavigationTest {
                 ".",
                 "G");
         Path solution = findPathToGoal(terrain);
-        assertThat(solution, hasLocation(3, 0));
-        assertThat(solution, hasTotalMoves(3));
+        assertThat(solution, hasDestination(3, 0));
+        assertThat(solution, hasLength(3));
     }
 
     @Test
     public void findsPathToGoalByGoingLeft() throws Exception {
         Terrain terrain = Terrain.parse("G..S");
         Path solution = findPathToGoal(terrain);
-        assertThat(solution, hasLocation(0, 0));
-        assertThat(solution, hasTotalMoves(3));
+        assertThat(solution, hasDestination(0, 0));
+        assertThat(solution, hasLength(3));
     }
 
     @Test
@@ -47,8 +47,8 @@ public class NavigationTest {
                 ".",
                 "S");
         Path solution = findPathToGoal(terrain);
-        assertThat(solution, hasLocation(0, 0));
-        assertThat(solution, hasTotalMoves(3));
+        assertThat(solution, hasDestination(0, 0));
+        assertThat(solution, hasLength(3));
     }
 
     @Test
@@ -59,8 +59,8 @@ public class NavigationTest {
                 "....",
                 "...G");
         Path solution = findPathToGoal(terrain);
-        assertThat(solution, hasLocation(3, 3));
-        assertThat(solution, hasTotalMoves(6));
+        assertThat(solution, hasDestination(3, 3));
+        assertThat(solution, hasLength(6));
     }
 
     @Test
@@ -72,8 +72,8 @@ public class NavigationTest {
                 ".-.-.--",
                 "...-..G");
         Path solution = findPathToGoal(terrain);
-        assertThat(solution, hasLocation(4, 6));
-        assertThat(solution, hasTotalMoves(22));
+        assertThat(solution, hasDestination(4, 6));
+        assertThat(solution, hasLength(22));
     }
 
     private Path findPathToGoal(Terrain terrain) {
@@ -91,7 +91,7 @@ public class NavigationTest {
         return path;
     }
 
-    private Matcher<? super Path> hasLocation(int row, int col) {
+    private Matcher<? super Path> hasDestination(int row, int col) {
         return new FeatureMatcher<Path, Pos>(equalTo(Pos.at(row, col)), "position", "position") {
             @Override
             protected Pos featureValueOf(Path actual) {
@@ -100,11 +100,11 @@ public class NavigationTest {
         };
     }
 
-    private Matcher<? super Path> hasTotalMoves(long count) {
-        return new FeatureMatcher<Path, Long>(equalTo(count), "total moves", "total") {
+    private Matcher<? super Path> hasLength(int count) {
+        return new FeatureMatcher<Path, Integer>(equalTo(count), "total moves", "total") {
             @Override
-            protected Long featureValueOf(Path actual) {
-                return actual.moves().count();
+            protected Integer featureValueOf(Path actual) {
+                return actual.length();
             }
         };
     }
