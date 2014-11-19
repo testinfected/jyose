@@ -29,7 +29,7 @@ public class Path {
     }
 
     public int length() {
-        return (int) moves().count();
+        return moves.size();
     }
 
     public Path advance(Step step) {
