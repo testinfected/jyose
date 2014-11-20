@@ -2,6 +2,7 @@ package com.vtence.jyose.fire;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -38,15 +39,15 @@ public class Terrain {
     }
 
     public Stream<Pos> findAll(int what) {
-        return allRows().flatMap(row -> cellsContaining(row, what).map(col -> Pos.at((int) row, col)));
+        return allRows().flatMap(row -> cellsContaining(what).apply(row).map(col -> Pos.at(row, col)));
     }
 
     private Stream<Integer> allRows() {
         return range(0, tiles.size()).boxed();
     }
 
-    private Stream<Integer> cellsContaining(int row, int what) {
-        return allCellsOf(row).filter(col -> at(row, col) == what);
+    private Function<Integer, Stream<Integer>> cellsContaining(int what) {
+        return row -> allCellsOf(row).filter(col -> at(row, col) == what);
     }
 
     private Stream<Integer> allCellsOf(int row) {
