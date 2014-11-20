@@ -36,9 +36,15 @@ public class TerrainTest {
     }
 
     @Test
-    public void locatesTargetsOnMap() throws Exception {
+    public void locatesGivenTargetsOnMap() throws Exception {
         Terrain terrain = Terrain.parse("..F", ".F.", "F..");
         assertThat("fires", terrain.findAll('F').collect(toList()), contains(Pos.at(0, 2), Pos.at(1, 1), Pos.at(2, 0)));
+    }
+
+    @Test
+    public void locatesAllTargetsOnSameRow() throws Exception {
+        Terrain terrain = Terrain.parse("W..W");
+        assertThat("fires", terrain.findAll('W').collect(toList()), contains(Pos.at(0, 0), Pos.at(0, 3)));
     }
 
     private void assertContainsCells(Terrain terrain, int height, int width) {
