@@ -38,18 +38,22 @@ public class Terrain {
     }
 
     public Stream<Pos> findAll(int what) {
-        return allRows().flatMap(row -> allCells(row).filter(col -> at(row, col) == what).map(col -> Pos.at(row, col)));
-    }
-
-    private Integer at(int row, int col) {
-        return tiles.get(row).get(col);
+        return allRows().flatMap(row -> cellsContaining(row, what).map(col -> Pos.at((int) row, col)));
     }
 
     private Stream<Integer> allRows() {
         return range(0, tiles.size()).boxed();
     }
 
-    private Stream<Integer> allCells(int row) {
+    private Stream<Integer> cellsContaining(int row, int what) {
+        return allCellsOf(row).filter(col -> at(row, col) == what);
+    }
+
+    private Stream<Integer> allCellsOf(int row) {
         return range(0, tiles.get(row).size()).boxed();
+    }
+
+    private int at(int row, int col) {
+        return tiles.get(row).get(col);
     }
 }
