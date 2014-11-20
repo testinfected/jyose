@@ -11,6 +11,7 @@ import static com.vtence.jyose.fire.Move.Up;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasSize;
 
 public class CommandCenterTest {
 
@@ -40,12 +41,11 @@ public class CommandCenterTest {
     @Test
     public void calculatesShortestPathToAttack() throws Exception {
         Terrain terrain = Terrain.parse(
-                "P...W",
-                ".....",
-                ".F...",
-                "..W..");
+                "...........",
+                ".W...P..W..",
+                "...F.......");
         CommandCenter base = new CommandCenter();
         List<Move> moves = base.planAttack(terrain).collect(toList());
-        assertThat("moves", moves, contains(Right, Right, Down, Down, Down, Left, Up));
+        assertThat("moves", moves, hasSize(7));
     }
 }
