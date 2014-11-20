@@ -1,11 +1,11 @@
 package com.vtence.jyose.fire;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.IntStream.range;
 
 public class Terrain {
     private final List<List<Integer>> tiles;
@@ -30,7 +30,7 @@ public class Terrain {
     }
 
     public int at(Pos pos) {
-        return tiles.get(pos.row).get(pos.col);
+        return at(pos.row, pos.col);
     }
 
     public Optional<Pos> find(int what) {
@@ -38,12 +38,18 @@ public class Terrain {
     }
 
     public Stream<Pos> findAll(int what) {
-        List<Pos> all = new ArrayList<>();
-        for (int row = 0; row < tiles.size(); row++) {
-            for (int col = 0; col < tiles.get(row).size(); col++) {
-                if (tiles.get(row).get(col) == what) all.add(Pos.at(row, col));
-            }
-        }
-        return all.stream();
+        return allRows().flatMap(row -> allCells(row).filter(col -> at(row, col) == what).map(col -> Pos.at(row, col)));
+    }
+
+    private Integer at(int row, int col) {
+        return tiles.get(row).get(col);
+    }
+
+    private Stream<Integer> allRows() {
+        return range(0, tiles.size()).boxed();
+    }
+
+    private Stream<Integer> allCells(int row) {
+        return range(0, tiles.get(row).size()).boxed();
     }
 }
