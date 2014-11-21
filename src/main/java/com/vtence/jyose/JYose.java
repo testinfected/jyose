@@ -6,12 +6,9 @@ import com.vtence.jyose.fire.FireFighting;
 import com.vtence.jyose.ping.Ping;
 import com.vtence.jyose.primes.Primes;
 import com.vtence.molecule.WebServer;
-import com.vtence.molecule.http.MimeTypes;
 import com.vtence.molecule.middlewares.FileServer;
 import com.vtence.molecule.middlewares.StaticAssets;
 import com.vtence.molecule.routing.DynamicRoutes;
-import com.vtence.molecule.templating.JMustacheRenderer;
-import com.vtence.molecule.templating.Templates;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,8 +17,8 @@ import static java.lang.Integer.parseInt;
 
 public class JYose {
 
-    private static final Object NO_CONTEXT = null;
-
+    private static final int PORT = 0;
+    private static final int WEB_ROOT = 1;
     private final File webroot;
     private final Gson gson;
 
@@ -35,21 +32,20 @@ public class JYose {
     }
 
     public void start(WebServer server) throws IOException {
-        final Templates views = new Templates(
-                new JMustacheRenderer().fromDir(new File(webroot, "views")).extension("html"));
+        Pages pages = new Pages(webroot);
+        server.add(staticAssets())
+                .start(new DynamicRoutes() {{
+                    get("/").to(new StaticPage(pages.home())::render);
+                    get("/ping").to(new Ping(gson)::pong);
+                    get("/primeFactors").to(new Primes(gson));
+                    get("/primeFactors/ui").to(new StaticPage(pages.primes())::render);
+                    get("/fire/geek").to(new FireFighting(gson));
+                }});
+    }
 
-        server.add(new StaticAssets(new FileServer(new File(webroot, "assets")), "/favicon.ico", "/images", "/css"))
-              .start(new DynamicRoutes() {{
-
-                  get("/").to(new StaticPage(views.named("home"))::render);
-                  get("/ping").to(new Ping(gson)::pong);
-                  get("/primeFactors").to(new Primes(gson));
-                  get("/primeFactors/ui").to((request, response) -> {
-                      response.contentType(MimeTypes.HTML);
-                      response.body(views.named("primes").render(NO_CONTEXT));
-                  });
-                  get("/fire/geek").to(new FireFighting(gson));
-              }});
+    private StaticAssets staticAssets() {
+        return new StaticAssets(new FileServer(new File(webroot, "assets")),
+                "/favicon.ico", "/images", "/css");
     }
 
     public static void main(String[] args) throws IOException {
@@ -57,9 +53,6 @@ public class JYose {
         WebServer server = WebServer.create("0.0.0.0", port(args));
         game.start(server);
     }
-
-    private static final int PORT = 0;
-    private static final int WEB_ROOT = 1;
 
     private static int port(String[] args) {
         return parseInt(args[PORT]);
