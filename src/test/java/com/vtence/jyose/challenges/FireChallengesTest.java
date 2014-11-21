@@ -77,7 +77,7 @@ public class FireChallengesTest {
                 "}");
     }
 
-    @Test @Ignore("wip")
+    @Test
     public void passesThirdFireChallenge() throws Exception {
         response = request.get("/fire/geek?width=5&map=" +
                 "W...P" +
