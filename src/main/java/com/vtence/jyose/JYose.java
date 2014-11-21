@@ -3,6 +3,7 @@ package com.vtence.jyose;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.vtence.jyose.fire.FireFighting;
+import com.vtence.jyose.ping.Ping;
 import com.vtence.jyose.primes.Primes;
 import com.vtence.molecule.WebServer;
 import com.vtence.molecule.http.MimeTypes;
@@ -45,10 +46,7 @@ public class JYose {
                       response.body(views.named("home").render(NO_CONTEXT));
                   });
 
-                  get("/ping").to((request, response) -> {
-                      response.contentType(MimeTypes.JSON);
-                      response.body(gson.toJson(new Pong()));
-                  });
+                  get("/ping").to(new Ping(gson)::pong);
 
                   get("/primeFactors").to(new Primes(gson));
 
@@ -59,11 +57,6 @@ public class JYose {
 
                   get("/fire/geek").to(new FireFighting(gson));
               }});
-    }
-
-
-    class Pong {
-        public final boolean alive = true;
     }
 
     public static void main(String[] args) throws IOException {
