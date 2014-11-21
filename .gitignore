@@ -6,3 +6,4 @@ reports
 .idea
 build
 .gradle
+node_modules

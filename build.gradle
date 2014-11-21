@@ -6,6 +6,7 @@ buildscript {
 
     dependencies {
         classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:0.4.0'
+        classpath 'com.moowork.gradle:gradle-node-plugin:0.8'
     }
 }
 
@@ -13,6 +14,7 @@ apply plugin: 'java'
 apply plugin: 'jacoco'
 apply plugin: 'coveralls'
 apply plugin: 'application'
+apply plugin: 'com.moowork.node'
 
 defaultTasks 'build'
 
@@ -69,6 +71,29 @@ task coverage(dependsOn: ['test', 'jacocoTestReport'])
 task wrapper(type: Wrapper) {
     gradleVersion = '2.1'
 }
+
+ext {
+    jasmineDependencies = ['karma', 'karma-jasmine@2_0', 'karma-phantomjs-launcher']
+    karmaExec = file('node_modules/karma/bin/karma')
+    karmaConfig = 'src/test/resources/karma.conf.js'
+}
+
+task jasmineSetup(type: NpmTask) {
+    outputs.dir file('node_modules')
+    args = ['install', '--loglevel', 'error'] + jasmineDependencies
+}
+
+task jasmineRun(type: NodeTask, dependsOn: 'jasmineSetup') {
+    script = karmaExec
+    args = ['start', karmaConfig, '--single-run']
+}
+
+task jasmineWatch(type: NodeTask, dependsOn: 'jasmineSetup') {
+    script = karmaExec
+    args = ['start', karmaConfig]
+}
+
+test.dependsOn jasmineRun
 
 mainClassName = 'com.vtence.jyose.JYose'
 applicationName = 'jyose'
