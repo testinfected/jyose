@@ -29,10 +29,11 @@ public class Primes implements Application {
         }
     }
 
-    private Object decompose(String number) {
-        if (!isInteger(number)) return new NotANumber(number);
-        if (isTooBig(parseInt(number))) return new NumberTooBig(parseInt(number));
-        return new PrimeFactorsDecomposition(parseInt(number));
+    private Object decompose(String input) {
+        if (!isInteger(input)) return new NotANumber(input);
+        int number = parseInt(input);
+        if (isTooBig(number)) return new NumberTooBig(number);
+        return new Decomposition(number, PrimeFactors.of(number));
     }
 
     private boolean isInteger(String candidate) {
@@ -43,13 +44,13 @@ public class Primes implements Application {
         return number > 1000000;
     }
 
-    class PrimeFactorsDecomposition {
+    class Decomposition {
         private final int number;
         private final List<Integer> decomposition;
 
-        public PrimeFactorsDecomposition(int number) {
+        public Decomposition(int number, List<Integer> primes) {
             this.number = number;
-            this.decomposition = PrimeFactors.of(number);
+            this.decomposition = primes;
         }
     }
 

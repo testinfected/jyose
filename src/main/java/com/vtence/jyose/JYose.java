@@ -41,20 +41,13 @@ public class JYose {
         server.add(new StaticAssets(new FileServer(new File(webroot, "assets")), "/favicon.ico", "/images", "/css"))
               .start(new DynamicRoutes() {{
 
-                  get("/").to((request, response) -> {
-                      response.contentType(MimeTypes.HTML);
-                      response.body(views.named("home").render(NO_CONTEXT));
-                  });
-
+                  get("/").to(new StaticPage(views.named("home"))::render);
                   get("/ping").to(new Ping(gson)::pong);
-
                   get("/primeFactors").to(new Primes(gson));
-
                   get("/primeFactors/ui").to((request, response) -> {
                       response.contentType(MimeTypes.HTML);
                       response.body(views.named("primes").render(NO_CONTEXT));
                   });
-
                   get("/fire/geek").to(new FireFighting(gson));
               }});
     }
