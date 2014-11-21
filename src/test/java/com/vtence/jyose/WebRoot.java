@@ -9,4 +9,8 @@ public class WebRoot {
     public static File locate() {
         return new File("src/main/webapp");
     }
+
+    public static File views() {
+        return new File(WebRoot.locate(), "views");
+    }
 }

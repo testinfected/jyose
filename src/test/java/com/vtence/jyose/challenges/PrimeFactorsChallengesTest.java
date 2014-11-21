@@ -11,6 +11,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 
+import static org.hamcrest.Matchers.containsString;
+
 public class PrimeFactorsChallengesTest {
 
     static final int PORT = 9999;
@@ -56,6 +58,16 @@ public class PrimeFactorsChallengesTest {
                 "[{\"number\":300,\"decomposition\":[2,2,3,5,5]}," +
                 "{\"number\":120,\"decomposition\":[2,2,2,3,5]}," +
                 "{\"number\":\"hello\",\"error\":\"not a number\"}]");
+    }
+
+    @Test public void
+    passesFormChallenge() throws IOException {
+        response = request.get("/primeFactors/ui");
+        response.assertOK();
+        response.assertHasContent(containsString("id=\"title\""));
+        response.assertHasContent(containsString("id=\"invitation\""));
+        response.assertHasContent(containsString("<input id=\"number\""));
+        response.assertHasContent(containsString("<button id=\"go\""));
     }
 
     @After public void

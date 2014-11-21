@@ -29,6 +29,10 @@ def libs = [
         jmock_junit4      : 'org.jmock:jmock-junit4:2.6.0@jar',
         htmlunit          : 'net.sourceforge.htmlunit:htmlunit:2.14',
         molecule_test     : 'com.vtence.molecule:molecule:0.4-SNAPSHOT:tests',
+        hamcrest_dom      : ['com.google.guava:guava:15.0',
+                             'org.antlr:antlr-runtime:3.0.1',
+                             'com.3levers.cssselectors:cssselectors:1.0@jar',
+                             'org.testinfected.hamcrest-matchers:dom-matchers:1.5@jar'],
 ]
 
 repositories {
@@ -50,6 +54,7 @@ dependencies {
     testCompile libs.jmock_junit4
     testCompile libs.htmlunit
     testCompile libs.molecule_test
+    testCompile libs.hamcrest_dom
 }
 
 jacocoTestReport {

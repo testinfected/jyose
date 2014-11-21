@@ -52,6 +52,11 @@ public class JYose {
 
                   get("/primeFactors").to(new Primes(gson));
 
+                  get("/primeFactors/ui").to((request, response) -> {
+                      response.contentType(MimeTypes.HTML);
+                      response.body(views.named("primes").render(NO_CONTEXT));
+                  });
+
                   get("/fire/geek").to(new FireFighting(gson));
               }});
     }
