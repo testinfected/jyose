@@ -41,7 +41,7 @@ public class PortfolioChallengesTest {
         response.assertOK();
         response.assertHasContent(
                 containsString(
-                        "<a id=\"ping-challenge-link\" href=\"http://jyose.herokuapp.com/ping\""));
+                        "<a id=\"ping-challenge-link\" href=\"/ping\""));
     }
 
     @After public void

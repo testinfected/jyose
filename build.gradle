@@ -35,6 +35,12 @@ def libs = [
                              'org.antlr:antlr-runtime:3.0.1',
                              'com.3levers.cssselectors:cssselectors:1.0@jar',
                              'org.testinfected.hamcrest-matchers:dom-matchers:1.5@jar'],
+        selenium_api      : 'org.seleniumhq.selenium:selenium-api:2.44.0',
+        selenium_remote   : 'org.seleniumhq.selenium:selenium-remote-driver:2.44.0',
+        selenium_firefox  : 'org.seleniumhq.selenium:selenium-firefox-driver:2.44.0',
+        selenium_phantom  : 'com.github.detro:phantomjsdriver:1.2.0',
+        windowlicker_core : 'com.googlecode.windowlicker:windowlicker-core:r268@jar',
+        windowlicker_web  : 'com.googlecode.windowlicker:windowlicker-web:r268@jar',
 ]
 
 repositories {
@@ -57,6 +63,14 @@ dependencies {
     testCompile libs.htmlunit
     testCompile libs.molecule_test
     testCompile libs.hamcrest_dom
+    testCompile libs.selenium_api
+    testCompile libs.selenium_firefox
+    testCompile(libs.selenium_phantom) {
+        exclude module: 'selenium-java'
+        exclude module: 'selenium-server'
+    }
+    testCompile libs.windowlicker_core
+    testCompile libs.windowlicker_web
 }
 
 jacocoTestReport {
