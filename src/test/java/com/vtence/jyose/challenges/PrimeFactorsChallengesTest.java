@@ -27,7 +27,7 @@ public class PrimeFactorsChallengesTest {
     HttpRequest request = new HttpRequest(PORT);
     HttpResponse response;
 
-    WebDriver browser = Browser.firefox();
+    WebDriver browser = Browser.phantom();
     JYoseDriver driver = new JYoseDriver(browser);
 
     @Before public void
