@@ -1,13 +1,18 @@
 package com.vtence.jyose.challenges;
 
+import com.vtence.jyose.Browser;
 import com.vtence.jyose.JYose;
+import com.vtence.jyose.JYoseDriver;
 import com.vtence.jyose.WebRoot;
+import com.vtence.jyose.pages.PrimeFactorsPage;
 import com.vtence.molecule.WebServer;
 import com.vtence.molecule.support.HttpRequest;
 import com.vtence.molecule.support.HttpResponse;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.openqa.selenium.WebDriver;
 
 import java.io.IOException;
 
@@ -15,15 +20,25 @@ import static org.hamcrest.Matchers.containsString;
 
 public class PrimeFactorsChallengesTest {
 
-    static final int PORT = 9999;
+    int PORT = 9999;
     JYose yose = new JYose(WebRoot.locate());
     WebServer server = WebServer.create(PORT);
+
     HttpRequest request = new HttpRequest(PORT);
     HttpResponse response;
+
+    WebDriver browser = Browser.firefox();
+    JYoseDriver driver = new JYoseDriver(browser);
 
     @Before public void
     startServer() throws Exception {
         yose.start(server);
+    }
+
+    @After public void
+    stopServer() throws Exception {
+        server.stop();
+        browser.close();
     }
 
     @Test public void
@@ -56,8 +71,8 @@ public class PrimeFactorsChallengesTest {
         response.assertOK();
         response.assertHasContent(
                 "[{\"number\":300,\"decomposition\":[2,2,3,5,5]}," +
-                "{\"number\":120,\"decomposition\":[2,2,2,3,5]}," +
-                "{\"number\":\"hello\",\"error\":\"not a number\"}]");
+                        "{\"number\":120,\"decomposition\":[2,2,2,3,5]}," +
+                        "{\"number\":\"hello\",\"error\":\"not a number\"}]");
     }
 
     @Test public void
@@ -70,8 +85,10 @@ public class PrimeFactorsChallengesTest {
         response.assertHasContent(containsString("<button id=\"go\""));
     }
 
-    @After public void
-    stopServer() throws Exception {
-        server.stop();
+    @Test @Ignore("wip") public void
+    passesInputChallenge() throws IOException {
+        PrimeFactorsPage page = driver.primeFactors();
+        page.decompose("66");
+        page.showsResult("66 = 2 x 3 x 11");
     }
 }
