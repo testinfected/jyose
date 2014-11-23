@@ -87,27 +87,27 @@ task wrapper(type: Wrapper) {
 }
 
 ext {
-    jasmineDependencies = ['karma', 'karma-jasmine@2_0', 'karma-phantomjs-launcher']
+    karmaDependencies = ['karma', 'karma-mocha', 'karma-chai', 'karma-phantomjs-launcher']
     karmaExec = file('node_modules/karma/bin/karma')
     karmaConfig = 'src/test/resources/karma.conf.js'
 }
 
-task jasmineSetup(type: NpmTask) {
+task karmaSetup(type: NpmTask) {
     outputs.dir file('node_modules')
-    args = ['install', '--loglevel', 'error'] + jasmineDependencies
+    args = ['install', '--loglevel', 'error'] + karmaDependencies
 }
 
-task jasmineRun(type: NodeTask, dependsOn: 'jasmineSetup') {
+task karmaRun(type: NodeTask, dependsOn: 'karmaSetup') {
     script = karmaExec
     args = ['start', karmaConfig, '--single-run']
 }
 
-task jasmineWatch(type: NodeTask, dependsOn: 'jasmineSetup') {
+task karmaWatch(type: NodeTask, dependsOn: 'karmaSetup') {
     script = karmaExec
     args = ['start', karmaConfig]
 }
 
-test.dependsOn jasmineRun
+test.dependsOn karmaRun
 
 mainClassName = 'com.vtence.jyose.JYose'
 applicationName = 'jyose'

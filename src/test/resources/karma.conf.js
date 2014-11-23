@@ -1,25 +1,21 @@
 module.exports = function(config) {
 
-    var ASSET_PATH = 'src/main/webapp/assets';
-    var TEST_PATH = 'test/js';
-
     config.set({
-        basePath: '../../',
-        frameworks: ['jasmine'],
+        basePath: '../../..',
+        frameworks: ['mocha', 'chai'],
 
         files: [
-            ASSET_PATH + '/javascripts/**/*.js',
-            TEST_PATH + '/**/*-spec.js'
+            'src/main/webapp/assets/javascripts/**/*.js',
+            'src/test/js/**/*.js'
         ],
 
-        exclude: [],
-        preprocessors: {},
         reporters: ['progress'],
+
         port: 9876,
         colors: true,
-        logLevel: config.LOG_ERROR,
         autoWatch: true,
+        singleRun: false,
         browsers: ['PhantomJS'],
-        singleRun: false
+        logLevel: config.LOG_ERROR
     });
 };
