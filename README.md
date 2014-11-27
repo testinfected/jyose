@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/testinfected/jyose.svg?branch=master)](https://travis-ci.org/testinfected/jyose)
 [![Yose score](http://yosethegame.com/players/testinfected/badge.svg)](http://yosethegame.com)
 
 jyose
