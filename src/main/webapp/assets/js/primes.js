@@ -9,12 +9,14 @@ var ajax = {
 
     send: function (settings, done) {
         var request = new XMLHttpRequest();
-        request.open(settings.method, settings.url);
+        //Yose uses Zombie which does not support send data, so we append data to the url
+        request.open(settings.method, settings.url + '?' + this.encode(settings.data));
         request.setRequestHeader("Content-type", settings.encoding);
         request.onload = function () {
             done(JSON.parse(request.responseText))
         };
-        request.send(this.encode(settings.data));
+        request.send();
+        //request.send(this.encode(settings.data));
     }
 };
 
