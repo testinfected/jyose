@@ -13,6 +13,8 @@ import com.vtence.molecule.routing.DynamicRoutes;
 import java.io.File;
 import java.io.IOException;
 
+import static com.vtence.molecule.http.HttpMethod.GET;
+import static com.vtence.molecule.http.HttpMethod.POST;
 import static java.lang.Integer.parseInt;
 
 public class JYose {
@@ -37,7 +39,7 @@ public class JYose {
                 .start(new DynamicRoutes() {{
                     get("/").to(new StaticPage(pages.home())::render);
                     get("/ping").to(new Ping(gson)::pong);
-                    get("/primeFactors").to(new Primes(gson));
+                    map("/primeFactors").via(GET, POST).to(new Primes(gson));
                     get("/primeFactors/ui").to(new StaticPage(pages.primes())::render);
                     get("/fire/geek").to(new FireFighting(gson));
                 }});
@@ -45,7 +47,7 @@ public class JYose {
 
     private StaticAssets staticAssets() {
         return new StaticAssets(new FileServer(new File(webroot, "assets")),
-                "/favicon.ico", "/images", "/css");
+                "/favicon.ico", "/images", "/css", "/js");
     }
 
     public static void main(String[] args) throws IOException {

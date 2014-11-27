@@ -10,7 +10,6 @@ import com.vtence.molecule.support.HttpRequest;
 import com.vtence.molecule.support.HttpResponse;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 
@@ -70,9 +69,11 @@ public class PrimeFactorsChallengesTest {
         response = request.withParameters("number", "300", "120", "hello").get("/primeFactors");
         response.assertOK();
         response.assertHasContent(
-                "[{\"number\":300,\"decomposition\":[2,2,3,5,5]}," +
-                        "{\"number\":120,\"decomposition\":[2,2,2,3,5]}," +
-                        "{\"number\":\"hello\",\"error\":\"not a number\"}]");
+                "[" +
+                    "{\"number\":300,\"decomposition\":[2,2,3,5,5]}," +
+                    "{\"number\":120,\"decomposition\":[2,2,2,3,5]}," +
+                    "{\"number\":\"hello\",\"error\":\"not a number\"}" +
+                "]");
     }
 
     @Test public void
@@ -85,7 +86,7 @@ public class PrimeFactorsChallengesTest {
         response.assertHasContent(containsString("<button id=\"go\""));
     }
 
-    @Test @Ignore("wip") public void
+    @Test public void
     passesInputChallenge() throws IOException {
         PrimeFactorsPage page = driver.primeFactors();
         page.decompose("66");

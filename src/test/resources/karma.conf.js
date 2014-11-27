@@ -5,7 +5,7 @@ module.exports = function(config) {
         frameworks: ['mocha', 'chai'],
 
         files: [
-            'src/main/webapp/assets/javascripts/**/*.js',
+            'src/main/webapp/assets/js/**/*.js',
             'src/test/js/**/*.js'
         ],
 

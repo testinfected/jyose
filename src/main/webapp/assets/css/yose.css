@@ -83,6 +83,10 @@ fieldset ol {
     margin: 0;
 }
 
+input {
+    line-height: 1.75em;
+}
+
 button {
     display: inline;
     padding: 5px 10px;

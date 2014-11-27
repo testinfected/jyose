@@ -31,17 +31,14 @@ public class PortfolioChallengesTest {
     passesContactInformationChallenge() throws IOException {
         response = request.get("/");
         response.assertOK();
-        response.assertHasContent(
-                containsString("<a id=\"contact-me-link\" href=\"http://vtence.com\""));
+        response.assertHasContent(containsString("<a id=\"contact-me-link\" href=\"http://vtence.com\""));
     }
 
     @Test public void
     passesPingSourceChallenge() throws IOException {
         response = request.get("/");
         response.assertOK();
-        response.assertHasContent(
-                containsString(
-                        "<a id=\"ping-challenge-link\" href=\"/ping\""));
+        response.assertHasContent(containsString("<a id=\"ping-challenge-link\" href=\"/ping\""));
     }
 
     @After public void

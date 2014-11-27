@@ -9,13 +9,14 @@
     <link rel="icon" type="image/png" href="/images/favicon-16x16.png" sizes="16x16">
     <link rel="icon" type="image/png" href="/images/favicon-32x32.png" sizes="32x32">
     <link href="/css/yose.css" rel="stylesheet">
+    <script type="text/javascript" src="/js/primes.js"></script>
 </head>
 <body>
 <div class="container">
     <div class="content">
         <h3 id="title">Prime Factors</h3>
 
-        <form>
+        <form id="primes" action="/primeFactors" method="post">
             <fieldset>
                 <legend id="invitation">Enter a number to decompose:</legend>
                 <ol>
@@ -26,6 +27,7 @@
                 <li><button id="go">Decompose</button></li>
             </ol>
         </form>
+        <div id="result"></div>
     </div>
 </div>
 </body>
