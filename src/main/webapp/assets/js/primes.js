@@ -46,7 +46,7 @@ primes.Form = {
     }
 };
 
-primes.render = function (container) {
+primes.renderIn = function (container) {
     function format(data) {
         return data.number + ' = ' + data.decomposition.join(' x ');
     }
@@ -60,8 +60,8 @@ primes.render = function (container) {
     document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('#primes').addEventListener('submit', function (event) {
             event.preventDefault();
-            var form = new primes.Form.parse(this);
-            var renderer = primes.render(document.querySelector("#result"));
+            var form = primes.Form.parse(this);
+            var renderer = primes.renderIn(document.querySelector("#result"));
             form.submit(renderer);
         });
     });

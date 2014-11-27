@@ -67,13 +67,13 @@ describe('rendering results', function () {
 
     it('displays the original number', function () {
         var factors = {number: 1, decomposition: []};
-        primes.render(result)(factors);
+        primes.renderIn(result)(factors);
         result.innerHTML.should.contain('1');
     });
 
     it('displays the prime factors decomposition of the number', function () {
         var factors = {number: 66, decomposition: [2, 3, 11]};
-        primes.render(result)(factors);
+        primes.renderIn(result)(factors);
         result.innerHTML.should.contain('= 2 x 3 x 11');
     });
 });
