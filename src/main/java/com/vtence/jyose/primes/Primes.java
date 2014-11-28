@@ -22,11 +22,15 @@ public class Primes implements Application {
     public void handle(Request request, Response response) throws Exception {
         List<Object> decompositions = request.parameters("number").stream().map(this::decompose).collect(toList());
         response.contentType(MimeTypes.JSON);
-        if (decompositions.size() == 1) {
-            response.body(gson.toJson(decompositions.get(0)));
-        } else {
-            response.body(gson.toJson(decompositions));
-        }
+        response.body(toJson(decompositions));
+    }
+
+    private String toJson(List<Object> decompositions) {
+        return gson.toJson(resultOf(decompositions));
+    }
+
+    private Object resultOf(List<Object> decompositions) {
+        return decompositions.size() > 1 ? decompositions : decompositions.get(0);
     }
 
     private Object decompose(String input) {
