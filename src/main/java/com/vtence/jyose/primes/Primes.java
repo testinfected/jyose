@@ -78,7 +78,7 @@ public class Primes implements Application {
 
         public NotGreaterThanOne(String number) {
             this.number = parseInt(number);
-            this.error = number + " is not a number > 1";
+            this.error = number + " is not an integer > 1";
         }
 
         public static boolean verify(String number) {

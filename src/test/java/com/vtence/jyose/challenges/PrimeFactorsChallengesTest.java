@@ -111,6 +111,6 @@ public class PrimeFactorsChallengesTest {
     passesResistNegativeNumberChallenge() throws IOException {
         PrimeFactorsPage page = driver.primeFactors();
         page.decompose("-42");
-        page.showsResult("-42 is not a number > 1");
+        page.showsResult("-42 is not an integer > 1");
     }
 }
