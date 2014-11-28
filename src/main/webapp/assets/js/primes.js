@@ -52,6 +52,8 @@ primes.renderIn = function (container) {
     function format(data) {
         if ('decomposition' in data) {
             return data.number + ' = ' + data.decomposition.join(' x ');
+        } else if (data.error == 'not a number') {
+            return data.number + ' is ' + data.error;
         } else {
             return data.error;
         }

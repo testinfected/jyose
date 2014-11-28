@@ -10,7 +10,6 @@ import com.vtence.molecule.support.HttpRequest;
 import com.vtence.molecule.support.HttpResponse;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 
@@ -101,7 +100,7 @@ public class PrimeFactorsChallengesTest {
         page.showsResult("too big number (>1e6)");
     }
 
-    @Test @Ignore("wip") public void
+    @Test public void
     passesResistStringsChallenge() throws IOException {
         PrimeFactorsPage page = driver.primeFactors();
         page.decompose("3hello");

@@ -82,10 +82,15 @@ describe('rendering results', function () {
         });
     });
 
-    describe('when number is too big', function () {
-        it('displays the error message', function () {
+    describe('when decomposition fails', function () {
+        it('indicates when number is too big', function () {
             var factors = {"number": 1000001, "error": "number too big"};
             render(factors).should.equal('number too big');
+        });
+
+        it('indicates when input is not a number', function () {
+            var factors = {"number": "1allo", "error": "not a number"};
+            render(factors).should.equal('1allo is not a number');
         })
     })
 });
