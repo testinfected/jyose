@@ -92,4 +92,11 @@ public class PrimeFactorsChallengesTest {
         page.decompose("66");
         page.showsResult("66 = 2 x 3 x 11");
     }
+
+    @Test public void
+    passesResistBigNumberChallenge() throws IOException {
+        PrimeFactorsPage page = driver.primeFactors();
+        page.decompose("123456789");
+        page.showsResult("too big number (>1e6)");
+    }
 }

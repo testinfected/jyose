@@ -50,11 +50,16 @@ primes.Form = {
 
 primes.renderIn = function (container) {
     function format(data) {
-        return data.number + ' = ' + data.decomposition.join(' x ');
+        if ('decomposition' in data) {
+            return data.number + ' = ' + data.decomposition.join(' x ');
+        } else {
+            return data.error;
+        }
     }
 
     return function (data) {
         container.innerHTML = format(data);
+        return container.innerHTML;
     };
 };
 

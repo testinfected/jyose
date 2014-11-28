@@ -58,6 +58,11 @@ describe('primes', function () {
 describe('rendering results', function () {
     var result;
 
+    function render(factors) {
+        primes.renderIn(result)(factors);
+        return result.innerHTML;
+    }
+
     beforeEach(function () {
         var fragment = document.createDocumentFragment();
         result = document.createElement("div");
@@ -65,15 +70,22 @@ describe('rendering results', function () {
         fragment.appendChild(result);
     });
 
-    it('displays the original number', function () {
-        var factors = {number: 1, decomposition: []};
-        primes.renderIn(result)(factors);
-        result.innerHTML.should.contain('1');
+    describe('when decomposition succeeds', function () {
+        it('displays the original number', function () {
+            var factors = {number: 1, decomposition: []};
+            render(factors).should.contain('1');
+        });
+
+        it('displays the prime factors decomposition of the number', function () {
+            var factors = {number: 66, decomposition: [2, 3, 11]};
+            render(factors).should.contain('= 2 x 3 x 11');
+        });
     });
 
-    it('displays the prime factors decomposition of the number', function () {
-        var factors = {number: 66, decomposition: [2, 3, 11]};
-        primes.renderIn(result)(factors);
-        result.innerHTML.should.contain('= 2 x 3 x 11');
-    });
+    describe('when number is too big', function () {
+        it('displays the error message', function () {
+            var factors = {"number": 1000001, "error": "number too big"};
+            render(factors).should.equal('number too big');
+        })
+    })
 });
