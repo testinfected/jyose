@@ -30,45 +30,59 @@ public class Primes implements Application {
     }
 
     private Object decompose(String input) {
-        if (!isInteger(input)) return new NotANumber(input);
-        int number = parseInt(input);
-        if (isTooBig(number)) return new NumberTooBig(number);
-        return new Decomposition(number, PrimeFactors.of(number));
+        if (NotANumber.verify(input)) return new NotANumber(input);
+        if (NumberTooBig.verify(input)) return new NumberTooBig(input);
+        if (NotGreaterThanOne.verify(input)) return new NotGreaterThanOne(input);
+        return new ValidNumber(input, PrimeFactors.of(parseInt(input)));
     }
 
-    private boolean isInteger(String candidate) {
-        return candidate.matches("\\d+");
-    }
-
-    private boolean isTooBig(int number) {
-        return number > 1000000;
-    }
-
-    class Decomposition {
+    static class ValidNumber {
         private final int number;
         private final List<Integer> decomposition;
 
-        public Decomposition(int number, List<Integer> primes) {
-            this.number = number;
+        public ValidNumber(String number, List<Integer> primes) {
+            this.number = parseInt(number);
             this.decomposition = primes;
         }
     }
 
-    class NumberTooBig {
+    static class NumberTooBig {
         private final int number;
         private final String error = "too big number (>1e6)";
 
-        public NumberTooBig(int number) {
-            this.number = number;
+        public NumberTooBig(String number) {
+            this.number = parseInt(number);
+        }
+
+        public static boolean verify(String number) {
+            return parseInt(number) > 1000000;
         }
     }
 
-    class NotANumber {
+    static class NotANumber {
         private final String number;
         private final String error = "not a number";
 
         public NotANumber(String number) {
             this.number = number;
+        }
+
+        public static boolean verify(String candidate) {
+            return !candidate.matches("-?\\d+");
+        }
+    }
+
+    static class NotGreaterThanOne {
+        private final int number;
+        private final String error;
+
+        public NotGreaterThanOne(String number) {
+            this.number = parseInt(number);
+            this.error = number + " is not a number > 1";
+        }
+
+        public static boolean verify(String number) {
+            return parseInt(number) <= 1;
         }
     }
 }
