@@ -10,6 +10,7 @@ import com.vtence.molecule.support.HttpRequest;
 import com.vtence.molecule.support.HttpResponse;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 
@@ -105,5 +106,12 @@ public class PrimeFactorsChallengesTest {
         PrimeFactorsPage page = driver.primeFactors();
         page.decompose("3hello");
         page.showsResult("3hello is not a number");
+    }
+
+    @Test @Ignore("wip") public void
+    passesResistNegativeNumberChallenge() throws IOException {
+        PrimeFactorsPage page = driver.primeFactors();
+        page.decompose("-42");
+        page.showsResult("-42 is not a number > 1");
     }
 }
