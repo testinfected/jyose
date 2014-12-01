@@ -90,27 +90,38 @@ public class PrimeFactorsChallengesTest {
     passesInputChallenge() throws IOException {
         PrimeFactorsPage page = driver.primeFactors();
         page.decompose("66");
-        page.showsResult("66 = 2 x 3 x 11");
+        page.showsSingleResult("66 = 2 x 3 x 11");
     }
 
     @Test public void
     passesResistBigNumberChallenge() throws IOException {
         PrimeFactorsPage page = driver.primeFactors();
         page.decompose("123456789");
-        page.showsResult("too big number (>1e6)");
+        page.showsSingleResult("too big number (>1e6)");
     }
 
     @Test public void
     passesResistStringsChallenge() throws IOException {
         PrimeFactorsPage page = driver.primeFactors();
         page.decompose("3hello");
-        page.showsResult("3hello is not a number");
+        page.showsSingleResult("3hello is not a number");
     }
 
     @Test public void
     passesResistNegativeNumberChallenge() throws IOException {
         PrimeFactorsPage page = driver.primeFactors();
         page.decompose("-42");
-        page.showsResult("-42 is not an integer > 1");
+        page.showsSingleResult("-42 is not an integer > 1");
+    }
+
+    @Test public void
+    passesListOfDecompositionChallenge() throws IOException {
+        PrimeFactorsPage page = driver.primeFactors();
+        page.decompose("15, -42, hello, 123456789");
+        page.showsResults(
+                "15 = 3 x 5",
+                "-42 is not an integer > 1",
+                "hello is not a number",
+                "too big number (>1e6)");
     }
 }
