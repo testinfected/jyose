@@ -1,8 +1,10 @@
 package com.vtence.jyose.pages;
 
+import com.objogate.wl.web.AsyncElementDriver;
 import com.objogate.wl.web.AsyncWebDriver;
 import org.openqa.selenium.By;
 
+import static java.util.stream.IntStream.range;
 import static org.hamcrest.Matchers.equalTo;
 
 public class PrimeFactorsPage {
@@ -17,7 +19,16 @@ public class PrimeFactorsPage {
         browser.element(By.id("go")).click();
     }
 
-    public void showsResult(String decomposition) {
+    public void showsSingleResult(String decomposition) {
         browser.element(By.id("result")).assertText(equalTo(decomposition));
+    }
+
+    public void showsResults(String... decompositions) {
+        AsyncElementDriver results = browser.element(By.id("results"));
+        range(0, decompositions.length).forEach(n -> nthItem(results, n + 1).assertText(equalTo(decompositions[n])));
+    }
+
+    private AsyncElementDriver nthItem(AsyncElementDriver results, int index) {
+        return results.element(By.xpath("li[" + index + "]"));
     }
 }

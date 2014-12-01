@@ -1,15 +1,46 @@
 describe('ajax', function () {
-    describe('when encoding data', function () {
+    describe('when encoding values', function () {
         var parameters;
 
         beforeEach(function () {
             parameters = ajax.encode({
-                number: 'value'
+                number: 42,
+                name: 'primes'
             });
         });
 
         it('creates name value pairs', function () {
-            parameters.should.equal('number=value');
+            parameters.should.equal('number=42&name=primes');
+        });
+    });
+
+    describe('when encoding', function () {
+        var parameters;
+
+        beforeEach(function () {
+            parameters = ajax.encode({
+                say: "I'll be back"
+            });
+        });
+
+        it('escapes values', function () {
+            [12].map(function(v) { return v}).join('&name=').should.equal('12');
+            [12, 13].map(function(v) { return v }).join('&name=').should.equal('12&name=13');
+            parameters.should.equal("say=I'll%20be%20back");
+        });
+    });
+
+    describe('when encoding arrays', function () {
+        var parameters;
+
+        beforeEach(function () {
+            parameters = ajax.encode({
+                number: [42, 37, 12]
+            });
+        });
+
+        it('creates multiple name value pairs', function () {
+            parameters.should.equal('number=42&number=37&number=12');
         });
     });
 });
@@ -17,11 +48,12 @@ describe('ajax', function () {
 describe('primes', function () {
 
     describe('when parsing form', function () {
+        var form;
         var settings;
 
         beforeEach(function () {
             var fragment = document.createDocumentFragment();
-            var form = document.createElement("form");
+            form = document.createElement("form");
             form.id = 'primes';
             form.setAttribute('action', '/url');
             form.setAttribute('method', 'post');
@@ -29,28 +61,50 @@ describe('primes', function () {
             var number = document.createElement('input');
             number.id = 'number';
             number.setAttribute('name', 'number');
-            number.value = 'value';
             form.appendChild(number);
             fragment.appendChild(form);
-            settings = primes.Form.parse(form).settings;
         });
 
-        it('reads the form method', function () {
-            settings.should.have.property('method', 'post');
+        describe('in any case', function() {
+            beforeEach(function() {
+                settings = primes.Form.parse(form).settings;
+            });
+
+            it('reads the form method', function () {
+                settings.should.have.property('method', 'post');
+            });
+
+            it('reads the form action', function () {
+                settings.should.have.property('url').with.string('/url');
+            });
+
+            it('reads the form encoding', function () {
+                settings.should.have.property('encoding', 'application/x-www-form-urlencoded');
+            });
         });
 
-        it('reads the form action', function () {
-            settings.should.have.property('url');
-            settings.url.should.have.string('/url');
+        describe('with a single number', function() {
+            beforeEach(function() {
+                form.querySelector('#number').value = 'value';
+                settings = primes.Form.parse(form).settings;
+            });
+
+            it('includes the number in the data', function () {
+                settings.should.have.deep.property('data.number[0]', 'value');
+            });
         });
 
-        it('reads the form encoding', function () {
-            settings.should.have.property('encoding', 'application/x-www-form-urlencoded');
-        });
+        describe('with multiple numbers', function() {
+            beforeEach(function() {
+                form.querySelector('#number').value = 'first, second, third';
+                settings = primes.Form.parse(form).settings;
+            });
 
-        it('includes the number input in the data', function () {
-            settings.should.have.property('data');
-            settings.data.should.have.property('number', 'value');
+            it('splits number input and includes all values', function () {
+                settings.should.have.deep.property('data.number[0]', 'first');
+                settings.should.have.deep.property('data.number[1]', 'second');
+                settings.should.have.deep.property('data.number[2]', 'third');
+            });
         });
     });
 });

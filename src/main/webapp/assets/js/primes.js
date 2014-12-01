@@ -1,8 +1,13 @@
 var ajax = {
     encode: function (data) {
         var parameters = [];
+
         for (var key in  data) {
-            parameters.push(encodeURIComponent(key) + "=" + encodeURIComponent(data[key]));
+            var name = encodeURIComponent(key);
+            var value = data[key] instanceof Array ?
+                data[key].map(function(v) { return encodeURIComponent(v) }).join('&' + name + '=') :
+                encodeURIComponent(data[key]);
+            parameters.push(name + '=' + value);
         }
         return parameters.join('&');
     },
@@ -40,7 +45,7 @@ primes.Form = {
                 data: {}
             };
             var number = form.querySelector('#number');
-            settings.data[number.name] = encodeURIComponent(number.value);
+            settings.data[number.name] = number.value.split(',').map(function(value) { return value.trim(); });
             return settings;
         }
 
