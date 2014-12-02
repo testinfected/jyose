@@ -41,6 +41,13 @@ public class PortfolioChallengesTest {
         response.assertHasContent(containsString("<a id=\"ping-challenge-link\" href=\"/ping\""));
     }
 
+    @Test public void
+    passesPrimesFactorsChallenge() throws IOException {
+        response = request.get("/");
+        response.assertOK();
+        response.assertHasContent(containsString("<a id=\"prime-factors-decomposition-link\" href=\"/primeFactors/ui\""));
+    }
+
     @After public void
     stopServer() throws Exception {
         server.stop();
