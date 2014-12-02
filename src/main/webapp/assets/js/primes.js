@@ -54,25 +54,36 @@ primes.Form = {
 };
 
 primes.render = function (data) {
-    var container = document.querySelector("#result");
-    return primes.renderIn(container)(data);
-};
-
-primes.renderIn = function (container) {
-    function format(data) {
-        if ('decomposition' in data) {
-            return data.number + ' = ' + data.decomposition.join(' x ');
-        } else if (data.error == 'not a number') {
-            return data.number + ' is ' + data.error;
-        } else {
-            return data.error;
+    function renderAll(container) {
+        for (var i = 0; i < data.length; i++) {
+            container.innerHTML += '<li>' + primes.format(data[i]) + '</li>'
         }
     }
 
-    return function (data) {
-        container.innerHTML = format(data);
-        return container.innerHTML;
-    };
+    function renderSingle(container) {
+        container.innerHTML = primes.format(data);
+    }
+
+    var results = document.querySelector("#results");
+    results.innerHTML = '';
+    var result = document.querySelector("#result");
+    result.innerHTML = '';
+
+    if (data instanceof Array) {
+        renderAll(results);
+    } else {
+        renderSingle(result);
+    }
+};
+
+primes.format = function (data) {
+    if ('decomposition' in data) {
+        return data.number + ' = ' + data.decomposition.join(' x ');
+    } else if (data.error == 'not a number') {
+        return data.number + ' is ' + data.error;
+    } else {
+        return data.error;
+    }
 };
 
 (function () {
