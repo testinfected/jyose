@@ -11,7 +11,7 @@ public class HomePage {
     }
 
     public PrimeFactorsPage primeFactors() {
-        browser.element(By.id("prime-factors-challenge-link")).click();
+        browser.element(By.id("prime-factors-decomposition-link")).click();
         return new PrimeFactorsPage(browser);
     }
 }
