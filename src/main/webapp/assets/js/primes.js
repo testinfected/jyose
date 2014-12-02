@@ -53,6 +53,11 @@ primes.Form = {
     }
 };
 
+primes.render = function (data) {
+    var container = document.querySelector("#result");
+    return primes.renderIn(container)(data);
+};
+
 primes.renderIn = function (container) {
     function format(data) {
         if ('decomposition' in data) {
@@ -75,8 +80,7 @@ primes.renderIn = function (container) {
         document.querySelector('#primes').addEventListener('submit', function (event) {
             event.preventDefault();
             var form = primes.Form.parse(this);
-            var renderer = primes.renderIn(document.querySelector("#result"));
-            form.submit(renderer);
+            form.submit(primes.render);
         });
     });
 }());

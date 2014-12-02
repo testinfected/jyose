@@ -52,17 +52,12 @@ describe('primes', function () {
         var settings;
 
         beforeEach(function () {
-            var fragment = document.createDocumentFragment();
-            form = document.createElement("form");
-            form.id = 'primes';
-            form.setAttribute('action', '/url');
-            form.setAttribute('method', 'post');
-            form.setAttribute('enctype', 'application/x-www-form-urlencoded');
-            var number = document.createElement('input');
-            number.id = 'number';
-            number.setAttribute('name', 'number');
-            form.appendChild(number);
-            fragment.appendChild(form);
+            var body = document.querySelector('body');
+            body.innerHTML =
+                '<form id="primes" action="/url" method="post" enctype="application/x-www-form-urlencoded">' +
+                '   <input id ="number" name="number" value=""/>' +
+                '</form>';
+            form = document.getElementById('primes')
         });
 
         describe('in any case', function() {
@@ -110,41 +105,31 @@ describe('primes', function () {
 });
 
 describe('rendering results', function () {
-    var result;
-
-    function render(factors) {
-        primes.renderIn(result)(factors);
-        return result.innerHTML;
-    }
-
     beforeEach(function () {
-        var fragment = document.createDocumentFragment();
-        result = document.createElement("div");
-        result.id = 'result';
-        fragment.appendChild(result);
+        document.querySelector('body').innerHTML = '<span id="result"></span>';
     });
 
     describe('when decomposition succeeds', function () {
         it('displays the original number', function () {
             var factors = {number: 1, decomposition: []};
-            render(factors).should.contain('1');
+            primes.render(factors).should.contain('1');
         });
 
         it('displays the prime factors decomposition of the number', function () {
             var factors = {number: 66, decomposition: [2, 3, 11]};
-            render(factors).should.contain('= 2 x 3 x 11');
+            primes.render(factors).should.contain('= 2 x 3 x 11');
         });
     });
 
     describe('when decomposition fails', function () {
         it('indicates when number is too big', function () {
             var factors = {"number": 1000001, "error": "number too big"};
-            render(factors).should.equal('number too big');
+            primes.render(factors).should.equal('number too big');
         });
 
         it('indicates when input is not a number', function () {
             var factors = {"number": "1allo", "error": "not a number"};
-            render(factors).should.equal('1allo is not a number');
+            primes.render(factors).should.equal('1allo is not a number');
         })
     })
 });
