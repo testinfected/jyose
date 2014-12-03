@@ -15,7 +15,6 @@ public class PrimeFactorsPage {
     }
 
     public void decompose(String number) {
-        browser.element(By.id("number")).clear();
         browser.element(By.id("number")).type(number);
         browser.element(By.id("go")).click();
     }
