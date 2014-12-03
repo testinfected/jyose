@@ -15,6 +15,7 @@ public class PrimeFactorsPage {
     }
 
     public void decompose(String number) {
+        browser.element(By.id("number")).clear();
         browser.element(By.id("number")).type(number);
         browser.element(By.id("go")).click();
     }
@@ -30,5 +31,9 @@ public class PrimeFactorsPage {
 
     private AsyncElementDriver nthItem(AsyncElementDriver results, int index) {
         return results.element(By.xpath("li[" + index + "]"));
+    }
+
+    public void showsLastDecomposition(String decomposition) {
+        browser.element(By.id("last-decomposition")).assertText(equalTo(decomposition));
     }
 }

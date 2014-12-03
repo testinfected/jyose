@@ -124,4 +124,15 @@ public class PrimeFactorsChallengesTest {
                 "hello is not a number",
                 "too big number (>1e6)");
     }
+
+    @Test public void
+    passesLastDecompositionChallenge() throws IOException {
+        PrimeFactorsPage page = driver.primeFactors();
+        page.decompose("15");
+        page.showsLastDecomposition("");
+        page.decompose("42");
+        page.showsLastDecomposition("15 = 3 x 5");
+        page.decompose("33");
+        page.showsLastDecomposition("42 = 2 x 3 x 7");
+    }
 }

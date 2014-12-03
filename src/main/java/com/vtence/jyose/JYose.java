@@ -6,9 +6,11 @@ import com.vtence.jyose.fire.FireFighting;
 import com.vtence.jyose.ping.Ping;
 import com.vtence.jyose.primes.Primes;
 import com.vtence.molecule.WebServer;
+import com.vtence.molecule.middlewares.CookieSessionTracker;
 import com.vtence.molecule.middlewares.FileServer;
 import com.vtence.molecule.middlewares.StaticAssets;
 import com.vtence.molecule.routing.DynamicRoutes;
+import com.vtence.molecule.session.SessionPool;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,11 +38,13 @@ public class JYose {
     public void start(WebServer server) throws IOException {
         Pages pages = new Pages(webroot);
         server.add(staticAssets())
+                .add(new CookieSessionTracker(new SessionPool()))
                 .start(new DynamicRoutes() {{
                     get("/").to(new StaticPage(pages.home())::render);
                     get("/ping").to(new Ping(gson)::pong);
-                    map("/primeFactors").via(GET, POST).to(new Primes(gson));
+                    map("/primeFactors").via(GET, POST).to(new Primes(gson)::list);
                     get("/primeFactors/ui").to(new StaticPage(pages.primes())::render);
+                    get("/primeFactors/last").to(new Primes(gson)::last);
                     get("/fire/geek").to(new FireFighting(gson));
                 }});
     }

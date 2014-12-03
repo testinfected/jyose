@@ -106,7 +106,10 @@ describe('primes', function () {
 
 describe('rendering', function () {
     beforeEach(function () {
-        document.querySelector('body').innerHTML = '<span id="result"></span><ol id="results"></ol>';
+        document.querySelector('body').innerHTML =
+            '<span id="last-decomposition"></span>' +
+            '<span id="result"></span>' +
+            '<ol id="results"></ol>';
     });
 
     function result() {
@@ -119,6 +122,10 @@ describe('rendering', function () {
 
     function item(number) {
         return document.querySelector('#results li:nth-child(' + number + ')').innerHTML;
+    }
+
+    function lastResult() {
+        return document.querySelector('#last-decomposition').innerHTML;
     }
 
     describe('a single decomposition', function() {
@@ -168,9 +175,6 @@ describe('rendering', function () {
 
     describe('successive decompositions', function() {
         it('clears preceding result', function () {
-            var factors = [
-
-            ];
             primes.render({number: 66, decomposition: [2, 3, 11]});
             results().should.be.empty();
             primes.render([
@@ -180,6 +184,18 @@ describe('rendering', function () {
             result().should.be.empty();
             primes.render({number: 66, decomposition: [2, 3, 11]});
             results().should.be.empty()
+        });
+    });
+
+    describe('last decomposition', function() {
+        it('omits if absent', function () {
+            primes.renderLast({});
+            lastResult().should.be.empty();
+        });
+
+        it('displays if included', function () {
+            primes.renderLast({number: 22, decomposition: [2, 11]});
+            lastResult().should.equal('22 = 2 x 11');
         });
     });
 });

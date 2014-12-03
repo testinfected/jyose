@@ -4,14 +4,16 @@ import com.google.gson.Gson;
 import com.vtence.molecule.Application;
 import com.vtence.molecule.Request;
 import com.vtence.molecule.Response;
+import com.vtence.molecule.Session;
 import com.vtence.molecule.http.MimeTypes;
 
+import java.io.IOException;
 import java.util.List;
 
 import static java.lang.Integer.parseInt;
 import static java.util.stream.Collectors.toList;
 
-public class Primes implements Application {
+public class Primes {
 
     private final Gson gson;
 
@@ -19,8 +21,33 @@ public class Primes implements Application {
         this.gson = gson;
     }
 
-    public void handle(Request request, Response response) throws Exception {
-        List<Object> decompositions = request.parameters("number").stream().map(this::decompose).collect(toList());
+    public void list(Request request, Response response) throws Exception {
+        List<Object> decompositions = decomposeNumbers(request);
+        storeLastDecomposition(request, decompositions);
+        respondWith(response, decompositions);
+    }
+
+    public void last(Request request, Response response) throws IOException {
+        Session session = Session.get(request);
+        Object last = session.get("last-decomposition");
+        response.body(gson.toJson(last != null ? last : new NoDecomposition()));
+    }
+
+    private List<Object> decomposeNumbers(Request request) {
+        return request.parameters("number").stream().map(this::decompose).collect(toList());
+    }
+
+    private void storeLastDecomposition(Request request, List<Object> decompositions) {
+        if (decompositions.isEmpty()) return;
+        Session session = Session.get(request);
+        session.put("last-decomposition", lastOf(decompositions));
+    }
+
+    private Object lastOf(List<Object> decompositions) {
+        return decompositions.get(decompositions.size() - 1);
+    }
+
+    private void respondWith(Response response, List<Object> decompositions) throws IOException {
         response.contentType(MimeTypes.JSON);
         response.body(toJson(decompositions));
     }
@@ -30,6 +57,7 @@ public class Primes implements Application {
     }
 
     private Object resultOf(List<Object> decompositions) {
+        if (decompositions.isEmpty()) return new NoDecomposition();
         return decompositions.size() > 1 ? decompositions : decompositions.get(0);
     }
 
@@ -39,6 +67,8 @@ public class Primes implements Application {
         if (NotGreaterThanOne.verify(input)) return new NotGreaterThanOne(input);
         return new ValidNumber(input, PrimeFactors.of(parseInt(input)));
     }
+
+    static class NoDecomposition {}
 
     static class ValidNumber {
         private final int number;

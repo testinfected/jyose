@@ -16,7 +16,8 @@ var ajax = {
         var request = new XMLHttpRequest();
         //Yose uses Zombie which does not support send data, so we append data to the url
         request.open(settings.method, settings.url + '?' + this.encode(settings.data));
-        request.setRequestHeader("Content-type", settings.encoding);
+        if (settings.encoding)
+            request.setRequestHeader("Content-type", settings.encoding);
         request.onload = function () {
             done(JSON.parse(request.responseText))
         };
@@ -53,6 +54,18 @@ primes.Form = {
     }
 };
 
+primes.Last = {
+    get: function (render) {
+        this.settings = {
+            url: '/primeFactors/last',
+            method: 'get',
+            data: {}
+        };
+
+        ajax.send(this.settings, render);
+    }
+};
+
 primes.render = function (data) {
     function renderAll(container) {
         for (var i = 0; i < data.length; i++) {
@@ -76,13 +89,20 @@ primes.render = function (data) {
     }
 };
 
+primes.renderLast = function (data) {
+    var container = document.querySelector("#last-decomposition");
+    container.innerHTML = primes.format(data);
+};
+
 primes.format = function (data) {
-    if ('decomposition' in data) {
+    if (data.decomposition) {
         return data.number + ' = ' + data.decomposition.join(' x ');
     } else if (data.error == 'not a number') {
         return data.number + ' is ' + data.error;
-    } else {
+    } else if (data.error) {
         return data.error;
+    } else {
+        return '';
     }
 };
 
@@ -90,6 +110,7 @@ primes.format = function (data) {
     document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('#primes').addEventListener('submit', function (event) {
             event.preventDefault();
+            primes.Last.get(primes.renderLast);
             var form = primes.Form.parse(this);
             form.submit(primes.render);
         });
