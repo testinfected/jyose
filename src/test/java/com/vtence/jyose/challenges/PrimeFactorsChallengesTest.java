@@ -138,4 +138,11 @@ public class PrimeFactorsChallengesTest {
     private PrimeFactorsPage refresh(PrimeFactorsPage page) {
         return driver.primeFactors();
     }
+
+    @Test public void
+    passesRomanNumeralsChallenge() throws IOException {
+        PrimeFactorsPage page = driver.primeFactors();
+        page.decompose("XLII");
+        page.showsSingleResult("XLII = II x III x VII");
+    }
 }

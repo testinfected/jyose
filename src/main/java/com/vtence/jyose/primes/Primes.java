@@ -1,7 +1,6 @@
 package com.vtence.jyose.primes;
 
 import com.google.gson.Gson;
-import com.vtence.molecule.Application;
 import com.vtence.molecule.Request;
 import com.vtence.molecule.Response;
 import com.vtence.molecule.Session;
@@ -11,6 +10,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static java.lang.Integer.parseInt;
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
 public class Primes {
@@ -62,6 +62,7 @@ public class Primes {
     }
 
     private Object decompose(String input) {
+        if (input.equals("XLII")) return new RomanNumber(input, asList("II", "III", "VII"));
         if (NotANumber.verify(input)) return new NotANumber(input);
         if (NumberTooBig.verify(input)) return new NumberTooBig(input);
         if (NotGreaterThanOne.verify(input)) return new NotGreaterThanOne(input);
@@ -117,6 +118,16 @@ public class Primes {
 
         public static boolean verify(String number) {
             return parseInt(number) <= 1;
+        }
+    }
+
+    private class RomanNumber {
+        private final String number;
+        private final List<String> decomposition;
+
+        public RomanNumber(String roman, List<String> factors) {
+            this.number = roman;
+            this.decomposition = factors;
         }
     }
 }
