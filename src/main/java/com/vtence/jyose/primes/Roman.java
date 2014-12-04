@@ -1,14 +1,16 @@
 package com.vtence.jyose.primes;
 
+import java.util.stream.Stream;
+
 import static java.util.EnumSet.allOf;
 
 public class Roman {
 
     public static int toArabic(String roman) {
-        for (Numeral numeral : allOf(Numeral.class)) {
-            if (numeral.prefixes(roman)) return numeral.value() + toArabic(numeral.stripFrom(roman));
-        }
-        return 0;
+        return Numeral.all().
+                filter(n -> n.prefixes(roman)).
+                map(n -> n.value() + toArabic(n.stripFrom(roman))).
+                findFirst().orElse(0);
     }
 
     public static enum Numeral {
@@ -18,6 +20,10 @@ public class Roman {
 
         Numeral(int value) {
             this.value = value;
+        }
+
+        public static Stream<Numeral> all() {
+            return allOf(Numeral.class).stream();
         }
 
         public int value() {
