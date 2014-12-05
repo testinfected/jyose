@@ -1,7 +1,5 @@
 package com.vtence.jyose.challenges;
 
-import com.vtence.jyose.Browser;
-import com.vtence.jyose.JYose;
 import com.vtence.jyose.JYoseDriver;
 import com.vtence.jyose.WebRoot;
 import com.vtence.jyose.pages.PrimeFactorsPage;
@@ -11,7 +9,6 @@ import com.vtence.molecule.support.HttpResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.WebDriver;
 
 import java.io.IOException;
 
@@ -20,24 +17,21 @@ import static org.hamcrest.Matchers.containsString;
 public class PrimeFactorsChallengesTest {
 
     int PORT = 9999;
-    JYose yose = new JYose(WebRoot.locate());
     WebServer server = WebServer.create(PORT);
 
     HttpRequest request = new HttpRequest(PORT);
     HttpResponse response;
 
-    WebDriver browser = Browser.phantom();
-    JYoseDriver driver = new JYoseDriver(browser);
+    JYoseDriver yose = new JYoseDriver(PORT, WebRoot.locate());
 
     @Before public void
     startServer() throws Exception {
-        yose.start(server);
+        yose.start();
     }
 
     @After public void
     stopServer() throws Exception {
-        server.stop();
-        browser.close();
+        yose.stop();
     }
 
     @Test public void
@@ -88,35 +82,35 @@ public class PrimeFactorsChallengesTest {
 
     @Test public void
     passesInputChallenge() throws IOException {
-        PrimeFactorsPage page = driver.primeFactors();
+        PrimeFactorsPage page = yose.primeFactors();
         page.decompose("66");
         page.showsSingleResult("66 = 2 x 3 x 11");
     }
 
     @Test public void
     passesResistBigNumberChallenge() throws IOException {
-        PrimeFactorsPage page = driver.primeFactors();
+        PrimeFactorsPage page = yose.primeFactors();
         page.decompose("123456789");
         page.showsSingleResult("too big number (>1e6)");
     }
 
     @Test public void
     passesResistStringsChallenge() throws IOException {
-        PrimeFactorsPage page = driver.primeFactors();
+        PrimeFactorsPage page = yose.primeFactors();
         page.decompose("3hello");
         page.showsSingleResult("3hello is not a number");
     }
 
     @Test public void
     passesResistNegativeNumberChallenge() throws IOException {
-        PrimeFactorsPage page = driver.primeFactors();
+        PrimeFactorsPage page = yose.primeFactors();
         page.decompose("-42");
         page.showsSingleResult("-42 is not an integer > 1");
     }
 
     @Test public void
     passesListOfDecompositionChallenge() throws IOException {
-        PrimeFactorsPage page = driver.primeFactors();
+        PrimeFactorsPage page = yose.primeFactors();
         page.decompose("15, -42, hello, 123456789");
         page.showsResults(
                 "15 = 3 x 5",
@@ -127,7 +121,7 @@ public class PrimeFactorsChallengesTest {
 
     @Test public void
     passesLastDecompositionChallenge() throws IOException {
-        PrimeFactorsPage page = driver.primeFactors();
+        PrimeFactorsPage page = yose.primeFactors();
         page.showsLastDecomposition("");
         page.decompose("15");
         refresh(page).showsLastDecomposition("15 = 3 x 5");
@@ -136,12 +130,12 @@ public class PrimeFactorsChallengesTest {
     }
 
     private PrimeFactorsPage refresh(PrimeFactorsPage page) {
-        return driver.primeFactors();
+        return yose.primeFactors();
     }
 
     @Test public void
     passesRomanNumeralsChallenge() throws IOException {
-        PrimeFactorsPage page = driver.primeFactors();
+        PrimeFactorsPage page = yose.primeFactors();
         page.decompose("XLII");
         page.showsSingleResult("XLII = II x III x VII");
     }

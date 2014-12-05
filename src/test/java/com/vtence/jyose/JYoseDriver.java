@@ -5,17 +5,28 @@ import com.objogate.wl.web.AsyncWebDriver;
 import com.vtence.jyose.pages.HomePage;
 import com.vtence.jyose.pages.PrimeFactorsPage;
 import com.vtence.molecule.WebServer;
-import org.openqa.selenium.WebDriver;
+
+import java.io.File;
+import java.io.IOException;
 
 public class JYoseDriver {
-    public static final int PORT = 9999;
-
     private final AsyncWebDriver browser;
     private final WebServer server;
+    private final JYose yose;
 
-    public JYoseDriver(WebDriver browser) {
-        this.browser = new AsyncWebDriver(new UnsynchronizedProber(), browser);
-        this.server = WebServer.create(PORT);
+    public JYoseDriver(int port, File webroot) {
+        this.browser = new AsyncWebDriver(new UnsynchronizedProber(), Browsers.phantom());
+        this.server = WebServer.create(port);
+        this.yose = new JYose(webroot);
+    }
+
+    public void start() throws IOException {
+        yose.start(server);
+    }
+
+    public void stop() throws IOException {
+        server.stop();
+        browser.quit();
     }
 
     public HomePage home() {

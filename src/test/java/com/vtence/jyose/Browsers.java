@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 import static org.openqa.selenium.phantomjs.PhantomJSDriverService.PHANTOMJS_CLI_ARGS;
 
-public class Browser {
+public class Browsers {
 
     public static WebDriver phantom() {
         DesiredCapabilities config = new DesiredCapabilities();
