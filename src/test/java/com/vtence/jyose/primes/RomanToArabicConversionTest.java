@@ -13,12 +13,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 @RunWith(Parameterized.class)
-public class RomanToArabicTest {
+public class RomanToArabicConversionTest {
 
     private final String roman;
     private final int arabic;
 
-    public RomanToArabicTest(String roman, int arabic) {
+    public RomanToArabicConversionTest(String roman, int arabic) {
         this.roman = roman;
         this.arabic = arabic;
     }
@@ -26,6 +26,7 @@ public class RomanToArabicTest {
     @Parameters(name = "{0} -> {1}")
     public static Collection<Object[]> data() {
         return asList(new Object[][]{
+                {"", 0},
                 {"I", 1},
                 {"III", 3},
                 {"IV", 4},

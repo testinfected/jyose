@@ -9,8 +9,14 @@ public class Roman {
     public static int toArabic(String roman) {
         return Numeral.all().
                 filter(n -> n.prefixes(roman)).
-                map(n -> n.value() + toArabic(n.stripFrom(roman))).
+                map(n -> n.value() + toArabic(n.dropFrom(roman))).
                 findFirst().orElse(0);
+    }
+    public static String fromArabic(int arabic) {
+        return Numeral.all().
+                filter(n -> n.value() <= arabic).
+                map(n -> n.name() + fromArabic(arabic - n.value())).
+                findFirst().orElse("");
     }
 
     public static enum Numeral {
@@ -30,7 +36,7 @@ public class Roman {
             return value;
         }
 
-        public String stripFrom(String roman) {
+        public String dropFrom(String roman) {
             return roman.substring(name().length());
         }
 
