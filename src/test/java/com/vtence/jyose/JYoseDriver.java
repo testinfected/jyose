@@ -3,6 +3,7 @@ package com.vtence.jyose;
 import com.objogate.wl.UnsynchronizedProber;
 import com.objogate.wl.web.AsyncWebDriver;
 import com.vtence.jyose.pages.HomePage;
+import com.vtence.jyose.pages.MineSweeperPage;
 import com.vtence.jyose.pages.PrimeFactorsPage;
 import com.vtence.molecule.WebServer;
 
@@ -36,6 +37,11 @@ public class JYoseDriver {
 
     public PrimeFactorsPage primeFactors() {
         return home().primeFactors();
+    }
+
+    public MineSweeperPage minesweeper() {
+        browser.navigate().to(url("/minesweeper"));
+        return new MineSweeperPage(browser);
     }
 
     private String url(String path) {

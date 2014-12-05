@@ -22,4 +22,8 @@ public class Pages {
     public Template primes() {
         return views.named("primes");
     }
+
+    public Template minesweeper() {
+        return views.named("minesweeper");
+    }
 }

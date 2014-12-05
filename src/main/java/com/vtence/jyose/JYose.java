@@ -5,8 +5,10 @@ import com.google.gson.GsonBuilder;
 import com.vtence.jyose.fire.FireFighting;
 import com.vtence.jyose.ping.Ping;
 import com.vtence.jyose.primes.Primes;
+import com.vtence.molecule.FailureReporter;
 import com.vtence.molecule.WebServer;
 import com.vtence.molecule.middlewares.CookieSessionTracker;
+import com.vtence.molecule.middlewares.Failsafe;
 import com.vtence.molecule.middlewares.FileServer;
 import com.vtence.molecule.middlewares.StaticAssets;
 import com.vtence.molecule.routing.DynamicRoutes;
@@ -14,6 +16,7 @@ import com.vtence.molecule.session.SessionPool;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 
 import static com.vtence.molecule.http.HttpMethod.GET;
 import static com.vtence.molecule.http.HttpMethod.POST;
@@ -25,6 +28,7 @@ public class JYose {
     private static final int WEB_ROOT = 1;
     private final File webroot;
     private final Gson gson;
+    private final PrintStream out;
 
     public JYose(File webroot) {
         this(webroot, new Gson());
@@ -33,11 +37,14 @@ public class JYose {
     public JYose(File webroot, Gson gson) {
         this.webroot = webroot;
         this.gson = gson;
+        this.out = System.out;
     }
 
     public void start(WebServer server) throws IOException {
         Pages pages = new Pages(webroot);
-        server.add(staticAssets())
+        server.failureReporter(this::errorOccurred)
+                .add(new Failsafe())
+                .add(staticAssets())
                 .add(new CookieSessionTracker(new SessionPool()))
                 .start(new DynamicRoutes() {{
                     get("/").to(new StaticPage(pages.home())::render);
@@ -46,12 +53,18 @@ public class JYose {
                     get("/primeFactors/ui").to(new StaticPage(pages.primes())::render);
                     get("/primeFactors/last").to(new Primes(gson)::last);
                     get("/fire/geek").to(new FireFighting(gson));
+                    get("/minesweeper").to(new StaticPage(pages.minesweeper())::render);
                 }});
     }
 
     private StaticAssets staticAssets() {
         return new StaticAssets(new FileServer(new File(webroot, "assets")),
                 "/favicon.ico", "/images", "/css", "/js");
+    }
+
+    public void errorOccurred(Throwable error) {
+        out.println("[ERROR] " + error.getMessage());
+        error.printStackTrace(out);
     }
 
     public static void main(String[] args) throws IOException {
