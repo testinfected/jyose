@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.List;
 
 import static java.lang.Integer.parseInt;
-import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
 public class Primes {
@@ -62,11 +61,19 @@ public class Primes {
     }
 
     private Object decompose(String input) {
-        if (input.equals("XLII")) return new RomanNumber(input, asList("II", "III", "VII"));
+        if (RomanNumber.verify(input)) return new RomanNumber(input, romanFactorsOf(input));
         if (NotANumber.verify(input)) return new NotANumber(input);
         if (NumberTooBig.verify(input)) return new NumberTooBig(input);
         if (NotGreaterThanOne.verify(input)) return new NotGreaterThanOne(input);
-        return new ValidNumber(input, PrimeFactors.of(parseInt(input)));
+        return new ValidNumber(input, primeFactorsOf(input));
+    }
+
+    private List<String> romanFactorsOf(String input) {
+        return PrimeFactors.of(Roman.toArabic(input)).stream().map(Roman::fromArabic).collect(toList());
+    }
+
+    private List<Integer> primeFactorsOf(String input) {
+        return PrimeFactors.of(parseInt(input));
     }
 
     static class NoDecomposition {}
@@ -121,13 +128,17 @@ public class Primes {
         }
     }
 
-    private class RomanNumber {
+    static class RomanNumber {
         private final String number;
         private final List<String> decomposition;
 
         public RomanNumber(String roman, List<String> factors) {
             this.number = roman;
             this.decomposition = factors;
+        }
+
+        public static boolean verify(String number) {
+            return number.matches("[MDCLXVI]+");
         }
     }
 }
