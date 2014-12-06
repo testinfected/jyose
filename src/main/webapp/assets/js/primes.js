@@ -112,6 +112,8 @@ primes.format = function (data) {
 
 (function () {
     document.addEventListener('DOMContentLoaded', function () {
+        primes.Last.get(primes.renderLast);
+
         document.querySelector('#primes').addEventListener('submit', function (event) {
             event.preventDefault();
             var form = primes.Form.parse(this);
