@@ -35,10 +35,11 @@ primes.Form = {
 
             this.submit = function (render) {
                 ajax.send(this.settings, render);
-                this.clear();
             };
 
-            form.querySelector('#number').value = ''
+            this.clear = function() {
+                form.querySelector('#number').value = ''
+            }
         }
 
         function read(form) {
@@ -115,6 +116,7 @@ primes.format = function (data) {
             event.preventDefault();
             var form = primes.Form.parse(this);
             form.submit(primes.render);
+            form.clear();
         });
     });
 }());
