@@ -1,4 +1,16 @@
 describe('ajax', function () {
+    describe('without data', function () {
+        var parameters;
+
+        beforeEach(function () {
+            parameters = ajax.encode({});
+        });
+
+        it('does not create parameters', function () {
+            parameters.should.equal('');
+        });
+    });
+
     describe('when encoding values', function () {
         var parameters;
 
