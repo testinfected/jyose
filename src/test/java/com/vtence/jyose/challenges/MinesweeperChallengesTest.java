@@ -7,7 +7,6 @@ import com.vtence.molecule.support.HttpRequest;
 import com.vtence.molecule.support.HttpResponse;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class MinesweeperChallengesTest {
@@ -33,6 +32,6 @@ public class MinesweeperChallengesTest {
     public void passesBoardChallenge() {
         MineSweeperPage minesweeper = yose.minesweeper();
         minesweeper.showsInTitle("Minesweeper");
-        minesweeper.showsGridOfSize(2, 2);
+        minesweeper.showsGridOfSize(8, 8);
     }
 }
