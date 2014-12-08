@@ -1,9 +1,9 @@
 package com.vtence.jyose.primes;
 
 import com.google.gson.Gson;
+import com.vtence.jyose.primes.Decomposition.*;
 import com.vtence.molecule.Request;
 import com.vtence.molecule.Response;
-import com.vtence.molecule.helpers.Joiner;
 import com.vtence.molecule.http.MimeTypes;
 
 import java.io.IOException;
@@ -15,7 +15,7 @@ import static java.util.stream.Collectors.toList;
 public class Primes {
 
     private final Gson gson;
-    private Decomposition lastDecomposition = new NoDecomposition();
+    private Decomposition lastDecomposition = new None();
 
     public Primes(Gson gson) {
         this.gson = gson;
@@ -49,12 +49,12 @@ public class Primes {
         response.body(toJson(decompositions));
     }
 
-    private String toJson(List<?> decompositions) {
+    private String toJson(List<Decomposition> decompositions) {
         return gson.toJson(resultOf(decompositions));
     }
 
     private Object resultOf(List<?> decompositions) {
-        if (decompositions.isEmpty()) return new NoDecomposition();
+        if (decompositions.isEmpty()) return new None();
         return decompositions.size() > 1 ? decompositions : decompositions.get(0);
     }
 
@@ -72,99 +72,5 @@ public class Primes {
 
     private List<Integer> primeFactorsOf(String input) {
         return PrimeFactors.of(parseInt(input));
-    }
-
-    public static interface Decomposition {
-        String result();
-    }
-
-    public static class NoDecomposition implements Decomposition {
-        public String result() {
-            return "";
-        }
-    }
-
-    public static class ValidNumber implements Decomposition {
-        private final int number;
-        private final List<Integer> decomposition;
-
-        public ValidNumber(String number, List<Integer> primes) {
-            this.number = parseInt(number);
-            this.decomposition = primes;
-        }
-
-        public String result() {
-            return number + " = " + Joiner.on(" x ").join(decomposition);
-        }
-    }
-
-    public static class NumberTooBig implements Decomposition {
-        private final int number;
-        private final String error = "too big number (>1e6)";
-
-        public NumberTooBig(String number) {
-            this.number = parseInt(number);
-        }
-
-        public static boolean verify(String number) {
-            return parseInt(number) > 1000000;
-        }
-
-        public String result() {
-            return error;
-        }
-    }
-
-    public static class NotANumber implements Decomposition {
-        private final String number;
-        private final String error = "not a number";
-
-        public NotANumber(String number) {
-            this.number = number;
-        }
-
-        public String result() {
-            return number + " is " + error;
-        }
-
-        public static boolean verify(String candidate) {
-            return !candidate.matches("-?\\d+");
-        }
-    }
-
-    public static class NotGreaterThanOne implements Decomposition {
-        private final int number;
-        private final String error;
-
-        public NotGreaterThanOne(String number) {
-            this.number = parseInt(number);
-            this.error = number + " is not an integer > 1";
-        }
-
-        public String result() {
-            return error;
-        }
-
-        public static boolean verify(String number) {
-            return parseInt(number) <= 1;
-        }
-    }
-
-    public static class RomanNumber implements Decomposition {
-        private final String number;
-        private final List<String> decomposition;
-
-        public RomanNumber(String roman, List<String> factors) {
-            this.number = roman;
-            this.decomposition = factors;
-        }
-
-        public String result() {
-            return number + " = " + Joiner.on(" x ").join(decomposition);
-        }
-
-        public static boolean verify(String number) {
-            return number.matches("[MDCLXVI]+");
-        }
     }
 }

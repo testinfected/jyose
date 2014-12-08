@@ -18,7 +18,7 @@ public class PrimesTest {
     public void storesAndRecallLastDecomposition() throws Exception {
         primes.list(request.addParameter("number", "42"), response);
         primes.last(request, response);
-        response.assertBody(containsString("[2, 3, 7]"));
+        response.assertBody(containsString("[2,3,7]"));
     }
 
     @Test
