@@ -70,7 +70,7 @@ primes.Last = {
     }
 };
 
-primes.renderResults = function (data) {
+primes.render = function (data) {
     function renderAll(container) {
         for (var i = 0; i < data.length; i++) {
             container.innerHTML += '<li>' + primes.format(data[i]) + '</li>'
@@ -93,15 +93,6 @@ primes.renderResults = function (data) {
     }
 };
 
-primes.displayLastResult = function (asText) {
-    function unescapeQuotes(text) {
-        return text.replace(/&quot;/g, '"');
-    }
-    var container = document.querySelector("#last-decomposition");
-    var data = JSON.parse(unescapeQuotes(asText));
-    container.innerHTML = primes.format(data);
-};
-
 primes.format = function (data) {
     if (data.decomposition) {
         return data.number + ' = ' + data.decomposition.join(' x ');
@@ -119,7 +110,7 @@ primes.format = function (data) {
         document.querySelector('#primes').addEventListener('submit', function (event) {
             event.preventDefault();
             var form = primes.Form.parse(this);
-            form.submit(primes.renderResults);
+            form.submit(primes.render);
             form.clear();
         });
     });

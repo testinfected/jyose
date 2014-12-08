@@ -5,6 +5,7 @@ import com.vtence.jyose.View;
 import com.vtence.molecule.Request;
 import com.vtence.molecule.Response;
 import com.vtence.molecule.Session;
+import com.vtence.molecule.helpers.Joiner;
 import com.vtence.molecule.http.MimeTypes;
 
 import java.io.IOException;
@@ -16,54 +17,54 @@ import static java.util.stream.Collectors.toList;
 public class Primes {
 
     private final Gson gson;
-    private final View<String> ui;
+    private final View<Decomposition> ui;
 
-    public Primes(Gson gson, View<String> ui) {
+    public Primes(Gson gson, View<Decomposition> ui) {
         this.gson = gson;
         this.ui = ui;
     }
 
     public void list(Request request, Response response) throws Exception {
-        List<Object> decompositions = decomposeNumbers(request);
+        List<Decomposition> decompositions = decomposeNumbers(request);
         storeLastDecomposition(request, decompositions);
         respondWith(response, decompositions);
     }
 
     public void ui(Request request, Response response) throws IOException {
         Session session = Session.get(request);
-        Object last = session.get("last-decomposition");
-        ui.render(response, gson.toJson(last != null ? last : new NoDecomposition()));
+        Decomposition last = session.get("last-decomposition");
+        ui.render(response, last != null ? last : new NoDecomposition());
     }
 
-    private List<Object> decomposeNumbers(Request request) {
+    private List<Decomposition> decomposeNumbers(Request request) {
         return request.parameters("number").stream().map(this::decompose).collect(toList());
     }
 
-    private void storeLastDecomposition(Request request, List<Object> decompositions) {
+    private void storeLastDecomposition(Request request, List<Decomposition> decompositions) {
         if (decompositions.isEmpty()) return;
         Session session = Session.get(request);
         session.put("last-decomposition", lastOf(decompositions));
     }
 
-    private Object lastOf(List<Object> decompositions) {
+    private Object lastOf(List<Decomposition> decompositions) {
         return decompositions.get(decompositions.size() - 1);
     }
 
-    private void respondWith(Response response, List<Object> decompositions) throws IOException {
+    private void respondWith(Response response, List<Decomposition> decompositions) throws IOException {
         response.contentType(MimeTypes.JSON);
         response.body(toJson(decompositions));
     }
 
-    private String toJson(List<Object> decompositions) {
+    private String toJson(List<?> decompositions) {
         return gson.toJson(resultOf(decompositions));
     }
 
-    private Object resultOf(List<Object> decompositions) {
+    private Object resultOf(List<?> decompositions) {
         if (decompositions.isEmpty()) return new NoDecomposition();
         return decompositions.size() > 1 ? decompositions : decompositions.get(0);
     }
 
-    private Object decompose(String input) {
+    private Decomposition decompose(String input) {
         if (RomanNumber.verify(input)) return new RomanNumber(input, romanFactorsOf(input));
         if (NotANumber.verify(input)) return new NotANumber(input);
         if (NumberTooBig.verify(input)) return new NumberTooBig(input);
@@ -79,9 +80,17 @@ public class Primes {
         return PrimeFactors.of(parseInt(input));
     }
 
-    static class NoDecomposition {}
+    public static interface Decomposition {
+        String result();
+    }
 
-    static class ValidNumber {
+    public static class NoDecomposition implements Decomposition {
+        public String result() {
+            return "";
+        }
+    }
+
+    public static class ValidNumber implements Decomposition {
         private final int number;
         private final List<Integer> decomposition;
 
@@ -89,9 +98,13 @@ public class Primes {
             this.number = parseInt(number);
             this.decomposition = primes;
         }
+
+        public String result() {
+            return number + " = " + Joiner.on(" x ").join(decomposition);
+        }
     }
 
-    static class NumberTooBig {
+    public static class NumberTooBig implements Decomposition {
         private final int number;
         private final String error = "too big number (>1e6)";
 
@@ -102,9 +115,13 @@ public class Primes {
         public static boolean verify(String number) {
             return parseInt(number) > 1000000;
         }
+
+        public String result() {
+            return error;
+        }
     }
 
-    static class NotANumber {
+    public static class NotANumber implements Decomposition {
         private final String number;
         private final String error = "not a number";
 
@@ -112,12 +129,16 @@ public class Primes {
             this.number = number;
         }
 
+        public String result() {
+            return number + " is " + error;
+        }
+
         public static boolean verify(String candidate) {
             return !candidate.matches("-?\\d+");
         }
     }
 
-    static class NotGreaterThanOne {
+    public static class NotGreaterThanOne implements Decomposition {
         private final int number;
         private final String error;
 
@@ -126,18 +147,26 @@ public class Primes {
             this.error = number + " is not an integer > 1";
         }
 
+        public String result() {
+            return error;
+        }
+
         public static boolean verify(String number) {
             return parseInt(number) <= 1;
         }
     }
 
-    static class RomanNumber {
+    public static class RomanNumber implements Decomposition {
         private final String number;
         private final List<String> decomposition;
 
         public RomanNumber(String roman, List<String> factors) {
             this.number = roman;
             this.decomposition = factors;
+        }
+
+        public String result() {
+            return number + " = " + Joiner.on(" x ").join(decomposition);
         }
 
         public static boolean verify(String number) {

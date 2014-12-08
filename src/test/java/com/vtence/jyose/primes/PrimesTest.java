@@ -5,6 +5,8 @@ import com.vtence.jyose.MockView;
 import com.vtence.molecule.Session;
 import com.vtence.molecule.support.MockRequest;
 import com.vtence.molecule.support.MockResponse;
+import org.hamcrest.FeatureMatcher;
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,7 +14,7 @@ import static org.hamcrest.Matchers.*;
 
 public class PrimesTest {
 
-    MockView<String> ui = new MockView<>();
+    MockView<Primes.Decomposition> ui = new MockView<>();
     MockRequest first = new MockRequest();
     MockResponse dummy = new MockResponse();
     MockRequest last = new MockRequest();
@@ -34,20 +36,28 @@ public class PrimesTest {
         primes.list(first.addParameter("number", "42"), dummy);
         primes.ui(last, response);
         ui.assertRenderedTo(response);
-        ui.assertRenderedWith(containsString("\"number\":42"));
+        ui.assertRenderedWith(resultOf("42 = 2 x 3 x 7"));
     }
 
     @Test
     public void storesLastOfMultipleDecompositions() throws Exception {
         primes.list(first.addParameter("number", "42").addParameter("number", "alpha"), dummy);
         primes.ui(last, response);
-        ui.assertRenderedWith(containsString("\"number\":\"alpha\""));
+        ui.assertRenderedWith(resultOf("alpha is not a number"));
     }
 
     @Test
     public void gracefullyHandleAbsenceOfNumber() throws Exception {
         primes.list(first, dummy);
         primes.ui(last, response);
-        ui.assertRenderedWith(equalTo("{}"));
+        ui.assertRenderedWith(resultOf(""));
+    }
+
+    private Matcher<? super Primes.Decomposition> resultOf(String expected) {
+        return new FeatureMatcher<Primes.Decomposition, String>(equalTo(expected), "result of", "result") {
+            protected String featureValueOf(Primes.Decomposition actual) {
+                return actual.result();
+            }
+        };
     }
 }
