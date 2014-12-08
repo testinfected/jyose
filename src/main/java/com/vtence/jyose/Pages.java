@@ -1,6 +1,5 @@
 package com.vtence.jyose;
 
-import com.vtence.jyose.primes.Primes;
 import com.vtence.molecule.templating.JMustacheRenderer;
 import com.vtence.molecule.templating.Template;
 import com.vtence.molecule.templating.Templates;
@@ -20,18 +19,11 @@ public class Pages {
         return templates.named("home");
     }
 
-    public View<Primes.Decomposition> primes() {
-        return page("primes");
+    public Template primes() {
+        return templates.named("primes");
     }
 
     public Template minesweeper() {
         return templates.named("minesweeper");
-    }
-
-    private <T> View<T> page(final String template) {
-        return (response, context) -> {
-            response.contentType("text/html; charset=utf-8");
-            response.body(templates.named(template).render(context));
-        };
     }
 }

@@ -136,17 +136,21 @@ describe('rendering', function () {
         return document.querySelector('#results li:nth-child(' + number + ')').innerHTML;
     }
 
+    function lastResult() {
+        return document.querySelector('#last-decomposition').innerHTML;
+    }
+
     describe('a single decomposition', function() {
         describe('when successful', function () {
             it('displays the original number', function () {
                 var factors = {number: 1, decomposition: []};
-                primes.render(factors);
+                primes.renderDecompositions(factors);
                 result().should.contain('1');
             });
 
             it('displays the prime factors decomposition of the number', function () {
                 var factors = {number: 66, decomposition: [2, 3, 11]};
-                primes.render(factors);
+                primes.renderDecompositions(factors);
                 result().should.contain('= 2 x 3 x 11');
             });
         });
@@ -154,13 +158,13 @@ describe('rendering', function () {
         describe('when failing', function () {
             it('indicates when an error occurs', function () {
                 var factors = {number: 1000001, error: "number too big"};
-                primes.render(factors);
+                primes.renderDecompositions(factors);
                 result().should.equal('number too big');
             });
 
             it('includes the input in the error message when not a number', function () {
                 var factors = {number: "1allo", error: "not a number"};
-                primes.render(factors);
+                primes.renderDecompositions(factors);
                 result().should.equal('1allo is not a number');
             });
         })
@@ -173,7 +177,7 @@ describe('rendering', function () {
                 {number: 1000001, error: "number too big"},
                 {number: "1allo", error: "not a number"}
             ];
-            primes.render(factors);
+            primes.renderDecompositions(factors);
 
             item(1).should.equal('66 = 2 x 3 x 11');
             item(2).should.equal('number too big');
@@ -183,15 +187,27 @@ describe('rendering', function () {
 
     describe('successive decompositions', function() {
         it('clears preceding result', function () {
-            primes.render({number: 66, decomposition: [2, 3, 11]});
+            primes.renderDecompositions({number: 66, decomposition: [2, 3, 11]});
             results().should.be.empty();
-            primes.render([
+            primes.renderDecompositions([
                 {number: 1000001, error: "number too big"},
                 {number: "1allo", error: "not a number"}
             ]);
             result().should.be.empty();
-            primes.render({number: 66, decomposition: [2, 3, 11]});
+            primes.renderDecompositions({number: 66, decomposition: [2, 3, 11]});
             results().should.be.empty()
+        });
+    });
+
+    describe('last decomposition', function() {
+        it('omits if absent', function () {
+            primes.renderLastDecomposition({});
+            lastResult().should.be.empty();
+        });
+
+        it('displays if included', function () {
+            primes.renderLastDecomposition({number: 22, decomposition: [2, 11]});
+            lastResult().should.equal('22 = 2 x 11');
         });
     });
 });

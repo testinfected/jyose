@@ -1,7 +1,6 @@
 package com.vtence.jyose;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.vtence.jyose.fire.FireFighting;
 import com.vtence.jyose.ping.Ping;
 import com.vtence.jyose.primes.Primes;
@@ -42,12 +41,12 @@ public class JYose {
                 .add(staticAssets())
                 .add(new CookieSessionTracker(new SessionPool()))
                 .start(new DynamicRoutes() {{
-                    Primes primes = new Primes(gson, pages.primes());
-
+                    Primes primes = new Primes(gson);
                     get("/").to(new StaticPage(pages.home())::render);
                     get("/ping").to(new Ping(gson)::pong);
                     map("/primeFactors").via(GET, POST).to(primes::list);
-                    get("/primeFactors/ui").to(primes::ui);
+                    get("/primeFactors/ui").to(new StaticPage(pages.primes())::render);
+                    get("/primeFactors/last").to(primes::last);
                     get("/fire/geek").to(new FireFighting(gson));
                     get("/minesweeper").to(new StaticPage(pages.minesweeper())::render);
                 }});

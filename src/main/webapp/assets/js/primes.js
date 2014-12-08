@@ -58,19 +58,7 @@ primes.Form = {
     }
 };
 
-primes.Last = {
-    get: function (render) {
-        this.settings = {
-            url: '/primeFactors/last',
-            method: 'get',
-            data: {}
-        };
-
-        ajax.send(this.settings, render);
-    }
-};
-
-primes.render = function (data) {
+primes.renderDecompositions = function (data) {
     function renderAll(container) {
         for (var i = 0; i < data.length; i++) {
             container.innerHTML += '<li>' + primes.format(data[i]) + '</li>'
@@ -105,12 +93,31 @@ primes.format = function (data) {
     }
 };
 
+primes.Last = {
+    get: function (render) {
+        this.settings = {
+            url: '/primeFactors/last',
+            method: 'get',
+            data: {}
+        };
+
+        ajax.send(this.settings, render);
+    }
+};
+
+primes.renderLastDecomposition = function (data) {
+    var container = document.querySelector("#last-decomposition");
+    container.innerHTML = primes.format(data);
+};
+
 (function () {
     document.addEventListener('DOMContentLoaded', function () {
+        primes.Last.get(primes.renderLastDecomposition);
+
         document.querySelector('#primes').addEventListener('submit', function (event) {
             event.preventDefault();
             var form = primes.Form.parse(this);
-            form.submit(primes.render);
+            form.submit(primes.renderDecompositions);
             form.clear();
         });
     });
