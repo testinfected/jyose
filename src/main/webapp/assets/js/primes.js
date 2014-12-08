@@ -70,7 +70,7 @@ primes.Last = {
     }
 };
 
-primes.render = function (data) {
+primes.renderResults = function (data) {
     function renderAll(container) {
         for (var i = 0; i < data.length; i++) {
             container.innerHTML += '<li>' + primes.format(data[i]) + '</li>'
@@ -93,8 +93,12 @@ primes.render = function (data) {
     }
 };
 
-primes.renderLast = function (data) {
+primes.displayLastResult = function (asText) {
+    function unescapeQuotes(text) {
+        return text.replace(/&quot;/g, '"');
+    }
     var container = document.querySelector("#last-decomposition");
+    var data = JSON.parse(unescapeQuotes(asText));
     container.innerHTML = primes.format(data);
 };
 
@@ -112,12 +116,10 @@ primes.format = function (data) {
 
 (function () {
     document.addEventListener('DOMContentLoaded', function () {
-        primes.Last.get(primes.renderLast);
-
         document.querySelector('#primes').addEventListener('submit', function (event) {
             event.preventDefault();
             var form = primes.Form.parse(this);
-            form.submit(primes.render);
+            form.submit(primes.renderResults);
             form.clear();
         });
     });

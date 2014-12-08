@@ -8,22 +8,29 @@ import java.io.File;
 
 public class Pages {
 
-    public final Templates views;
+    public final Templates templates;
 
     public Pages(File webroot) {
-        this.views = new Templates(
+        this.templates = new Templates(
                 new JMustacheRenderer().fromDir(new File(webroot, "views")).extension("html"));
     }
 
     public Template home() {
-        return views.named("home");
+        return templates.named("home");
     }
 
-    public Template primes() {
-        return views.named("primes");
+    public View<String> primes() {
+        return page("primes");
     }
 
     public Template minesweeper() {
-        return views.named("minesweeper");
+        return templates.named("minesweeper");
+    }
+
+    private <T> View<T> page(final String template) {
+        return (response, context) -> {
+            response.contentType("text/html; charset=utf-8");
+            response.body(templates.named(template).render(context));
+        };
     }
 }

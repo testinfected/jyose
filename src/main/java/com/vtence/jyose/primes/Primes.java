@@ -1,6 +1,7 @@
 package com.vtence.jyose.primes;
 
 import com.google.gson.Gson;
+import com.vtence.jyose.View;
 import com.vtence.molecule.Request;
 import com.vtence.molecule.Response;
 import com.vtence.molecule.Session;
@@ -15,9 +16,11 @@ import static java.util.stream.Collectors.toList;
 public class Primes {
 
     private final Gson gson;
+    private final View<String> ui;
 
-    public Primes(Gson gson) {
+    public Primes(Gson gson, View<String> ui) {
         this.gson = gson;
+        this.ui = ui;
     }
 
     public void list(Request request, Response response) throws Exception {
@@ -26,10 +29,10 @@ public class Primes {
         respondWith(response, decompositions);
     }
 
-    public void last(Request request, Response response) throws IOException {
+    public void ui(Request request, Response response) throws IOException {
         Session session = Session.get(request);
         Object last = session.get("last-decomposition");
-        response.body(gson.toJson(last != null ? last : new NoDecomposition()));
+        ui.render(response, gson.toJson(last != null ? last : new NoDecomposition()));
     }
 
     private List<Object> decomposeNumbers(Request request) {

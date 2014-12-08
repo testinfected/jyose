@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import com.vtence.jyose.fire.FireFighting;
 import com.vtence.jyose.ping.Ping;
 import com.vtence.jyose.primes.Primes;
-import com.vtence.molecule.FailureReporter;
 import com.vtence.molecule.WebServer;
 import com.vtence.molecule.middlewares.CookieSessionTracker;
 import com.vtence.molecule.middlewares.Failsafe;
@@ -31,12 +30,8 @@ public class JYose {
     private final PrintStream out;
 
     public JYose(File webroot) {
-        this(webroot, new Gson());
-    }
-
-    public JYose(File webroot, Gson gson) {
         this.webroot = webroot;
-        this.gson = gson;
+        this.gson = new Gson();
         this.out = System.out;
     }
 
@@ -49,9 +44,8 @@ public class JYose {
                 .start(new DynamicRoutes() {{
                     get("/").to(new StaticPage(pages.home())::render);
                     get("/ping").to(new Ping(gson)::pong);
-                    map("/primeFactors").via(GET, POST).to(new Primes(gson)::list);
-                    get("/primeFactors/ui").to(new StaticPage(pages.primes())::render);
-                    get("/primeFactors/last").to(new Primes(gson)::last);
+                    map("/primeFactors").via(GET, POST).to(new Primes(gson, pages.primes())::list);
+                    get("/primeFactors/ui").to(new Primes(gson, pages.primes())::ui);
                     get("/fire/geek").to(new FireFighting(gson));
                     get("/minesweeper").to(new StaticPage(pages.minesweeper())::render);
                 }});
@@ -68,7 +62,7 @@ public class JYose {
     }
 
     public static void main(String[] args) throws IOException {
-        JYose game = new JYose(webroot(args), new GsonBuilder().setPrettyPrinting().create());
+        JYose game = new JYose(webroot(args));
         WebServer server = WebServer.create("0.0.0.0", port(args));
         game.start(server);
     }
