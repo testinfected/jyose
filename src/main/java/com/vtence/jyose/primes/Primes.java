@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.vtence.jyose.View;
 import com.vtence.molecule.Request;
 import com.vtence.molecule.Response;
-import com.vtence.molecule.Session;
 import com.vtence.molecule.helpers.Joiner;
 import com.vtence.molecule.http.MimeTypes;
 
@@ -19,6 +18,8 @@ public class Primes {
     private final Gson gson;
     private final View<Decomposition> ui;
 
+    private Decomposition lastDecomposition = new NoDecomposition();
+
     public Primes(Gson gson, View<Decomposition> ui) {
         this.gson = gson;
         this.ui = ui;
@@ -26,27 +27,24 @@ public class Primes {
 
     public void list(Request request, Response response) throws Exception {
         List<Decomposition> decompositions = decomposeNumbers(request);
-        storeLastDecomposition(request, decompositions);
+        storeLastDecomposition(decompositions);
         respondWith(response, decompositions);
     }
 
     public void ui(Request request, Response response) throws IOException {
-        Session session = Session.get(request);
-        Decomposition last = session.get("last-decomposition");
-        ui.render(response, last != null ? last : new NoDecomposition());
+        ui.render(response, lastDecomposition);
     }
 
     private List<Decomposition> decomposeNumbers(Request request) {
         return request.parameters("number").stream().map(this::decompose).collect(toList());
     }
 
-    private void storeLastDecomposition(Request request, List<Decomposition> decompositions) {
+    private void storeLastDecomposition(List<Decomposition> decompositions) {
         if (decompositions.isEmpty()) return;
-        Session session = Session.get(request);
-        session.put("last-decomposition", lastOf(decompositions));
+        lastDecomposition = lastOf(decompositions);
     }
 
-    private Object lastOf(List<Decomposition> decompositions) {
+    private Decomposition lastOf(List<Decomposition> decompositions) {
         return decompositions.get(decompositions.size() - 1);
     }
 

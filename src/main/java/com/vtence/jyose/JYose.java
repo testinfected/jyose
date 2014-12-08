@@ -42,10 +42,12 @@ public class JYose {
                 .add(staticAssets())
                 .add(new CookieSessionTracker(new SessionPool()))
                 .start(new DynamicRoutes() {{
+                    Primes primes = new Primes(gson, pages.primes());
+
                     get("/").to(new StaticPage(pages.home())::render);
                     get("/ping").to(new Ping(gson)::pong);
-                    map("/primeFactors").via(GET, POST).to(new Primes(gson, pages.primes())::list);
-                    get("/primeFactors/ui").to(new Primes(gson, pages.primes())::ui);
+                    map("/primeFactors").via(GET, POST).to(primes::list);
+                    get("/primeFactors/ui").to(primes::ui);
                     get("/fire/geek").to(new FireFighting(gson));
                     get("/minesweeper").to(new StaticPage(pages.minesweeper())::render);
                 }});
