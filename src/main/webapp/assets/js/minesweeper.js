@@ -17,8 +17,8 @@ minesweeper.Board = function (grid) {
         function neighbors() {
             var around = [
                 [-1, -1], [-1, 0], [-1, 1],
-                [0, -1], [0, 1],
-                [1, -1], [1, 0], [1, 1]
+                [0, -1],           [0, 1],
+                [1, -1],  [1, 0],  [1, 1]
             ];
 
             return around.map(function (pos) {
@@ -67,6 +67,7 @@ minesweeper.Board = function (grid) {
 function load() {
     var grid = document.grid;
     var field = document.getElementById('board');
+    field.innerHTML = '';
     var board = new minesweeper.Board(grid);
     board.render(field);
 }
@@ -78,11 +79,11 @@ function load() {
             ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
             ['bomb' , 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
             ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
-            ['bomb' , 'empty', 'empty', 'bomb' , 'empty', 'empty', 'empty', 'empty'],
+            ['bomb' , 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
             ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
-            ['empty', 'empty', 'empty', 'empty', 'bomb' , 'empty', 'empty', 'empty'],
-            ['empty', 'empty', 'bomb' , 'empty', 'bomb' , 'bomb' , 'empty', 'empty'],
-            ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'bomb' , 'empty']
+            ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
+            ['empty', 'empty', 'bomb',  'empty', 'empty', 'empty', 'empty', 'empty'],
+            ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty']
         ];
         load();
     });
