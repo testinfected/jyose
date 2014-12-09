@@ -34,4 +34,10 @@ public class MinesweeperChallengesTest {
         minesweeper.showsInTitle("Minesweeper");
         minesweeper.showsGridOfSize(8, 8);
     }
+
+    @Test
+    public void passesDataInjectionChallenge() {
+        MineSweeperPage minesweeper = yose.minesweeper();
+        minesweeper.losesWhenRevealingCell(3, 6);
+    }
 }

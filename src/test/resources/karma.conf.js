@@ -2,7 +2,7 @@ module.exports = function(config) {
 
     config.set({
         basePath: '../../..',
-        frameworks: ['mocha', 'chai'],
+        frameworks: ['mocha', 'chai', 'effroi'],
 
         files: [
             'src/main/webapp/assets/js/**/*.js',

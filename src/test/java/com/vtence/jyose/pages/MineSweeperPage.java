@@ -26,4 +26,9 @@ public class MineSweeperPage {
     private String cell(int row, int col) {
         return "cell-" + row + "x" + col;
     }
+
+    public void losesWhenRevealingCell(int row, int col) {
+        browser.element(By.id(cell(row, col))).click();
+        browser.element(By.className("lost")).assertExists();
+    }
 }

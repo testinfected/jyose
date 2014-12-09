@@ -1,33 +1,58 @@
 var minesweeper = {};
 
 minesweeper.Board = {
-    generate: function (rows, cols) {
+    load: function (grid) {
         return {
             render: function (on) {
-                for (var row = 1; row <= rows; row++) {
-                    on.appendChild(this._renderRow(row));
+                function cellId(row, col) {
+                    return 'cell-' + row + 'x' + col;
                 }
-            },
 
-            _renderRow: function (row) {
-                var tr = document.createElement('tr');
-                for (var col = 1; col <= cols; col++) {
-                    tr.appendChild(this._renderCell(row, col));
+                function cell(row, col) {
+                    var cell = document.createElement('td');
+                    cell.id = cellId(row + 1, col + 1);
+                    cell.setAttribute('data-content', grid[row][col]);
+                    cell.addEventListener('click', function() {
+                        this.className = this.getAttribute('data-content') == 'bomb' ? 'lost' : 'safe';
+                    });
+                    return cell;
                 }
-                return tr;
-            },
 
-            _renderCell: function (row, col) {
-                var cell = document.createElement('td');
-                cell.id = 'cell-' + row + 'x' + col;
-                return cell;
+                function line(row) {
+                    var tr = document.createElement('tr');
+                    for (var col = 0; col < grid[row].length; col++) {
+                        tr.appendChild(cell(row, col));
+                    }
+                    return tr;
+                }
+
+                for (var row = 0; row < grid.length; row++) {
+                    on.appendChild(line(row));
+                }
             }
         }
     }
 };
 
+function load() {
+    var grid = document.grid;
+    var field = document.getElementById('board');
+    minesweeper.Board.load(grid).render(field);
+}
+
 (function () {
     document.addEventListener('DOMContentLoaded', function () {
-        minesweeper.Board.generate(8, 8).render(document.getElementById('board'));
+        // let's simulate yose game server behavior
+        document.grid = [
+            ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
+            ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
+            ['empty', 'empty', 'empty', 'empty', 'empty', 'bomb' , 'empty', 'empty'],
+            ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
+            ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
+            ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
+            ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
+            ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty']
+        ];
+        load();
     });
 }());
