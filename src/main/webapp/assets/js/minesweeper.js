@@ -11,6 +11,7 @@ minesweeper.Board = {
                 function cell(row, col) {
                     var cell = document.createElement('td');
                     cell.id = cellId(row + 1, col + 1);
+                    cell.innerHTML = '(' + (row + 1) + ',' + (col + 1) + ')';
                     cell.setAttribute('data-content', grid[row][col]);
                     cell.addEventListener('click', function() {
                         this.className = this.getAttribute('data-content') == 'bomb' ? 'lost' : 'safe';

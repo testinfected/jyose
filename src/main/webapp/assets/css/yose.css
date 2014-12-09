@@ -141,3 +141,11 @@ button {
     list-style-type: none;
 }
 
+td.lost {
+    background-color: red;
+}
+
+td.safe {
+    background-color: green;
+}
+
