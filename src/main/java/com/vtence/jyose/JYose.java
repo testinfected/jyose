@@ -5,12 +5,10 @@ import com.vtence.jyose.fire.FireFighting;
 import com.vtence.jyose.ping.Ping;
 import com.vtence.jyose.primes.Primes;
 import com.vtence.molecule.WebServer;
-import com.vtence.molecule.middlewares.CookieSessionTracker;
 import com.vtence.molecule.middlewares.Failsafe;
 import com.vtence.molecule.middlewares.FileServer;
 import com.vtence.molecule.middlewares.StaticAssets;
 import com.vtence.molecule.routing.DynamicRoutes;
-import com.vtence.molecule.session.SessionPool;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,17 +37,21 @@ public class JYose {
         server.failureReporter(this::errorOccurred)
                 .add(new Failsafe())
                 .add(staticAssets())
-                .add(new CookieSessionTracker(new SessionPool()))
-                .start(new DynamicRoutes() {{
-                    Primes primes = new Primes(gson);
-                    get("/").to(new StaticPage(pages.home())::render);
-                    get("/ping").to(new Ping(gson)::pong);
-                    map("/primeFactors").via(GET, POST).to(primes::list);
-                    get("/primeFactors/ui").to(new StaticPage(pages.primes())::render);
-                    get("/primeFactors/last").to(primes::last);
-                    get("/fire/geek").to(new FireFighting(gson));
-                    get("/minesweeper").to(new StaticPage(pages.minesweeper())::render);
-                }});
+                .start(routes(pages));
+    }
+
+    private DynamicRoutes routes(final Pages pages) {
+        Primes primes = new Primes(gson);
+
+        return new DynamicRoutes() {{
+            get("/").to(new StaticPage(pages.home())::render);
+            get("/ping").to(new Ping(gson)::pong);
+            map("/primeFactors").via(GET, POST).to(primes::list);
+            get("/primeFactors/ui").to(new StaticPage(pages.primes())::render);
+            get("/primeFactors/last").to(primes::last);
+            get("/fire/geek").to(new FireFighting(gson));
+            get("/minesweeper").to(new StaticPage(pages.minesweeper())::render);
+        }};
     }
 
     private StaticAssets staticAssets() {
