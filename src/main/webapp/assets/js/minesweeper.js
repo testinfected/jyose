@@ -34,16 +34,16 @@ minesweeper.Board = function (grid) {
             return bombs;
         }
 
-        function reveal() {
-            this.textContent = bombsAround().toString();
-            this.classList.add(bombAt(row, col) ? 'lost' : 'safe');
+        function reveal(me) {
+            me.textContent = bombsAround().toString();
+            me.classList.add(bombAt(row, col) ? 'lost' : 'safe');
         }
 
         var cell = document.createElement('td');
         cell.id = id(row + 1, col + 1);
 
         cell.addEventListener('click', function () {
-            reveal.call(this);
+            reveal(this);
         });
 
         return cell;
