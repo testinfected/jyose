@@ -44,12 +44,21 @@ public class MinesweeperChallengesTest {
     @Test
     public void passesSafeCellsChallenge() {
         MineSweeperPage minesweeper = yose.minesweeper();
-        minesweeper.revealsSafeCell(3, 2, "2");
+        minesweeper.revealCell(3, 2);
+        minesweeper.showsSafeCell(3, 2, "2");
     }
 
     @Test
     public void passesZeroBombAroundChallenge() {
         MineSweeperPage minesweeper = yose.minesweeper();
-        minesweeper.revealsSafeCell(3, 6, "");
+        minesweeper.revealCell(3, 6);
+        minesweeper.showsSafeCell(3, 6, "");
+    }
+
+    @Test
+    public void passesOpenFieldChallenge() {
+        MineSweeperPage minesweeper = yose.minesweeper();
+        minesweeper.revealCell(8, 8);
+        minesweeper.showsSafeCell(1, 3, "");
     }
 }

@@ -34,8 +34,11 @@ public class MineSweeperPage {
         browser.element(By.cssSelector(bombCell(row, col))).assertExists();
     }
 
-    public void revealsSafeCell(int row, int col, String content) {
+    public void revealCell(int row, int col) {
         browser.element(By.id(cell(row, col))).click();
+    }
+
+    public void showsSafeCell(int row, int col, String content) {
         browser.element(By.cssSelector(safeCell(row, col))).assertExists();
         browser.element(By.cssSelector(safeCell(row, col))).assertText(equalTo(content));
     }

@@ -11,6 +11,10 @@ describe('board', function () {
         return field.querySelector('#cell-' + row + 'x' + col);
     }
 
+    function loc(row, col) {
+        return '(' + row + ', ' + col + ')';
+    }
+
     describe('when loading data grid', function () {
         beforeEach(function () {
             field = document.getElementById('board');
@@ -20,7 +24,7 @@ describe('board', function () {
                 ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
                 ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
                 ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
-                ['empty', 'bomb', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
+                ['empty', 'bomb' , 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
                 ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
                 ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty']
             ];
@@ -30,7 +34,7 @@ describe('board', function () {
         it('renders a field of same size as the grid', function () {
             for (var row = 1; row <= 8; row++) {
                 for (var col = 1; col <= 8; col++) {
-                    cell(row, col).should.exist();
+                    should.exist(cell(row, col), loc(row, col));
                 }
             }
         });
@@ -42,7 +46,7 @@ describe('board', function () {
             var grid = [
                 ['empty', 'empty', 'empty'],
                 ['empty', 'empty', 'bomb'],
-                ['bomb', 'empty', 'empty']
+                ['bomb' , 'empty', 'empty']
             ];
             new minesweeper.Board(grid).render(field);
         });
@@ -60,8 +64,7 @@ describe('board', function () {
         it('indicates number of neighboring bombs when cell is safe', function () {
             for (var row = 1; row <= 3; row++) {
                 for (var col = 1; col <= 3; col++) {
-                    cell(row, col).textContent.should.equal('');
-                    mouse.click(cell(row, col)).should.be.ok;
+                    mouse.click(cell(row, col)).should.be.ok(loc(row, col));
                 }
             }
             cell(1, 1).textContent.should.equal('');
@@ -71,6 +74,34 @@ describe('board', function () {
             cell(2, 2).textContent.should.equal('2');
             cell(3, 2).textContent.should.equal('2');
             cell(3, 3).textContent.should.equal('1');
+        });
+    });
+
+    describe('when playing', function () {
+        var safeCells;
+
+        beforeEach(function () {
+            field = document.getElementById('board');
+            var grid = [
+                ['empty', 'empty', 'empty', 'empty', 'empty'],
+                ['empty', 'empty', 'empty', 'empty', 'empty'],
+                ['empty', 'empty', 'empty', 'empty', 'empty'],
+                ['bomb',  'empty', 'empty', 'empty', 'bomb' ],
+                ['empty', 'empty', 'empty', 'empty', 'empty']
+            ];
+            safeCells = [
+                [1, 1], [1, 2], [1, 3], [1, 4], [1, 5],
+                [2, 1], [2, 2], [2, 3], [2, 4], [2, 5],
+                [3, 3], [4, 3], [5, 3]
+            ];
+            new minesweeper.Board(grid).render(field);
+        });
+
+        it('reveals safe cells around and around, etc.', function () {
+            mouse.click(cell(1, 5)).should.be.ok;
+            safeCells.forEach(function(pos) {
+                cell(pos[0], pos[1]).className.should.equal('safe', loc(pos[0], pos[1]));
+            });
         });
     });
 });

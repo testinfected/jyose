@@ -6,15 +6,15 @@ minesweeper.Board = function (grid) {
     }
 
     function legal(row, col) {
-        return row >= 0 && row < grid.length;
+        return row >= 0 && row < grid.length && col >= 0 && col < grid[row].length;
     }
 
     function cell(row, col) {
         function id(row, col) {
-            return 'cell-' + row + 'x' + col;
+            return 'cell-' + (row + 1) + 'x' + (col + 1);
         }
 
-        function neighbors() {
+        function neighbors(row, col) {
             var around = [
                 [-1, -1], [-1, 0], [-1, 1],
                 [0, -1],           [0, 1],
@@ -26,30 +26,52 @@ minesweeper.Board = function (grid) {
             });
         }
 
-        function bombsAround() {
+        function legalNeighbors(row, col) {
+            return neighbors(row, col).filter(function (pos) { return legal(pos.row, pos.col); });
+        }
+
+        function safeNeighbors(row, col) {
+            return legalNeighbors(row, col).filter(function(pos) { return !bombAt(pos.row, pos.col)});
+        }
+
+        function bombsAround(row, col) {
             var bombs = 0;
-            neighbors().forEach(function (pos) {
+            legalNeighbors(row, col).forEach(function (pos) {
                 if (bombAt(pos.row, pos.col)) bombs += 1;
             });
             return bombs;
         }
 
-        function reveal() {
-            this.className = bombAt(row, col) ? 'lost' : 'safe';
-            this.textContent = bombsAround() != 0 ? bombsAround().toString() : '';
+        function $(row, col) {
+            return document.getElementById(id(row, col));
+        }
+
+        function decorate(row, col) {
+            $(row, col).className = bombAt(row, col) ? 'lost' : 'safe';
+            $(row, col).textContent = bombsAround(row, col) != 0 ? bombsAround(row, col).toString() : '';
+        }
+
+        function revealed(row, col) {
+            return $(row, col).className != '';
+        }
+
+        function reveal(row, col) {
+            if (revealed(row, col)) return;
+            decorate(row, col);
+
+            safeNeighbors(row, col).forEach(function(pos) {
+                reveal(pos.row, pos.col);
+            });
         }
 
         var cell = document.createElement('td');
-        cell.id = id(row + 1, col + 1);
-
-        cell.addEventListener('click', function () {
-            reveal.call(this);
-        });
-
+        cell.id = id(row, col);
+        cell.addEventListener('click', function () { reveal(row, col); });
         return cell;
     }
 
     this.render = function (on) {
+        on.innerHTML = '';
         function line(row) {
             var tr = document.createElement('tr');
             for (var col = 0; col < grid[row].length; col++) {
@@ -67,7 +89,6 @@ minesweeper.Board = function (grid) {
 function load() {
     var grid = document.grid;
     var field = document.getElementById('board');
-    field.innerHTML = '';
     var board = new minesweeper.Board(grid);
     board.render(field);
 }
