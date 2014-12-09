@@ -35,8 +35,8 @@ minesweeper.Board = function (grid) {
         }
 
         function reveal(me) {
+            me.className = bombAt(row, col) ? 'lost' : 'safe';
             me.textContent = bombsAround().toString();
-            me.classList.add(bombAt(row, col) ? 'lost' : 'safe');
         }
 
         var cell = document.createElement('td');
