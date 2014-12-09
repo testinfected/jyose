@@ -38,6 +38,12 @@ public class MinesweeperChallengesTest {
     @Test
     public void passesDataInjectionChallenge() {
         MineSweeperPage minesweeper = yose.minesweeper();
-        minesweeper.losesWhenRevealingCell(3, 6);
+        minesweeper.losesWhenRevealingCell(7, 3);
+    }
+
+    @Test
+    public void passesSafeCellsChallenge() {
+        MineSweeperPage minesweeper = yose.minesweeper();
+        minesweeper.revealsSafeCell(3, 2, 2);
     }
 }

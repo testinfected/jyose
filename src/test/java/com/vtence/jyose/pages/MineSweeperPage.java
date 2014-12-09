@@ -3,8 +3,10 @@ package com.vtence.jyose.pages;
 import com.objogate.wl.web.AsyncWebDriver;
 import org.openqa.selenium.By;
 
+import static java.lang.String.valueOf;
 import static java.util.stream.IntStream.rangeClosed;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 
 public class MineSweeperPage {
     private final AsyncWebDriver browser;
@@ -29,6 +31,20 @@ public class MineSweeperPage {
 
     public void losesWhenRevealingCell(int row, int col) {
         browser.element(By.id(cell(row, col))).click();
-        browser.element(By.className("lost")).assertExists();
+        browser.element(By.cssSelector(bombCell(row, col))).assertExists();
+    }
+
+    public void revealsSafeCell(int row, int col, int bombs) {
+        browser.element(By.id(cell(row, col))).click();
+        browser.element(By.cssSelector(safeCell(row, col))).assertExists();
+        browser.element(By.cssSelector(safeCell(row, col))).assertText(equalTo(valueOf(bombs)));
+    }
+
+    private String bombCell(int row, int col) {
+        return "#" + cell(row, col) + ".lost";
+    }
+
+    private String safeCell(int row, int col) {
+        return "#" + cell(row, col) + ".safe";
     }
 }
