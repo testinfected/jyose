@@ -34,16 +34,16 @@ minesweeper.Board = function (grid) {
             return bombs;
         }
 
-        function reveal(me) {
-            me.className = bombAt(row, col) ? 'lost' : 'safe';
-            me.textContent = bombsAround().toString();
+        function reveal() {
+            this.className = bombAt(row, col) ? 'lost' : 'safe';
+            this.textContent = bombsAround().toString();
         }
 
         var cell = document.createElement('td');
         cell.id = id(row + 1, col + 1);
 
         cell.addEventListener('click', function () {
-            reveal(this);
+            reveal.call(this);
         });
 
         return cell;
@@ -76,13 +76,13 @@ function load() {
         // let's simulate yose game server behavior
         document.grid = [
             ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
-            ['bomb', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
+            ['bomb' , 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
             ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
-            ['bomb', 'empty', 'empty', 'bomb', 'empty', 'empty', 'empty', 'empty'],
+            ['bomb' , 'empty', 'empty', 'bomb' , 'empty', 'empty', 'empty', 'empty'],
             ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
-            ['empty', 'empty', 'empty', 'empty', 'bomb', 'empty', 'empty', 'empty'],
-            ['empty', 'empty', 'bomb', 'empty', 'bomb', 'bomb', 'empty', 'empty'],
-            ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'bomb', 'empty']
+            ['empty', 'empty', 'empty', 'empty', 'bomb' , 'empty', 'empty', 'empty'],
+            ['empty', 'empty', 'bomb' , 'empty', 'bomb' , 'bomb' , 'empty', 'empty'],
+            ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'bomb' , 'empty']
         ];
         load();
     });
