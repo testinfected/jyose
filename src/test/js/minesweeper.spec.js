@@ -57,20 +57,20 @@ describe('board', function () {
             cell(2, 2).className.should.equal('safe');
         });
 
-        it('indicates number of neighboring bombs when cell is safe', function() {
-            for (var row = 1; row <=3; row++) {
-                for (var col = 1; col <=3; col++) {
+        it('indicates number of neighboring bombs when cell is safe', function () {
+            for (var row = 1; row <= 3; row++) {
+                for (var col = 1; col <= 3; col++) {
                     cell(row, col).textContent.should.equal('');
                     mouse.click(cell(row, col)).should.be.ok;
                 }
             }
-            cell(1, 1).textContent.should.equal('0');
+            cell(1, 1).textContent.should.equal('');
             cell(2, 1).textContent.should.equal('1');
             cell(1, 2).textContent.should.equal('1');
             cell(3, 3).textContent.should.equal('1');
             cell(2, 2).textContent.should.equal('2');
             cell(3, 2).textContent.should.equal('2');
             cell(3, 3).textContent.should.equal('1');
-        })
+        });
     });
 });
