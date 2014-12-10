@@ -43,8 +43,14 @@ minesweeper.Board = function (grid) {
         }
 
         function decorate(row, col) {
-            $(row, col).className = bombAt(row, col) ? 'lost' : 'safe';
-            $(row, col).textContent = bombsAround(row, col) != 0 ? bombsAround(row, col).toString() : '';
+            var cell = $(row, col);
+            cell.className = bombAt(row, col) ? 'lost' : 'safe';
+
+            var bombs = bombsAround(row, col);
+            if (safe(row, col) && bombs != 0) {
+                cell.textContent = bombs.toString();
+                cell.className += ' safe-' + bombs
+            }
         }
 
         function revealed(row, col) {

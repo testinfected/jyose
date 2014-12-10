@@ -53,12 +53,13 @@ describe('board', function () {
 
         it('sets cell class to lost if it contains a bomb', function () {
             mouse.click(cell(3, 1)).should.be.ok;
-            cell(3, 1).className.should.equal('lost');
+            cell(3, 1).className.should.have.string('lost');
+            cell(3, 1).textContent.should.equal('');
         });
 
         it('sets cell class to safe if it is empty', function () {
             mouse.click(cell(2, 2)).should.be.ok;
-            cell(2, 2).className.should.equal('safe');
+            cell(2, 2).className.should.have.string('safe');
         });
 
         it('indicates number of neighboring bombs when cell is safe', function () {
@@ -69,11 +70,9 @@ describe('board', function () {
             }
             cell(1, 1).textContent.should.equal('');
             cell(2, 1).textContent.should.equal('1');
-            cell(1, 2).textContent.should.equal('1');
-            cell(3, 3).textContent.should.equal('1');
+            cell(2, 1).className.should.have.string('safe-1');
             cell(2, 2).textContent.should.equal('2');
-            cell(3, 2).textContent.should.equal('2');
-            cell(3, 3).textContent.should.equal('1');
+            cell(2, 2).className.should.have.string('safe-2');
         });
     });
 
@@ -95,7 +94,7 @@ describe('board', function () {
         it('reveals safe neighbors if no bomb is around ', function () {
             mouse.click(cell(5, 3)).should.be.ok;
             [[5, 2], [5, 4], [4, 2], [4, 3], [4, 4]].forEach(function(pos) {
-                cell(pos[0], pos[1]).className.should.equal('safe', loc(pos[0], pos[1]));
+                cell(pos[0], pos[1]).className.should.have.string('safe', loc(pos[0], pos[1]));
             });
         });
 
@@ -109,7 +108,7 @@ describe('board', function () {
         it('keeps revealing neighbors if no bomb is still around', function () {
             mouse.click(cell(1, 5)).should.be.ok;
             [[1, 3], [3, 4], [3, 5]].forEach(function(pos) {
-                cell(pos[0], pos[1]).className.should.equal('safe', loc(pos[0], pos[1]));
+                cell(pos[0], pos[1]).className.should.have.string('safe', loc(pos[0], pos[1]));
             });
         });
 
