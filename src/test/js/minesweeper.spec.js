@@ -83,22 +83,40 @@ describe('board', function () {
         beforeEach(function () {
             field = document.getElementById('board');
             var grid = [
-                ['empty', 'empty', 'empty'],
-                ['bomb',  'empty', 'bomb' ],
-                ['empty', 'empty', 'empty']
-            ];
-            safeCells = [
-                [1, 1], [1, 2], [1, 3],
-                [2, 2],
-                [3, 1], [3, 2], [3, 3]
+                ['empty', 'empty', 'empty', 'empty', 'empty'],
+                ['empty', 'bomb' , 'empty', 'empty', 'empty'],
+                ['empty', 'empty', 'bomb' , 'empty', 'empty'],
+                ['bomb',  'empty', 'empty', 'empty', 'bomb' ],
+                ['empty', 'empty', 'empty', 'empty', 'empty']
             ];
             new minesweeper.Board(grid).render(field);
         });
 
-        it('reveals safe cells around and around, etc.', function () {
-            mouse.click(cell(1, 1)).should.be.ok;
-            safeCells.forEach(function(pos) {
+        it('reveals safe neighbors if no bomb is around ', function () {
+            mouse.click(cell(5, 3)).should.be.ok;
+            [[5, 2], [5, 4], [4, 2], [4, 3], [4, 4]].forEach(function(pos) {
                 cell(pos[0], pos[1]).className.should.equal('safe', loc(pos[0], pos[1]));
+            });
+        });
+
+        it('reveals no neighbor when bomb is around', function () {
+            mouse.click(cell(1, 1)).should.be.ok;
+            [[1, 2], [2, 1]].forEach(function(pos) {
+                cell(pos[0], pos[1]).className.should.equal('', loc(pos[0], pos[1]));
+            });
+        });
+
+        it('keeps revealing neighbors if no bomb is still around', function () {
+            mouse.click(cell(1, 5)).should.be.ok;
+            [[1, 3], [3, 4], [3, 5]].forEach(function(pos) {
+                cell(pos[0], pos[1]).className.should.equal('safe', loc(pos[0], pos[1]));
+            });
+        });
+
+        it('does not reveal neighbors of bombs', function () {
+            mouse.click(cell(4, 1)).should.be.ok;
+            [[3, 1], [3, 2], [4, 2], [5, 1], [5, 2]].forEach(function(pos) {
+                cell(pos[0], pos[1]).className.should.equal('', loc(pos[0], pos[1]));
             });
         });
     });

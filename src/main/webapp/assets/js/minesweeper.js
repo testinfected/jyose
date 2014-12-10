@@ -30,10 +30,6 @@ minesweeper.Board = function (grid) {
             return neighbors(row, col).filter(function (pos) { return legal(pos.row, pos.col); });
         }
 
-        function safeNeighbors(row, col) {
-            return legalNeighbors(row, col).filter(function(pos) { return !bombAt(pos.row, pos.col)});
-        }
-
         function bombsAround(row, col) {
             var bombs = 0;
             legalNeighbors(row, col).forEach(function (pos) {
@@ -55,13 +51,19 @@ minesweeper.Board = function (grid) {
             return $(row, col).className != '';
         }
 
+        function safe(row, col) {
+            return !bombAt(row, col);
+        }
+
         function reveal(row, col) {
             if (revealed(row, col)) return;
             decorate(row, col);
 
-            safeNeighbors(row, col).forEach(function(pos) {
-                reveal(pos.row, pos.col);
-            });
+            if (safe(row, col) && bombsAround(row, col) == 0) {
+                legalNeighbors(row, col).forEach(function (pos) {
+                    reveal(pos.row, pos.col);
+                });
+            }
         }
 
         var cell = document.createElement('td');
@@ -128,7 +130,7 @@ function load() {
             load();
         });
 
-        document.grid = minesweeper.Grid(8, 8)(minesweeper.Generator(0.5));
+        document.grid = minesweeper.Grid(8, 8)(minesweeper.Generator(0.25));
         load();
     });
 }());
