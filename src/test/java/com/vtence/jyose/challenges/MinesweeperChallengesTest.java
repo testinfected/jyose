@@ -61,4 +61,8 @@ public class MinesweeperChallengesTest {
         minesweeper.revealCell(8, 8);
         minesweeper.showsSafeCell(1, 3, "");
     }
+
+    @Test
+    public void passesOpenRandomFieldChallenge() {
+    }
 }

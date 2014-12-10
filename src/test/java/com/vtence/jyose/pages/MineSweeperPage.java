@@ -3,7 +3,6 @@ package com.vtence.jyose.pages;
 import com.objogate.wl.web.AsyncWebDriver;
 import org.openqa.selenium.By;
 
-import static java.lang.String.valueOf;
 import static java.util.stream.IntStream.rangeClosed;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -13,6 +12,7 @@ public class MineSweeperPage {
 
     public MineSweeperPage(AsyncWebDriver browser) {
         this.browser = browser;
+        testMode();
     }
 
     public void showsInTitle(String message) {
@@ -49,5 +49,9 @@ public class MineSweeperPage {
 
     private String safeCell(int row, int col) {
         return "#" + cell(row, col) + ".safe";
+    }
+
+    public void testMode() {
+        browser.element(By.id("test-mode")).click();
     }
 }

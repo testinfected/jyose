@@ -86,6 +86,25 @@ minesweeper.Board = function (grid) {
     }
 };
 
+minesweeper.Grid = function(height, width) {
+    return function(generator) {
+        var data = [];
+        for (var row = 0; row < height; row++) {
+            data.push([]);
+            for (var col = 0; col < width; col++) {
+                data[row].push(generator());
+            }
+        }
+        return data;
+    };
+};
+
+minesweeper.Generator = function(occurence) {
+    return function generate() {
+        return Math.random() <= occurence ? 'bomb' : 'empty';
+    };
+};
+
 function load() {
     var grid = document.grid;
     var field = document.getElementById('board');
@@ -95,17 +114,21 @@ function load() {
 
 (function () {
     document.addEventListener('DOMContentLoaded', function () {
-        // let's simulate yose game server behavior
-        document.grid = [
-            ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
-            ['bomb' , 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
-            ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
-            ['bomb' , 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
-            ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
-            ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
-            ['empty', 'empty', 'bomb',  'empty', 'empty', 'empty', 'empty', 'empty'],
-            ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty']
-        ];
+        document.getElementById("test-mode").addEventListener('click', function() {
+            document.grid = [
+                ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
+                ['bomb' , 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
+                ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
+                ['bomb' , 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
+                ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
+                ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
+                ['empty', 'empty', 'bomb',  'empty', 'empty', 'empty', 'empty', 'empty'],
+                ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty']
+            ];
+            load();
+        });
+
+        document.grid = minesweeper.Grid(8, 8)(minesweeper.Generator(0.5));
         load();
     });
 }());
