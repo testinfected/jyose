@@ -1,6 +1,14 @@
 var minesweeper = {};
 
+minesweeper.suspectMode = false;
+
+minesweeper.toggleSuspectMode = function() {
+    this.suspectMode = !this.suspectMode;
+};
+
 minesweeper.Board = function (grid) {
+    var RIGHT_BUTTON = 3;
+
     function bombAt(row, col) {
         return legal(row, col) && grid[row][col] == 'bomb';
     }
@@ -30,6 +38,10 @@ minesweeper.Board = function (grid) {
             return neighbors(row, col).filter(function (pos) { return legal(pos.row, pos.col); });
         }
 
+        function unknownNeighbors(row, col) {
+            return legalNeighbors(row, col).filter(function (pos) { return !revealed(pos.row, pos.col); });
+        }
+
         function bombsAround(row, col) {
             var bombs = 0;
             legalNeighbors(row, col).forEach(function (pos) {
@@ -42,39 +54,65 @@ minesweeper.Board = function (grid) {
             return document.getElementById(id(row, col));
         }
 
-        function decorate(row, col) {
+        function markSafe(row, col) {
             var cell = $(row, col);
-            cell.className = bombAt(row, col) ? 'lost' : 'safe';
+            cell.className = 'safe';
 
             var bombs = bombsAround(row, col);
-            if (safe(row, col) && bombs != 0) {
+            if (bombs != 0) {
                 cell.textContent = bombs.toString();
                 cell.className += ' safe-' + bombs
             }
         }
 
-        function revealed(row, col) {
-            return $(row, col).className != '';
+        function markLost(row, col) {
+            $(row, col).className = 'lost';
         }
 
-        function safe(row, col) {
-            return !bombAt(row, col);
+        function revealed(row, col) {
+            var classes = $(row, col).className;
+            return ~classes.indexOf('lost') || ~classes.indexOf('safe');
         }
 
         function reveal(row, col) {
-            if (revealed(row, col)) return;
-            decorate(row, col);
+            if (flagged(row, col)) return;
 
-            if (safe(row, col) && bombsAround(row, col) == 0) {
-                legalNeighbors(row, col).forEach(function (pos) {
+            if (bombAt(row, col)) {
+                markLost(row, col);
+                return;
+            }
+
+            markSafe(row, col);
+
+            if (bombsAround(row, col) == 0) {
+                unknownNeighbors(row, col).forEach(function (pos) {
                     reveal(pos.row, pos.col);
                 });
             }
         }
 
+        function flagged(row, col) {
+            return ~$(row, col).className.indexOf('suspect');
+        }
+
+        function toggleFlag(row, col) {
+            if (revealed(row, col)) return;
+            $(row, col).className = flagged(row, col) ? '' : 'suspect';
+        }
+
         var cell = document.createElement('td');
         cell.id = id(row, col);
-        cell.addEventListener('click', function () { reveal(row, col); });
+        cell.addEventListener('click', function (event) {
+            if (event.which == RIGHT_BUTTON || minesweeper.suspectMode) {
+                toggleFlag(row, col);
+            } else {
+                reveal(row, col);
+            }
+        });
+        cell.addEventListener('contextmenu', function (event) {
+            event.preventDefault();
+            toggleFlag(row, col);
+        });
         return cell;
     }
 
@@ -136,7 +174,11 @@ function load() {
             load();
         });
 
-        document.grid = minesweeper.Grid(8, 8)(minesweeper.Generator(0.25));
+        document.getElementById("suspect-mode").addEventListener('click', function() {
+            minesweeper.toggleSuspectMode();
+        });
+
+        document.grid = minesweeper.Grid(8, 8)(minesweeper.Generator(0.20));
         load();
     });
 }());

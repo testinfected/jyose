@@ -147,6 +147,8 @@ button {
 
 #test-mode {
     color: transparent;
+    width: 1px;
+    height: 1px;
 }
 
 #board td {
@@ -197,6 +199,11 @@ button {
 
 #board td.safe-8 {
     color: #858585;
+}
+
+#suspect-mode {
+    height: 2em;
+    margin-right: 10px;
 }
 
 

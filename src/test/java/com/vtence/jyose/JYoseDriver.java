@@ -41,7 +41,7 @@ public class JYoseDriver {
 
     public MineSweeperPage minesweeper() {
         browser.navigate().to(url("/minesweeper"));
-        return new MineSweeperPage(browser);
+        return MineSweeperPage.inTestMode(browser);
     }
 
     private String url(String path) {

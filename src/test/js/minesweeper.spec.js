@@ -1,4 +1,4 @@
-describe('board', function () {
+describe('minesweeper', function () {
     var mouse = effroi.mouse;
     var field;
 
@@ -15,7 +15,7 @@ describe('board', function () {
         return '(' + row + ', ' + col + ')';
     }
 
-    describe('when loading data grid', function () {
+    describe('when loading grid', function () {
         beforeEach(function () {
             field = document.getElementById('board');
             var grid = [
@@ -74,6 +74,51 @@ describe('board', function () {
             cell(2, 2).textContent.should.equal('2');
             cell(2, 2).className.should.have.string('safe-2');
         });
+
+        it('cannot reveal a suspect cell', function () {
+            mouse.rightclick(cell(3, 1)).should.be.ok;
+            mouse.click(cell(3, 1)).should.be.ok;
+            cell(3, 1).className.should.not.have.string('lost');
+            mouse.rightclick(cell(3, 1)).should.be.ok;
+            mouse.click(cell(3, 1)).should.be.ok;
+            cell(3, 1).className.should.have.string('lost');
+        });
+    });
+
+    describe('when flagging suspects', function () {
+        beforeEach(function () {
+            field = document.getElementById('board');
+            var grid = [
+                ['empty', 'empty', 'empty'],
+                ['empty', 'empty', 'bomb'],
+                ['bomb', 'empty', 'empty']
+            ];
+            new minesweeper.Board(grid).render(field);
+        });
+
+        it('sets cell class to suspect if still hidden', function () {
+            mouse.rightclick(cell(3, 1)).should.be.ok;
+            cell(3, 1).className.should.have.string('suspect');
+            cell(3, 1).textContent.should.equal('');
+        });
+
+        it('cannot flag an exploded bomb', function () {
+            mouse.click(cell(3, 1)).should.be.ok;
+            mouse.rightclick(cell(3, 1)).should.be.ok;
+            cell(3, 1).className.should.have.string('lost');
+        });
+
+        it('cannot flag a safe cell', function () {
+            mouse.click(cell(2, 1)).should.be.ok;
+            mouse.rightclick(cell(2, 1)).should.be.ok;
+            cell(2, 1).className.should.have.string('safe');
+        });
+
+        it('removes flag when set', function () {
+            mouse.rightclick(cell(3, 1)).should.be.ok;
+            mouse.rightclick(cell(3, 1)).should.be.ok;
+            cell(3, 1).className.should.not.have.string('suspect');
+        });
     });
 
     describe('when playing', function () {
@@ -117,6 +162,12 @@ describe('board', function () {
             [[3, 1], [3, 2], [4, 2], [5, 1], [5, 2]].forEach(function(pos) {
                 cell(pos[0], pos[1]).className.should.equal('', loc(pos[0], pos[1]));
             });
+        });
+
+        it('does not reveal suspect cells', function () {
+            mouse.rightclick(cell(2, 4)).should.be.ok;
+            mouse.click(cell(1, 5)).should.be.ok;
+            cell(2, 4).className.should.equal('suspect');
         });
     });
 });

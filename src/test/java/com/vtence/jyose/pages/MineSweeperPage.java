@@ -1,5 +1,6 @@
 package com.vtence.jyose.pages;
 
+import com.objogate.wl.web.AsyncElementDriver;
 import com.objogate.wl.web.AsyncWebDriver;
 import org.openqa.selenium.By;
 
@@ -10,9 +11,14 @@ import static org.hamcrest.Matchers.equalTo;
 public class MineSweeperPage {
     private final AsyncWebDriver browser;
 
+    public static MineSweeperPage inTestMode(AsyncWebDriver browser) {
+        MineSweeperPage page = new MineSweeperPage(browser);
+        page.enterTestMode();
+        return page;
+    }
+
     public MineSweeperPage(AsyncWebDriver browser) {
         this.browser = browser;
-        testMode();
     }
 
     public void showsInTitle(String message) {
@@ -43,6 +49,22 @@ public class MineSweeperPage {
         browser.element(By.cssSelector(safeCell(row, col))).assertText(equalTo(content));
     }
 
+    public void flagSuspectCell(int row, int col) {
+        toggleSuspectMode();
+        revealCell(row, col);
+        toggleSuspectMode();
+    }
+
+    private void toggleSuspectMode() {
+        AsyncElementDriver toggle = browser.element(By.cssSelector("input#suspect-mode[type=checkbox]"));
+        toggle.click();
+    }
+
+    public void showsSuspectCell(int row, int col) {
+        browser.element(By.cssSelector(suspectCell(row, col))).assertExists();
+        browser.element(By.cssSelector(suspectCell(row, col))).assertText(equalTo(""));
+    }
+
     private String bombCell(int row, int col) {
         return "#" + cell(row, col) + ".lost";
     }
@@ -51,7 +73,11 @@ public class MineSweeperPage {
         return "#" + cell(row, col) + ".safe";
     }
 
-    public void testMode() {
+    private String suspectCell(int row, int col) {
+        return "#" + cell(row, col) + ".suspect";
+    }
+
+    public void enterTestMode() {
         browser.element(By.id("test-mode")).click();
     }
 }

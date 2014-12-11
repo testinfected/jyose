@@ -65,4 +65,13 @@ public class MinesweeperChallengesTest {
     @Test
     public void passesOpenRandomFieldChallenge() {
     }
+
+    @Test
+    public void passesSuspectModeChallenge() {
+        MineSweeperPage minesweeper = yose.minesweeper();
+        minesweeper.flagSuspectCell(3, 3);
+        minesweeper.revealCell(3, 6);
+        minesweeper.showsSuspectCell(3, 3);
+        minesweeper.showsSafeCell(3, 6, "");
+    }
 }
