@@ -48,6 +48,13 @@ public class PortfolioChallengesTest {
         response.assertHasContent(containsString("<a id=\"prime-factors-decomposition-link\" href=\"/primeFactors/ui\""));
     }
 
+    @Test public void
+    passesMinesweeperChallenge() throws IOException {
+        response = request.get("/");
+        response.assertOK();
+        response.assertHasContent(containsString("<a id=\"minesweeper-link\" href=\"/minesweeper\""));
+    }
+
     @After public void
     stopServer() throws Exception {
         server.stop();
