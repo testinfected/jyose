@@ -190,17 +190,17 @@ minesweeper.Generator = function(occurence) {
     };
 };
 
-function load() {
-    var grid = document.grid;
+function load(data) {
+    document.grid = data || document.grid;
     var field = document.getElementById('board');
-    var board = new minesweeper.Board(grid);
+    var board = new minesweeper.Board(document.grid);
     board.render(field);
 }
 
 (function () {
     document.addEventListener('DOMContentLoaded', function () {
         document.getElementById("test-mode").addEventListener('click', function() {
-            document.grid = [
+            load([
                 ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
                 ['bomb' , 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
                 ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
@@ -209,15 +209,13 @@ function load() {
                 ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
                 ['empty', 'empty', 'bomb',  'empty', 'empty', 'empty', 'empty', 'empty'],
                 ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty']
-            ];
-            load();
+            ]);
         });
 
         document.getElementById("suspect-mode").addEventListener('click', function() {
             minesweeper.toggleSuspectMode();
         });
 
-        document.grid = minesweeper.Grid(8, 8)(minesweeper.Generator(0.20));
-        load();
+        load(minesweeper.Grid(8, 8)(minesweeper.Generator(10/64)));
     });
 }());
