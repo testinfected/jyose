@@ -13,9 +13,6 @@ public class MinesweeperChallengesTest {
 
     static int PORT = 9999;
 
-    HttpRequest request = new HttpRequest(PORT);
-    HttpResponse response;
-
     JYoseDriver yose = new JYoseDriver(PORT, WebRoot.locate());
 
     @Before
