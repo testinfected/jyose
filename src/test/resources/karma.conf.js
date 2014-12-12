@@ -19,7 +19,8 @@ module.exports = function(config) {
         coverageReporter: {
             dir : 'build/reports/instanbul/',
             reporters: [
-                { type: 'html', subdir: 'html' }
+                { type: 'html', subdir: 'html' },
+                { type: 'lcov', subdir: 'lcov' }
             ]
         },
 
