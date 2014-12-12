@@ -161,7 +161,7 @@ button {
 }
 
 #board td.lost {
-    background: #CFCFCF url(/images/bomb.png) no-repeat center center;
+    background: #dddddd url(/images/bomb.png) no-repeat center center;
 }
 
 #board td.suspect {
@@ -169,7 +169,7 @@ button {
 }
 
 #board td.safe {
-    background-color: #CFCFCF;
+    background-color: #dddddd;
     color: #0E1BFC;
 }
 
