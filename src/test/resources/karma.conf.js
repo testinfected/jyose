@@ -9,7 +9,19 @@ module.exports = function(config) {
             'src/test/js/**/*.js'
         ],
 
-        reporters: ['progress'],
+        reporters: ['progress', 'coverage'],
+
+        preprocessors: {
+            'src/main/webapp/assets/js/**/*.js': ['coverage']
+        },
+
+        // optionally, configure the reporter
+        coverageReporter: {
+            dir : 'build/reports/instanbul/',
+            reporters: [
+                { type: 'html', subdir: 'html' }
+            ]
+        },
 
         port: 9876,
         colors: true,

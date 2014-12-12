@@ -87,7 +87,7 @@ task wrapper(type: Wrapper) {
 }
 
 ext {
-    karmaDependencies = ['karma', 'karma-mocha', 'karma-chai', 'karma-effroi',
+    karmaDependencies = ['karma', 'karma-mocha', 'karma-chai', 'karma-effroi', 'karma-coverage',
                          'karma-phantomjs-launcher', 'karma-firefox-launcher', 'karma-chrome-launcher']
     karmaExec = file('node_modules/karma/bin/karma')
     karmaConfig = 'src/test/resources/karma.conf.js'
