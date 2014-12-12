@@ -6,153 +6,169 @@ minesweeper.toggleSuspectMode = function() {
     this.suspectMode = !this.suspectMode;
 };
 
-minesweeper.Board = function (grid) {
+minesweeper.Cell = function(row, col, content) {
     var RIGHT_BUTTON = 3;
 
-    function bombAt(row, col) {
-        return legal(row, col) && grid[row][col] == 'bomb';
-    }
-
-    function legal(row, col) {
-        return row >= 0 && row < grid.length && col >= 0 && col < grid[row].length;
+    function init() {
+        this.row = row;
+        this.col = col;
+        this.content = content;
+        this.elem = document.createElement('td');
+        this.elem.id = id(this.row, this.col);
     }
 
     function id(row, col) {
         return 'cell-' + (row + 1) + 'x' + (col + 1);
     }
 
-    function neighbors(row, col) {
+    this.onClick = function(handler) {
+        this.elem.addEventListener('click', function(event) {
+            if (event.which != RIGHT_BUTTON && !minesweeper.suspectMode) handler(event);
+        });
+    };
+
+    this.onRightClick = function(handler) {
+        this.elem.addEventListener('click', function(event) {
+            if (event.which == RIGHT_BUTTON || minesweeper.suspectMode) handler(event);
+        });
+        this.elem.addEventListener('contextmenu', function (event) {
+            event.preventDefault();
+            handler(event);
+        });
+    };
+
+    this.reveal = function(board) {
+        if (this.flagged()) return;
+
+        if (this.trapped()) {
+            this.markLost();
+            return;
+        }
+
+        this.markSafe(board);
+
+        if (this.bombsAround(board) == 0) {
+            this.maskedNeighbors(board).forEach(function (neighbor) {
+                neighbor.reveal(board);
+            });
+        }
+    };
+
+    this.vicinity = function() {
         var around = [
             [-1, -1], [-1, 0], [-1, 1],
             [0, -1],           [0, 1],
             [1, -1],  [1, 0],  [1, 1]
         ];
 
-        return around.map(function (pos) {
-            return {row: row + pos[0], col: col + pos[1]}
-        });
-    }
+        return around.map(function translate(pos) {
+            return {row: this.row + pos[0], col: this.col + pos[1]}
+        }.bind(this));
+    };
 
-    function legalNeighbors(row, col) {
-        return neighbors(row, col).filter(function (pos) { return legal(pos.row, pos.col); });
-    }
+    this.neighbors = function(board) {
+        return this.vicinity().
+            filter(function (loc) { return board.legal(loc.row, loc.col); }).
+            map(function(loc) { return board.cellAt(loc.row, loc.col)});
+    };
 
-    function unknownNeighbors(row, col) {
-        return legalNeighbors(row, col).filter(function (pos) { return !revealed(pos.row, pos.col); });
-    }
+    this.maskedNeighbors = function(board) {
+        return this.neighbors(board).filter(function (neighbor) { return !neighbor.revealed(); });
+    };
 
-    function bombsAround(row, col) {
+    this.bombsAround = function(board) {
         var bombs = 0;
-        legalNeighbors(row, col).forEach(function (pos) {
-            if (bombAt(pos.row, pos.col)) bombs += 1;
+        this.neighbors(board).forEach(function (neighbor) {
+            if (neighbor.trapped()) bombs += 1;
         });
         return bombs;
-    }
+    };
 
-    function $(row, col) {
-        return document.getElementById(id(row, col));
-    }
+    this.markSafe = function(board) {
+        this.elem.className = 'safe';
 
-    function markSafe(row, col) {
-        var cell = $(row, col);
-        cell.className = 'safe';
-
-        var bombs = bombsAround(row, col);
+        var bombs = this.bombsAround(board);
         if (bombs != 0) {
-            cell.textContent = bombs.toString();
-            cell.className += ' safe-' + bombs
+            this.elem.textContent = bombs.toString();
+            this.elem.className += ' safe-' + bombs
         }
-    }
+    };
 
-    function markLost(row, col) {
-        $(row, col).className = 'lost';
-    }
+    this.markLost = function() {
+        this.elem.className = 'lost';
+    };
 
-    function revealed(row, col) {
-        var classes = $(row, col).className;
+    this.revealed = function() {
+        var classes = this.elem.className;
         return ~classes.indexOf('lost') || ~classes.indexOf('safe');
-    }
+    };
 
-    function reveal(row, col) {
-        if (flagged(row, col)) return;
+    this.trapped = function() {
+        return this.content == 'bomb';
+    };
 
-        if (bombAt(row, col)) {
-            markLost(row, col);
-            return;
+    this.flagged = function() {
+        return ~this.elem.className.indexOf('suspect');
+    };
+
+    this.toggleFlag = function() {
+        if (this.revealed()) return;
+        this.elem.className = this.flagged() ? '' : 'suspect';
+    };
+
+    this.render = function() {
+        return this.elem;
+    } ;
+
+    init.call(this);
+};
+
+minesweeper.Board = function (grid) {
+    function init(grid) {
+        this.cells = [[]];
+        for (var row = 0; row < grid.length; row++) {
+            this.cells.push([]);
+            for (var col = 0; col < grid[row].length; col++) {
+                this.cells[row].push(makeCell.call(this, row, col, grid[row][col]));
+            }
         }
-
-        markSafe(row, col);
-
-        if (bombsAround(row, col) == 0) {
-            unknownNeighbors(row, col).forEach(function (pos) {
-                reveal(pos.row, pos.col);
-            });
-        }
     }
 
-    function flagged(row, col) {
-        return ~$(row, col).className.indexOf('suspect');
+    function makeCell(row, col, content) {
+        var cell = new minesweeper.Cell(row, col, content);
+
+        cell.onClick(function(event) {
+            cell.reveal(this)
+        }.bind(this));
+
+        cell.onRightClick(function (event) {
+            cell.toggleFlag();
+        });
+
+        return cell;
     }
 
-    function toggleFlag(row, col) {
-        if (revealed(row, col)) return;
-        $(row, col).className = flagged(row, col) ? '' : 'suspect';
-    }
+    this.legal = function(row, col) {
+        return row >= 0 && row < this.cells.length && col >= 0 && col < this.cells[row].length;
+    };
 
-    function Cell(row, col) {
-        this.row = row;
-        this.col = col;
-
-        this.onclick = function(handler) {
-            this.elem.addEventListener('click', function(event) {
-                if (event.which != RIGHT_BUTTON && !minesweeper.suspectMode) handler(event);
-            });
-        };
-
-        this.onrightclick = function(handler) {
-            this.elem.addEventListener('click', function(event) {
-                if (event.which == RIGHT_BUTTON || minesweeper.suspectMode) handler(event);
-            });
-            this.elem.addEventListener('contextmenu', function (event) {
-                event.preventDefault();
-                handler(event);
-            });
-        };
-
-        this.render = function() {
-            this.elem = document.createElement('td');
-            this.elem.id = id(this.row, this.col);
-            return this.elem;
-        };
-    }
+    this.cellAt = function(row, col) {
+        return this.cells[row][col];
+    };
 
     this.render = function (on) {
         on.innerHTML = '';
 
-        function cell(row, col) {
-            var cell = new Cell(row, col);
-            var td = cell.render();
-            cell.onclick(function (event) {
-                reveal(row, col);
-            });
-            cell.onrightclick(function (event) {
-                toggleFlag(row, col);
-            });
-            return td;
-        }
-
-        function line(row) {
+        for (var row = 0; row < this.cells.length; row++) {
             var tr = document.createElement('tr');
-            for (var col = 0; col < grid[row].length; col++) {
-                tr.appendChild(cell(row, col));
+            for (var col = 0; col < this.cells[row].length; col++) {
+                tr.appendChild(this.cellAt(row, col).render());
             }
-            return tr;
+            on.appendChild(tr);
         }
+    };
 
-        for (var row = 0; row < grid.length; row++) {
-            on.appendChild(line(row));
-        }
-    }
+    init.call(this, grid);
 };
 
 minesweeper.Grid = function(height, width) {
