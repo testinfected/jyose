@@ -9,3 +9,6 @@ deploy:
   app: jyose
   api_key:
     secure: bxHEL0FILrcrzCHJZPN0ud3uf1W0FbHQ6WQfK4nTrtz8LRBbDpi+opv88smwtYFvjV9oB8AhmIzk3Pgf9hx5jivwDI6eheANOAcyVQkLFjiEmd5WTVaCnTvoNgydUN1qHTiI/4pwtAzHbjGwo1d9Wpdj3FDfwAtf2/JEqjf1Utc=
+before_script:
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start

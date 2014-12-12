@@ -16,7 +16,7 @@ public class JYoseDriver {
     private final JYose yose;
 
     public JYoseDriver(int port, File webroot) {
-        this.browser = new AsyncWebDriver(new UnsynchronizedProber(), Browsers.phantom());
+        this.browser = new AsyncWebDriver(new UnsynchronizedProber(), Browsers.firefox());
         this.server = WebServer.create(port);
         this.yose = new JYose(webroot);
     }

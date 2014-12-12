@@ -15,7 +15,7 @@ module.exports = function(config) {
         colors: true,
         autoWatch: true,
         singleRun: false,
-        browsers: ['PhantomJS'],
+        browsers: ['Firefox', 'PhantomJS'],
         logLevel: config.LOG_ERROR
     });
 };
