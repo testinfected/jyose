@@ -26,4 +26,8 @@ public class Pages {
     public Template minesweeper() {
         return templates.named("minesweeper");
     }
+
+    public Template astroport() {
+        return templates.named("astroport");
+    }
 }

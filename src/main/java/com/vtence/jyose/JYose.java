@@ -51,6 +51,7 @@ public class JYose {
             get("/primeFactors/last").to(primes::last);
             get("/fire/geek").to(new FireFighting(gson));
             get("/minesweeper").to(new StaticPage(pages.minesweeper())::render);
+            get("/astroport").to(new StaticPage(pages.astroport())::render);
         }};
     }
 
