@@ -34,4 +34,10 @@ public class PrimesTest {
         primes.last(request, response);
         response.assertBody(equalTo("{}"));
     }
+
+    @Test
+    public void handlesVeryLargeNumbers() throws Exception {
+        primes.list(request.addParameter("number", "6469693230"), response);
+        response.assertBody(containsString("too big number"));
+    }
 }

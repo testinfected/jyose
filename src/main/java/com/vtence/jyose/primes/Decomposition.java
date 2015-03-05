@@ -1,5 +1,6 @@
 package com.vtence.jyose.primes;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import static java.lang.Integer.parseInt;
@@ -19,15 +20,15 @@ public interface Decomposition {
     }
 
     public static class NumberTooBig implements Decomposition {
-        private final int number;
+        private final BigInteger number;
         private final String error = "too big number (>1e6)";
 
         public NumberTooBig(String number) {
-            this.number = parseInt(number);
+            this.number = new BigInteger(number);
         }
 
         public static boolean verify(String number) {
-            return parseInt(number) > 1000000;
+            return new BigInteger(number).compareTo(new BigInteger("1000000")) > 0;
         }
     }
 
