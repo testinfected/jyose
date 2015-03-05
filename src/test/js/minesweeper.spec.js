@@ -65,7 +65,7 @@ describe('minesweeper', function () {
         it('indicates number of neighboring bombs when cell is safe', function () {
             for (var row = 1; row <= 3; row++) {
                 for (var col = 1; col <= 3; col++) {
-                    mouse.click(cell(row, col)).should.be.ok(loc(row, col));
+                    mouse.click(cell(row, col)).should.be.ok;
                 }
             }
             cell(1, 1).textContent.should.equal('');

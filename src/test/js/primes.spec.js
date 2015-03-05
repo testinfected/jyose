@@ -188,21 +188,21 @@ describe('rendering', function () {
     describe('successive decompositions', function() {
         it('clears preceding result', function () {
             primes.renderDecompositions({number: 66, decomposition: [2, 3, 11]});
-            results().should.be.empty();
+            results().should.be.equal('');
             primes.renderDecompositions([
                 {number: 1000001, error: "number too big"},
                 {number: "1allo", error: "not a number"}
             ]);
-            result().should.be.empty();
+            result().should.equal('');
             primes.renderDecompositions({number: 66, decomposition: [2, 3, 11]});
-            results().should.be.empty()
+            results().should.equal('')
         });
     });
 
     describe('last decomposition', function() {
         it('omits if absent', function () {
             primes.renderLastDecomposition({});
-            lastResult().should.be.empty();
+            lastResult().should.be.equal('');
         });
 
         it('displays if included', function () {
