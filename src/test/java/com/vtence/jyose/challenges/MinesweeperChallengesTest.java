@@ -3,8 +3,6 @@ package com.vtence.jyose.challenges;
 import com.vtence.jyose.JYoseDriver;
 import com.vtence.jyose.WebRoot;
 import com.vtence.jyose.pages.MineSweeperPage;
-import com.vtence.molecule.support.HttpRequest;
-import com.vtence.molecule.support.HttpResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
