@@ -3,8 +3,7 @@ describe('minesweeper', function () {
     var field;
 
     beforeEach(function () {
-        var body = document.querySelector('body');
-        body.innerHTML = '<table id="board"></table>';
+        document.body.innerHTML = '<table id="board"></table>';
     });
 
     function cell(row, col) {

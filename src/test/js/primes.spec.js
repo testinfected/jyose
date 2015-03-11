@@ -36,8 +36,6 @@ describe('ajax', function () {
         });
 
         it('escapes values', function () {
-            [12].map(function(v) { return v}).join('&name=').should.equal('12');
-            [12, 13].map(function(v) { return v }).join('&name=').should.equal('12&name=13');
             parameters.should.equal("say=I'll%20be%20back");
         });
     });
@@ -64,15 +62,14 @@ describe('primes', function () {
         var settings;
 
         beforeEach(function () {
-            var body = document.querySelector('body');
-            body.innerHTML =
+            document.body.innerHTML =
                 '<form id="primes" action="/url" method="post" enctype="application/x-www-form-urlencoded">' +
                 '   <input id ="number" name="number" value=""/>' +
                 '</form>';
             form = document.getElementById('primes')
         });
 
-        describe('in any case', function() {
+        describe('always', function() {
             beforeEach(function() {
                 settings = primes.Form.parse(form).settings;
             });
@@ -118,7 +115,7 @@ describe('primes', function () {
 
 describe('rendering', function () {
     beforeEach(function () {
-        document.querySelector('body').innerHTML =
+        document.body.innerHTML =
             '<span id="last-decomposition"></span>' +
             '<span id="result"></span>' +
             '<ol id="results"></ol>';
