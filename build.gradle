@@ -27,16 +27,15 @@ def libs = [
         simple            : ['org.simpleframework:simple-common:6.0.1',
                              'org.simpleframework:simple-transport:6.0.1',
                              'org.simpleframework:simple-http:6.0.1'],
-        hamcrest_all      : 'org.hamcrest:hamcrest-all:1.3',
-        junit             : 'junit:junit:4.11@jar',
-        jmock             : 'org.jmock:jmock:2.6.0@jar',
-        jmock_junit4      : 'org.jmock:jmock-junit4:2.6.0@jar',
+        junit             : 'junit:junit:4.12@jar',
+        jmock             : ['org.jmock:jmock:2.8.1@jar',
+                             'org.jmock:jmock-junit4:2.8.1@jar'],
+        hamcrest          : ['org.hamcrest:java-hamcrest:2.0.0.0',
+                             'org.hamcrest:hamcrest-junit:2.0.0.0'],
+        hamcrest_dom      : ['se.fishtank:css-selectors:1.0.5',
+                             'org.testinfected.hamcrest-matchers:dom-matchers:1.8@jar'],
         htmlunit          : 'net.sourceforge.htmlunit:htmlunit:2.14',
         molecule_test     : 'com.vtence.molecule:molecule:0.10:tests',
-        hamcrest_dom      : ['com.google.guava:guava:15.0',
-                             'org.antlr:antlr-runtime:3.0.1',
-                             'com.3levers.cssselectors:cssselectors:1.0@jar',
-                             'org.testinfected.hamcrest-matchers:dom-matchers:1.5@jar'],
         selenium_api      : 'org.seleniumhq.selenium:selenium-api:2.44.0',
         selenium_remote   : 'org.seleniumhq.selenium:selenium-remote-driver:2.44.0',
         selenium_firefox  : 'org.seleniumhq.selenium:selenium-firefox-driver:2.44.0',
@@ -58,10 +57,9 @@ dependencies {
     compile libs.simple
     compile libs.jmustache
 
-    testCompile libs.hamcrest_all
     testCompile libs.junit
     testCompile libs.jmock
-    testCompile libs.jmock_junit4
+    testCompile libs.hamcrest
     testCompile libs.htmlunit
     testCompile libs.molecule_test
     testCompile libs.hamcrest_dom
