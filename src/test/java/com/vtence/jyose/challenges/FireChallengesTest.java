@@ -3,11 +3,13 @@ package com.vtence.jyose.challenges;
 import com.vtence.jyose.JYose;
 import com.vtence.jyose.WebRoot;
 import com.vtence.molecule.WebServer;
-import com.vtence.molecule.support.HttpRequest;
-import com.vtence.molecule.support.HttpResponse;
+import com.vtence.molecule.testing.http.HttpRequest;
+import com.vtence.molecule.testing.http.HttpResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import static com.vtence.molecule.testing.http.HttpResponseAssert.assertThat;
 
 public class FireChallengesTest {
 
@@ -36,9 +38,10 @@ public class FireChallengesTest {
                 "..." +
                 "P.." +
                 ".WF");
-        response.assertOK();
-        response.assertHasContentType("application/json");
-        response.assertHasContent(
+        assertThat(response)
+                .isOK()
+                .hasContentType("application/json")
+                .hasBodyText(
                 "{" +
                     "\"map\":[" +
                         "\"...\"," +
@@ -59,9 +62,10 @@ public class FireChallengesTest {
                 "W..P." +
                 "....." +
                 "W....");
-        response.assertOK();
-        response.assertHasContentType("application/json");
-        response.assertHasContent(
+        assertThat(response)
+                .isOK()
+                .hasContentType("application/json")
+                .hasBodyText(
                 "{" +
                     "\"map\":[" +
                         "\"W..P.\"," +
@@ -82,9 +86,10 @@ public class FireChallengesTest {
                 "W...P" +
                 "F...." +
                 "....W");
-        response.assertOK();
-        response.assertHasContentType("application/json");
-        response.assertHasContent(
+        assertThat(response)
+                .isOK()
+                .hasContentType("application/json")
+                .hasBodyText(
                 "{" +
                     "\"map\":[" +
                         "\"W...P\"," +

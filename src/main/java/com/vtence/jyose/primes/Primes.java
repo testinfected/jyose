@@ -28,7 +28,7 @@ public class Primes {
     }
 
     public void last(Request request, Response response) throws IOException {
-        response.body(gson.toJson(lastDecomposition));
+        response.done(gson.toJson(lastDecomposition));
     }
 
     private List<Decomposition> decomposeNumbers(Request request) {
@@ -46,7 +46,7 @@ public class Primes {
 
     private void respondWith(Response response, List<Decomposition> decompositions) throws IOException {
         response.contentType(MimeTypes.JSON);
-        response.body(toJson(decompositions));
+        response.done(toJson(decompositions));
     }
 
     private String toJson(List<Decomposition> decompositions) {

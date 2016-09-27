@@ -1,27 +1,34 @@
 package com.vtence.jyose;
 
-import com.vtence.molecule.support.TemplateRenderer;
 import com.vtence.molecule.templating.JMustacheRenderer;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 
-import static com.vtence.jyose.HTMLDocument.toElement;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class ViewRenderer {
 
     private final JMustacheRenderer renderer =
-            new JMustacheRenderer().encoding("utf-8").extension("html").defaultValue("");
-    private final TemplateRenderer template;
+            new JMustacheRenderer().encoding(UTF_8).extension("html").defaultValue("");
+
+    private final String template;
+    private Object context = new Object();
 
     private ViewRenderer(String template) {
-        this.template = new TemplateRenderer(template);
+        this.template = template;
     }
 
     public static ViewRenderer render(String template) {
         return new ViewRenderer(template);
+    }
+
+    public ViewRenderer with(Object context){
+        this.context = context;
+        return this;
     }
 
     public ViewRenderer from(File location) {
@@ -29,20 +36,21 @@ public class ViewRenderer {
         return this;
     }
 
-    public ViewRenderer with(Object context) {
-        this.template.with(context);
-        return this;
-    }
-
     public String asString() {
         try {
-            return template.asString(renderer);
+            StringWriter buffer = new StringWriter();
+            renderer.render(buffer, template, context);
+            return buffer.toString();
         } catch (IOException e) {
             throw new AssertionError(e);
         }
     }
 
-    public Element asDom() throws IOException, SAXException {
-        return toElement(asString());
+    public Element asDom() {
+        try {
+            return HTMLDocument.toElement(asString());
+        } catch (IOException | SAXException e) {
+            throw new AssertionError(e);
+        }
     }
 }

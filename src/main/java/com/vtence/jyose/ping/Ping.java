@@ -17,7 +17,7 @@ public class Ping {
 
     public void pong(Request request, Response response) throws IOException {
         response.contentType(MimeTypes.JSON);
-        response.body(gson.toJson(new Pong()));
+        response.done(gson.toJson(new Pong()));
     }
 
     public static class Pong {

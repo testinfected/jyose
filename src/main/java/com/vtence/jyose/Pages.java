@@ -15,19 +15,19 @@ public class Pages {
                 new JMustacheRenderer().fromDir(new File(webroot, "views")).extension("html"));
     }
 
-    public Template home() {
+    public Template<Void> home() {
         return templates.named("home");
     }
 
-    public Template primes() {
+    public Template<Void> primes() {
         return templates.named("primes");
     }
 
-    public Template minesweeper() {
+    public Template<Void> minesweeper() {
         return templates.named("minesweeper");
     }
 
-    public Template astroport() {
+    public Template<Void> astroport() {
         return templates.named("astroport");
     }
 }

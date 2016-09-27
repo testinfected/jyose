@@ -9,16 +9,16 @@ import java.io.IOException;
 
 public class StaticPage {
 
-    private static final Object NO_CONTEXT = null;
+    private static final Void NO_CONTEXT = null;
 
-    private final Template view;
+    private final Template<Void> view;
 
-    public StaticPage(Template view) {
+    public StaticPage(Template<Void> view) {
         this.view = view;
     }
 
     public void render(Request request, Response response) throws IOException {
         response.contentType(MimeTypes.HTML);
-        response.body(view.render(NO_CONTEXT));
+        response.done(view.render(NO_CONTEXT));
     }
 }

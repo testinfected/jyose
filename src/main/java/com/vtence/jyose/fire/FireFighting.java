@@ -25,7 +25,7 @@ public class FireFighting implements Application {
         String[] map = Splitter.fixedLength(width).split(request.parameter("map"));
         Terrain terrain = Terrain.parse(map);
         response.contentType(JSON);
-        response.body(gson.toJson(new Solution(map, fireSolutionFor(terrain))));
+        response.done(gson.toJson(new Solution(map, fireSolutionFor(terrain))));
     }
 
     private Stream<Move> fireSolutionFor(Terrain terrain) {

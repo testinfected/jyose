@@ -3,12 +3,13 @@ package com.vtence.jyose.challenges;
 import com.vtence.jyose.JYose;
 import com.vtence.jyose.WebRoot;
 import com.vtence.molecule.WebServer;
-import com.vtence.molecule.support.HttpRequest;
-import com.vtence.molecule.support.HttpResponse;
+import com.vtence.molecule.testing.http.HttpRequest;
+import com.vtence.molecule.testing.http.HttpResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.vtence.molecule.testing.http.HttpResponseAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 
 public class AstroportChallengesTest {
@@ -35,8 +36,8 @@ public class AstroportChallengesTest {
     @Test
     public void passesAstroportNameChallenge() throws Exception {
         response = request.get("/astroport");
-        response.assertOK();
-        response.assertHasContentType("text/html");
-        response.assertHasContent(containsString("<h3 id=\"astroport-name\">Molecule</h3>"));
+        assertThat(response).isOK()
+                            .hasContentType("text/html")
+                            .hasBodyText(containsString("<h3 id=\"astroport-name\">Molecule</h3>"));
     }
 }

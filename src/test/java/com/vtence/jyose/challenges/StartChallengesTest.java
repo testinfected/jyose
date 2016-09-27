@@ -3,15 +3,15 @@ package com.vtence.jyose.challenges;
 import com.vtence.jyose.JYose;
 import com.vtence.jyose.WebRoot;
 import com.vtence.molecule.WebServer;
-import com.vtence.molecule.http.MimeTypes;
-import com.vtence.molecule.support.HttpRequest;
-import com.vtence.molecule.support.HttpResponse;
+import com.vtence.molecule.testing.http.HttpRequest;
+import com.vtence.molecule.testing.http.HttpResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 
+import static com.vtence.molecule.testing.http.HttpResponseAssert.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
 
 public class StartChallengesTest {
@@ -31,24 +31,27 @@ public class StartChallengesTest {
     @Test public void
     passesHelloChallenge() throws IOException {
         response = request.get("/");
-        response.assertOK();
-        response.assertHasContent(containsString("Hello Yose"));
+        assertThat(response)
+                .isOK()
+                .hasBodyText(containsString("Hello Yose"));
     }
 
     @Test public void
     passesPingChallenge() throws IOException {
         response = request.get("/ping");
-        response.assertOK();
-        response.assertHasContentType("application/json");
-        response.assertHasContent("{\"alive\":true}");
+        assertThat(response)
+                .isOK()
+                .hasContentType("application/json")
+                .hasBodyText("{\"alive\":true}");
     }
 
     @Test public void
     passesShareChallenge() throws IOException {
         response = request.get("/");
-        response.assertOK();
-        response.assertHasContentType(containsString(MimeTypes.HTML));
-        response.assertHasContent(containsString(
+        assertThat(response)
+                .isOK()
+                .hasContentType("text/html")
+                .hasBodyText(containsString(
                 "<a id=\"repository-link\" href=\"https://github.com/testinfected/jyose\""
         ));
     }

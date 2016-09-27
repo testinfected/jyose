@@ -3,14 +3,15 @@ package com.vtence.jyose.challenges;
 import com.vtence.jyose.JYose;
 import com.vtence.jyose.WebRoot;
 import com.vtence.molecule.WebServer;
-import com.vtence.molecule.support.HttpRequest;
-import com.vtence.molecule.support.HttpResponse;
+import com.vtence.molecule.testing.http.HttpRequest;
+import com.vtence.molecule.testing.http.HttpResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 
+import static com.vtence.molecule.testing.http.HttpResponseAssert.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
 
 public class PortfolioChallengesTest {
@@ -30,29 +31,33 @@ public class PortfolioChallengesTest {
     @Test public void
     passesContactInformationChallenge() throws IOException {
         response = request.get("/");
-        response.assertOK();
-        response.assertHasContent(containsString("<a id=\"contact-me-link\" href=\"http://vtence.com\""));
+        assertThat(response)
+                .isOK()
+                .hasBodyText(containsString("<a id=\"contact-me-link\" href=\"http://vtence.com\""));
     }
 
     @Test public void
     passesPingSourceChallenge() throws IOException {
         response = request.get("/");
-        response.assertOK();
-        response.assertHasContent(containsString("<a id=\"ping-challenge-link\" href=\"/ping\""));
+        assertThat(response)
+                .isOK()
+                .hasBodyText(containsString("<a id=\"ping-challenge-link\" href=\"/ping\""));
     }
 
     @Test public void
     passesPrimesFactorsChallenge() throws IOException {
         response = request.get("/");
-        response.assertOK();
-        response.assertHasContent(containsString("<a id=\"prime-factors-decomposition-link\" href=\"/primeFactors/ui\""));
+        assertThat(response)
+                .isOK()
+                .hasBodyText(containsString("<a id=\"prime-factors-decomposition-link\" href=\"/primeFactors/ui\""));
     }
 
     @Test public void
     passesMinesweeperChallenge() throws IOException {
         response = request.get("/");
-        response.assertOK();
-        response.assertHasContent(containsString("<a id=\"minesweeper-link\" href=\"/minesweeper\""));
+        assertThat(response)
+                .isOK()
+                .hasBodyText(containsString("<a id=\"minesweeper-link\" href=\"/minesweeper\""));
     }
 
     @After public void
