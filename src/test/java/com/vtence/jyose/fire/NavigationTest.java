@@ -92,7 +92,7 @@ public class NavigationTest {
     }
 
     private Matcher<? super Path> hasDestination(int row, int col) {
-        return new FeatureMatcher<Path, Pos>(equalTo(Pos.at(row, col)), "position", "position") {
+        return new FeatureMatcher<Path, Pos>(equalTo(Pos.at(col, row)), "position", "position") {
             @Override
             protected Pos featureValueOf(Path actual) {
                 return actual.pos();

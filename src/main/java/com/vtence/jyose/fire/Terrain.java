@@ -23,7 +23,7 @@ public class Terrain {
     }
 
     public boolean contains(Pos pos) {
-        return isDefined(pos.row, tiles) && isDefined(pos.col, tiles.get(pos.row));
+        return isDefined(pos.y, tiles) && isDefined(pos.x, tiles.get(pos.y));
     }
 
     private boolean isDefined(int index, List<?> map) {
@@ -31,7 +31,7 @@ public class Terrain {
     }
 
     public int at(Pos pos) {
-        return at(pos.row, pos.col);
+        return at(pos.x, pos.y);
     }
 
     public Optional<Pos> find(int what) {
@@ -39,7 +39,7 @@ public class Terrain {
     }
 
     public Stream<Pos> findAll(int what) {
-        return allRows().flatMap(row -> cellsContaining(what).apply(row).map(col -> Pos.at(row, col)));
+        return allRows().flatMap(row -> cellsContaining(what).apply(row).map(col -> Pos.at(col, row)));
     }
 
     private Stream<Integer> allRows() {
@@ -47,14 +47,14 @@ public class Terrain {
     }
 
     private Function<Integer, Stream<Integer>> cellsContaining(int what) {
-        return row -> allCellsOf(row).filter(col -> at(row, col) == what);
+        return row -> allCellsOf(row).filter(col -> at(col, row) == what);
     }
 
     private Stream<Integer> allCellsOf(int row) {
         return range(0, tiles.get(row).size()).boxed();
     }
 
-    private int at(int row, int col) {
+    private int at(int col, int row) {
         return tiles.get(row).get(col);
     }
 }

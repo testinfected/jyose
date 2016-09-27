@@ -38,25 +38,25 @@ public class TerrainTest {
     @Test
     public void locatesGivenTargetsOnMap() throws Exception {
         Terrain terrain = Terrain.parse("..F", ".F.", "F..");
-        assertThat("fires", terrain.findAll('F').collect(toList()), contains(Pos.at(0, 2), Pos.at(1, 1), Pos.at(2, 0)));
+        assertThat("fires", terrain.findAll('F').collect(toList()), contains(Pos.at(2, 0), Pos.at(1, 1), Pos.at(0, 2)));
     }
 
     @Test
     public void locatesAllTargetsOnSameRow() throws Exception {
         Terrain terrain = Terrain.parse("W..W");
-        assertThat("fires", terrain.findAll('W').collect(toList()), contains(Pos.at(0, 0), Pos.at(0, 3)));
+        assertThat("fires", terrain.findAll('W').collect(toList()), contains(Pos.at(0, 0), Pos.at(3, 0)));
     }
 
     private void assertContainsCells(Terrain terrain, int height, int width) {
-        range(0, height).forEach((row) -> range(0, width).forEach((col) -> assertWithinLimits(terrain, Pos.at(row, col))));
-        assertOffLimits(terrain, Pos.at(height, width));
+        range(0, height).forEach((row) -> range(0, width).forEach((col) -> assertWithinLimits(terrain, Pos.at(col, row))));
+        assertOffLimits(terrain, Pos.at(width, height));
     }
 
     private void assertWithinLimits(Terrain terrain, Pos pos) {
-        assertThat(format("(%s,%s) off limits", pos.row, pos.col), terrain.contains(pos));
+        assertThat(format("%s off limits", pos), terrain.contains(pos));
     }
 
     private void assertOffLimits(Terrain terrain, Pos pos) {
-        assertThat(format("(%s,%s) within limits", pos.row, pos.col), !terrain.contains(pos));
+        assertThat(format("%s within limits", pos), !terrain.contains(pos));
     }
 }

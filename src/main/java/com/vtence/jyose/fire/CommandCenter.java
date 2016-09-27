@@ -1,13 +1,11 @@
 package com.vtence.jyose.fire;
 
+import java.util.Comparator;
 import java.util.Optional;
-import java.util.function.BinaryOperator;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
-import static java.util.Comparator.naturalOrder;
-import static java.util.function.BinaryOperator.minBy;
 
 public class CommandCenter {
 
@@ -23,7 +21,7 @@ public class CommandCenter {
         Stream<Pos> waters = terrain.findAll(WATER);
         Optional<Path> shortest = waters.map(water -> Path.concat(
                 Navigation.on(terrain).avoiding(FIRE).findPath(plane, water).orElseThrow(invalidMap),
-                Navigation.on(terrain).findPath(water, fire).orElseThrow(invalidMap))).reduce(shortestPath());
+                Navigation.on(terrain).findPath(water, fire).orElseThrow(invalidMap))).min(pathLength());
         return shortest.orElseThrow(invalidMap).moves();
     }
 
@@ -32,11 +30,11 @@ public class CommandCenter {
         Stream<Pos> water = terrain.findAll(WATER);
 
         Optional<Path> shortest =
-                water.map(w -> Navigation.on(terrain).findPath(plane, w).get()).reduce(shortestPath());
+                water.map(w -> Navigation.on(terrain).findPath(plane, w).get()).min(pathLength());
         return shortest.orElseThrow(invalidMap).moves();
     }
 
-    private BinaryOperator<Path> shortestPath() {
-        return minBy(comparing(Path::length, naturalOrder()));
+    private Comparator<Path> pathLength() {
+        return comparing(Path::length);
     }
 }

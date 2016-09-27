@@ -3,32 +3,20 @@ package com.vtence.jyose.fire;
 import java.util.stream.Stream;
 
 public class Pos {
-    public final int row;
-    public final int col;
+    public final int x;
+    public final int y;
 
-    public Pos(Integer row, Integer col) {
-        this.row = row;
-        this.col = col;
+    public Pos(Integer x, Integer y) {
+        this.x = x;
+        this.y = y;
     }
 
-    public static Pos at(int row, int col) {
-        return new Pos(row, col);
+    public static Pos at(int x, int y) {
+        return new Pos(x, y);
     }
 
-    public Pos up() {
-        return at(row - 1, col);
-    }
-
-    public Pos right() {
-        return at(row, col + 1);
-    }
-
-    public Pos down() {
-        return at(row + 1, col);
-    }
-
-    public Pos left() {
-        return at(row, col - 1);
+    public Pos plus(Pos other) {
+        return new Pos(x + other.x, y + other.y);
     }
 
     public Stream<Step> neighbors() {
@@ -42,21 +30,21 @@ public class Pos {
 
         Pos pos = (Pos) o;
 
-        if (col != pos.col) return false;
-        if (row != pos.row) return false;
+        if (y != pos.y) return false;
+        if (x != pos.x) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = row;
-        result = 31 * result + col;
+        int result = x;
+        result = 31 * result + y;
         return result;
     }
 
     @Override
     public String toString() {
-        return String.format("(%s,%s)", row, col);
+        return String.format("(%s,%s)", x, y);
     }
 }

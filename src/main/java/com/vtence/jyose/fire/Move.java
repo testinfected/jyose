@@ -4,25 +4,25 @@ public enum Move {
     Right {
         @Override
         public Pos from(Pos initial) {
-            return initial.right();
+            return initial.plus(new Pos(1, 0));
         }
     },
     Down {
         @Override
         public Pos from(Pos initial) {
-            return initial.down();
+            return initial.plus(new Pos(0, 1));
         }
     },
     Left {
         @Override
         public Pos from(Pos initial) {
-            return initial.left();
+            return initial.plus(new Pos(-1, 0));
         }
     },
     Up {
         @Override
         public Pos from(Pos initial) {
-            return initial.up();
+            return initial.plus(new Pos(0, -1));
         }
     };
 
