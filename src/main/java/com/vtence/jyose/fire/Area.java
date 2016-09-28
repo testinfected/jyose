@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class Area {
     private final Queue<Path> frontier = new ArrayDeque<>();
-    private final Set<Pos> visited = new HashSet<>();
+    private final Set<Vector> visited = new HashSet<>();
 
     public boolean done() {
         return frontier.isEmpty();
@@ -18,8 +18,8 @@ public class Area {
     }
 
     public void expand(Path path) {
-        if (!visited.contains(path.pos())) {
-            visited.add(path.pos());
+        if (!visited.contains(path.end())) {
+            visited.add(path.end());
             frontier.add(path);
         }
     }

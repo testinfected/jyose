@@ -13,9 +13,9 @@ public class AreaTest {
     @Test
     public void visitsLocationsInOrderOfAddition() throws Exception {
         Area area = new Area();
-        area.expand(Path.startingAt(Pos.at(0, 1)));
-        area.expand(Path.startingAt(Pos.at(1, 3)));
-        area.expand(Path.startingAt(Pos.at(2, 1)));
+        area.expand(Path.startingAt(Vector.pos(0, 1)));
+        area.expand(Path.startingAt(Vector.pos(1, 3)));
+        area.expand(Path.startingAt(Vector.pos(2, 1)));
 
         assertThat("(1, 0)", area.visitNext(), hasPosition(1, 0));
         assertThat("(3, 1)", area.visitNext(), hasPosition(3, 1));
@@ -26,7 +26,7 @@ public class AreaTest {
     @Test
     public void ignoresLocationsAlreadyVisited() throws Exception {
         Area area = new Area();
-        Path location = Path.startingAt(Pos.at(5, 4));
+        Path location = Path.startingAt(Vector.pos(5, 4));
         area.expand(location);
         area.visitNext();
         assertTrue(area.done());
@@ -35,10 +35,10 @@ public class AreaTest {
     }
 
     private Matcher<? super Path> hasPosition(int row, int col) {
-        return new FeatureMatcher<Path, Pos>(equalTo(Pos.at(col, row)), "a location", "location") {
+        return new FeatureMatcher<Path, Vector>(equalTo(Vector.pos(col, row)), "a location", "location") {
             @Override
-            protected Pos featureValueOf(Path actual) {
-                return actual.pos();
+            protected Vector featureValueOf(Path actual) {
+                return actual.end();
             }
         };
     }

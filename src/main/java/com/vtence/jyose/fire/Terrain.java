@@ -22,7 +22,7 @@ public class Terrain {
         return new Terrain(tiles);
     }
 
-    public boolean contains(Pos pos) {
+    public boolean contains(Vector pos) {
         return isDefined(pos.y, tiles) && isDefined(pos.x, tiles.get(pos.y));
     }
 
@@ -30,16 +30,16 @@ public class Terrain {
         return index >= 0 && index < map.size();
     }
 
-    public int at(Pos pos) {
+    public int at(Vector pos) {
         return at(pos.x, pos.y);
     }
 
-    public Optional<Pos> find(int what) {
+    public Optional<Vector> find(int what) {
         return findAll(what).findAny();
     }
 
-    public Stream<Pos> findAll(int what) {
-        return allRows().flatMap(row -> cellsContaining(what).apply(row).map(col -> Pos.at(col, row)));
+    public Stream<Vector> findAll(int what) {
+        return allRows().flatMap(row -> cellsContaining(what).apply(row).map(col -> Vector.pos(col, row)));
     }
 
     private Stream<Integer> allRows() {

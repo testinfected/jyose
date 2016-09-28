@@ -77,25 +77,25 @@ public class NavigationTest {
     }
 
     private Path findPathToGoal(Terrain terrain) {
-        Pos start = terrain.find('S').get();
-        Pos goal = terrain.find('G').get();
+        Vector start = terrain.find('S').get();
+        Vector goal = terrain.find('G').get();
         Optional<Path> solution = Navigation.on(terrain).avoiding('-').findPath(start, goal);
         assertThat("no solution found", solution.isPresent());
         Path path = solution.get();
-        path.moves().reduce(start, (pos, move) -> {
-            Pos next = move.from(pos);
+        path.steps().reduce(start, (pos, step) -> {
+            Vector next = pos.plus(step);
             if (!terrain.contains(next) || terrain.at(next) == '-')
-                throw new AssertionError("Illegal move: " + move + " to " + pos);
+                throw new AssertionError("Illegal move: " + step + " to " + pos);
             return next;
         }, (left, right) -> right);
         return path;
     }
 
     private Matcher<? super Path> hasDestination(int row, int col) {
-        return new FeatureMatcher<Path, Pos>(equalTo(Pos.at(col, row)), "position", "position") {
+        return new FeatureMatcher<Path, Vector>(equalTo(Vector.pos(col, row)), "position", "position") {
             @Override
-            protected Pos featureValueOf(Path actual) {
-                return actual.pos();
+            protected Vector featureValueOf(Path actual) {
+                return actual.end();
             }
         };
     }

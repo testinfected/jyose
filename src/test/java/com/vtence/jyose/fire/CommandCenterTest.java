@@ -4,10 +4,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static com.vtence.jyose.fire.Move.Down;
-import static com.vtence.jyose.fire.Move.Left;
-import static com.vtence.jyose.fire.Move.Right;
-import static com.vtence.jyose.fire.Move.Up;
+import static com.vtence.jyose.fire.Moves.*;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -23,8 +20,8 @@ public class CommandCenterTest {
                 "....",
                 "..W.");
         CommandCenter base = new CommandCenter();
-        List<Move> moves = base.planAttack(terrain).collect(toList());
-        assertThat("moves", moves, contains(Right, Right, Down, Down, Down, Left, Up, Up));
+        List<Vector> moves = base.planAttack(terrain).collect(toList());
+        assertThat("moves", moves, contains(RIGHT, RIGHT, DOWN, DOWN, DOWN, LEFT, UP, UP));
     }
 
     @Test
@@ -34,8 +31,8 @@ public class CommandCenterTest {
                 ".....",
                 "P...W");
         CommandCenter base = new CommandCenter();
-        List<Move> moves = base.trainPilot(terrain).collect(toList());
-        assertThat("moves", moves, contains(Up, Up));
+        List<Vector> moves = base.trainPilot(terrain).collect(toList());
+        assertThat("moves", moves, contains(UP, UP));
     }
 
     @Test
@@ -45,7 +42,7 @@ public class CommandCenterTest {
                 ".W...P..W..",
                 "...F.......");
         CommandCenter base = new CommandCenter();
-        List<Move> moves = base.planAttack(terrain).collect(toList());
+        List<Vector> moves = base.planAttack(terrain).collect(toList());
         assertThat("moves", moves, hasSize(7));
     }
 }

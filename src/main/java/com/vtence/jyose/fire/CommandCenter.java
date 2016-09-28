@@ -15,23 +15,27 @@ public class CommandCenter {
 
     private final Supplier<? extends RuntimeException> invalidMap = () -> new IllegalArgumentException("Invalid map");
 
-    public Stream<Move> planAttack(Terrain terrain) {
-        Pos plane = terrain.find(PLANE).orElseThrow(invalidMap);
-        Pos fire = terrain.find(FIRE).orElseThrow(invalidMap);
-        Stream<Pos> waters = terrain.findAll(WATER);
-        Optional<Path> shortest = waters.map(water -> Path.concat(
-                Navigation.on(terrain).avoiding(FIRE).findPath(plane, water).orElseThrow(invalidMap),
-                Navigation.on(terrain).findPath(water, fire).orElseThrow(invalidMap))).min(pathLength());
-        return shortest.orElseThrow(invalidMap).moves();
+    public Stream<Vector> planAttack(Terrain terrain) {
+        Vector plane = terrain.find(PLANE).orElseThrow(invalidMap);
+        Vector fire = terrain.find(FIRE).orElseThrow(invalidMap);
+        Stream<Vector> waters = terrain.findAll(WATER);
+        Optional<Path> shortest = waters.map(water ->
+                Path.concat(
+                        Navigation.on(terrain).avoiding(FIRE).findPath(plane, water).orElseThrow(invalidMap),
+                        Navigation.on(terrain).findPath(water, fire).orElseThrow(invalidMap)))
+                .min(pathLength());
+
+        return shortest.orElseThrow(invalidMap).steps();
     }
 
-    public Stream<Move> trainPilot(Terrain terrain) {
-        Pos plane = terrain.find(PLANE).orElseThrow(invalidMap);
-        Stream<Pos> water = terrain.findAll(WATER);
+    public Stream<Vector> trainPilot(Terrain terrain) {
+        Vector plane = terrain.find(PLANE).orElseThrow(invalidMap);
+        Stream<Vector> water = terrain.findAll(WATER);
 
         Optional<Path> shortest =
-                water.map(w -> Navigation.on(terrain).findPath(plane, w).get()).min(pathLength());
-        return shortest.orElseThrow(invalidMap).moves();
+                water.map(w -> Navigation.on(terrain).findPath(plane, w).orElseThrow(invalidMap)).min(pathLength());
+
+        return shortest.orElseThrow(invalidMap).steps();
     }
 
     private Comparator<Path> pathLength() {

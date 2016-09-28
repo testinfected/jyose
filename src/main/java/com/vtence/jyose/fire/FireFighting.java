@@ -28,7 +28,7 @@ public class FireFighting implements Application {
         response.done(gson.toJson(new Solution(map, fireSolutionFor(terrain))));
     }
 
-    private Stream<Move> fireSolutionFor(Terrain terrain) {
+    private Stream<Vector> fireSolutionFor(Terrain terrain) {
         CommandCenter base = new CommandCenter();
         if (terrain.find(FIRE).isPresent()) {
             return base.planAttack(terrain);
@@ -41,17 +41,9 @@ public class FireFighting implements Application {
         private final String[] map;
         private final DxDy[] moves;
 
-        public Solution(String[] map, Stream<Move> moves) {
+        public Solution(String[] map, Stream<Vector> moves) {
             this.map = map;
-            this.moves = moves.map(move -> {
-                switch (move) {
-                    case Right: return new DxDy(1, 0);
-                    case Left: return new DxDy(-1, 0);
-                    case Down: return new DxDy(0, 1);
-                    case Up: return new DxDy(0, -1);
-                    default: return new DxDy(0, 0);
-                }
-            }).toArray(DxDy[]::new);
+            this.moves = moves.map(move -> new DxDy(move.x, move.y)).toArray(DxDy[]::new);
         }
 
         public static class DxDy {

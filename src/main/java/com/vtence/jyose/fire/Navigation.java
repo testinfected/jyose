@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 public class Navigation {
 
@@ -24,34 +23,32 @@ public class Navigation {
         return this;
     }
 
-    public Optional<Path> findPath(Pos from, Pos to) {
+    public Optional<Path> findPath(Vector from, Vector to) {
         Area explored = new Area();
         explored.expand(Path.startingAt(from));
 
         while (!explored.done()) {
             Path next = explored.visitNext();
-            if (next.pos().equals(to)) return Optional.of(next);
-
-            Stream<Step> neighbors = legalNeighborsOnly(allNeighbors(next));
-            neighbors.map(next::advance).forEach(explored::expand);
+            if (destinationReached(next, to)) return Optional.of(next);
+            next.expand(legalPaths()).forEach(explored::expand);
         }
 
         return Optional.empty();
     }
 
-    private Stream<Step> legalNeighborsOnly(Stream<Step> neighbors) {
-        return neighbors.filter(legal().and(obstacle().negate()));
+    private boolean destinationReached(Path path, Vector destination) {
+        return destination.equals(path.end());
     }
 
-    private Stream<Step> allNeighbors(Path next) {
-        return next.pos().neighbors();
+    private Predicate<Path> legalPaths() {
+        return legal().and(obstacle().negate());
     }
 
-    private Predicate<Step> legal() {
-        return s -> terrain.contains(s.pos);
+    private Predicate<Path> legal() {
+        return p -> terrain.contains(p.end());
     }
 
-    private Predicate<Step> obstacle() {
-        return s -> obstacles.contains(terrain.at(s.pos));
+    private Predicate<Path> obstacle() {
+        return p -> obstacles.contains(terrain.at(p.end()));
     }
 }
