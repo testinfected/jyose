@@ -1,16 +1,16 @@
 package com.vtence.jyose.pages;
 
-import com.objogate.wl.web.AsyncElementDriver;
-import com.objogate.wl.web.AsyncWebDriver;
+import com.vtence.mario.BrowserDriver;
+import com.vtence.mario.WebElementDriver;
 import org.openqa.selenium.By;
 
 import static java.util.stream.IntStream.range;
 import static org.hamcrest.Matchers.equalTo;
 
 public class PrimeFactorsPage {
-    private final AsyncWebDriver browser;
+    private final BrowserDriver browser;
 
-    public PrimeFactorsPage(AsyncWebDriver browser) {
+    public PrimeFactorsPage(BrowserDriver browser) {
         this.browser = browser;
     }
 
@@ -20,19 +20,19 @@ public class PrimeFactorsPage {
     }
 
     public void showsSingleResult(String decomposition) {
-        browser.element(By.id("result")).assertText(equalTo(decomposition));
+        browser.element(By.id("result")).hasText(equalTo(decomposition));
     }
 
     public void showsResults(String... decompositions) {
-        AsyncElementDriver results = browser.element(By.id("results"));
-        range(0, decompositions.length).forEach(n -> nthItem(results, n + 1).assertText(equalTo(decompositions[n])));
+        WebElementDriver results = browser.element(By.id("results"));
+        range(0, decompositions.length).forEach(n -> nthItem(results, n + 1).hasText(equalTo(decompositions[n])));
     }
 
-    private AsyncElementDriver nthItem(AsyncElementDriver results, int index) {
+    private WebElementDriver nthItem(WebElementDriver results, int index) {
         return results.element(By.xpath("li[" + index + "]"));
     }
 
     public void showsLastDecomposition(String decomposition) {
-        browser.element(By.id("last-decomposition")).assertText(equalTo(decomposition));
+        browser.element(By.id("last-decomposition")).hasText(equalTo(decomposition));
     }
 }

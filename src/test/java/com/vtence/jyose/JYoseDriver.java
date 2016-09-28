@@ -1,22 +1,22 @@
 package com.vtence.jyose;
 
-import com.objogate.wl.UnsynchronizedProber;
-import com.objogate.wl.web.AsyncWebDriver;
 import com.vtence.jyose.pages.HomePage;
 import com.vtence.jyose.pages.MineSweeperPage;
 import com.vtence.jyose.pages.PrimeFactorsPage;
+import com.vtence.mario.BrowserDriver;
+import com.vtence.mario.UnsynchronizedProber;
 import com.vtence.molecule.WebServer;
 
 import java.io.File;
 import java.io.IOException;
 
 public class JYoseDriver {
-    private final AsyncWebDriver browser;
+    private final BrowserDriver browser;
     private final WebServer server;
     private final JYose yose;
 
     public JYoseDriver(int port, File webroot) {
-        this.browser = new AsyncWebDriver(new UnsynchronizedProber(), Browsers.firefox());
+        this.browser = new BrowserDriver(new UnsynchronizedProber(2000, 50), Browsers.firefox());
         this.server = WebServer.create(port);
         this.yose = new JYose(webroot);
     }

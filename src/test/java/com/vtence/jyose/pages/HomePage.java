@@ -1,12 +1,12 @@
 package com.vtence.jyose.pages;
 
-import com.objogate.wl.web.AsyncWebDriver;
+import com.vtence.mario.BrowserDriver;
 import org.openqa.selenium.By;
 
 public class HomePage {
-    private final AsyncWebDriver browser;
+    private final BrowserDriver browser;
 
-    public HomePage(AsyncWebDriver browser) {
+    public HomePage(BrowserDriver browser) {
         this.browser = browser;
     }
 

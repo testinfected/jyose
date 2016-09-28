@@ -36,12 +36,9 @@ def libs = [
                              'org.testinfected.hamcrest-matchers:dom-matchers:1.8@jar'],
         htmlunit          : 'net.sourceforge.htmlunit:htmlunit:2.14',
         molecule_test     : 'com.vtence.molecule:molecule:0.10:tests',
-        selenium_api      : 'org.seleniumhq.selenium:selenium-api:2.44.0',
-        selenium_remote   : 'org.seleniumhq.selenium:selenium-remote-driver:2.44.0',
-        selenium_firefox  : 'org.seleniumhq.selenium:selenium-firefox-driver:2.44.0',
-        selenium_phantom  : 'com.github.detro:phantomjsdriver:1.2.0',
-        windowlicker_core : 'com.googlecode.windowlicker:windowlicker-core:r268@jar',
-        windowlicker_web  : 'com.googlecode.windowlicker:windowlicker-web:r268@jar',
+        selenium_api      : 'org.seleniumhq.selenium:selenium-api:2.53.0',
+        selenium_firefox  : 'org.seleniumhq.selenium:selenium-firefox-driver:2.53.0',
+        mario             : 'com.vtence.mario:mario:0.2-SNAPSHOT'
 ]
 
 repositories {
@@ -65,12 +62,7 @@ dependencies {
     testCompile libs.hamcrest_dom
     testCompile libs.selenium_api
     testCompile libs.selenium_firefox
-    testCompile(libs.selenium_phantom) {
-        exclude module: 'selenium-java'
-        exclude module: 'selenium-server'
-    }
-    testCompile libs.windowlicker_core
-    testCompile libs.windowlicker_web
+    testCompile libs.mario
 }
 
 jacocoTestReport {
